@@ -389,7 +389,7 @@ Project filter, then three cards: **Progress** (% with bar and "x of y tasks don
 
 ### 6.8 Account, Help, Search
 
-- **Account:** one scrollable page of cards: Profile (name, email), Preferences (week starts on, density, due-today reminders), Appearance (motion: follow device / reduce), Privacy (links to the policy), Developer (show developer tools, reset session data with count). The form is **preview-only**: edits stay on screen, an "Edited" badge and Reset appear, nothing is saved. (The *week starts on* and *density* options are inert in the web demo; keep them inert and labelled preview.)
+- **Account:** one scrollable page of cards: Profile (name, email), Preferences (week starts on, density, due-today reminders), Appearance (motion: follow device / reduce), Privacy (links to the policy), Developer (show developer tools, reset session data with count). The form is **preview-only**: edits stay on screen, an "Edited" badge and Reset appear, nothing is saved. (The *week starts on* and *density* options are inert in the web demo; keep them inert and labelled preview.) **Superseded (M5, M6):** preferences are now real and apply at once; density and reminders were removed; see `docs/PLAN-MOBILE-UI.md`.
 - **Help:** renders `individual-workspace-guide.md` with a contents list. Update wording that refers to keyboard shortcuts and the desktop rail so it reads correctly on mobile (see Open question 4).
 - **Search / Jump:** text field with grouped results (Actions: Quick add, New project; Go to: Home, Projects, Tasks, Library, Insights, Account, Calendar, Help; Projects; Library files). Empty query shows Recent + Actions + Go to. Matches the palette logic in `CommandPalette.jsx`, capped at 12 results.
 - **Account menu** (from the avatar): who/what ("Demo workspace, Individual · sample data, nothing is saved"), Insights, Account and preferences, Help, Developer tools toggle, Legal links, Back to welcome, Leave demo.
@@ -496,7 +496,7 @@ Status on 2026-11-14. Ticked items are verified by automated tests or builds; op
 - [x] No network code, no persistence, no `INTERNET` permission in release; session additions disappear on restart and are always labelled. *`privacy_test.dart`; release APK permissions checked with `aapt`.*
 - [x] No team concepts anywhere (people, assignees, roles, access). *`design_rules_test.dart`.*
 - [x] Fredoka, flat colour, ink-outlined selection, at least 12 sp text, at least 48 dp targets; status never by colour alone. *Rules test, accessibility guideline test on 24 routes. The calendar's day dots are colour-only, but each day's agenda writes status out in words.*
-- [x] `flutter analyze` and `flutter test` pass; goldens committed. *126 tests, 16 goldens.*
+- [x] `flutter analyze` and `flutter test` pass; goldens committed. *126 tests, 16 goldens at the end of Phase 8; now 195 tests and 20 goldens after M1 to M6.*
 - [ ] TalkBack, 200 % text and reduced-motion passes recorded in `LOG.md`. *200 % text is covered by goldens and the layout sweep; reduced motion by unit tests. A TalkBack pass and reduced motion on a device are still to do.*
 - [x] Mobile `README.md`, `CODEMAP.md`, `LOG.md`, `CONTEXT.md` created and current.
 

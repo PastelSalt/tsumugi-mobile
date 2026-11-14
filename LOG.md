@@ -104,3 +104,5 @@ Chronological record of actions in this repository.
   - Account: real settings (theme, text size, reduce motion, week start, vibration, reset). Calendar honours Sunday week start. Density and reminders removed.
   - Not done: coverage rings, traceability timeline, week strip, tinted project header, lazy Projects and Library.
   - Tests: 195 pass (11 new in `m4_test.dart`, 8 in `m5_test.dart`, 8 in `m6_test.dart`); goldens regenerated and four dark goldens added; `flutter analyze` clean. Nothing run on a device.
+
+- **Repository and docs housekeeping (2026-11-14):** the work was committed as `05da883` and published to a new private GitHub repo, `PastelSalt/tsumugi-mobile` (app at the root, branch `main`, made with `git subtree split`). A first push to a `MoekoWorks` repo was a mistake and that repo was deleted. `CONTEXT.md` now records the git layout, what is real versus preview, the pitfalls found in M2 to M6, and a hand-off brief for M7 and M8; README, CODEMAP and the test count (195) were brought up to date.

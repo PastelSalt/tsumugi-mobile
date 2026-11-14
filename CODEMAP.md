@@ -74,7 +74,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `lib/features/gallery/gallery_screen.dart` | Developer widget gallery at `/gallery` |
 | `lib/app/shell/account_sheet.dart` | Account menu sheet: Insights, Account, Help, legal links, Back to welcome, Leave demo; developer switch that reveals the preview-state picker and the gallery |
 | `lib/shared/widgets/brand_mark.dart` | `BrandMark` ("ts" badge) and `BrandLogo` (badge plus "tsumugi" wordmark) |
-| `assets/fonts/` | Fredoka Regular and Bold (TTF) and the OFL license |
+| `assets/fonts/` | Fredoka Regular, Medium, SemiBold and Bold (TTF) and the OFL license |
 | `assets/brand/` | `tsumugi-mark.svg` (reference), `launcher_icon.png`, `launcher_foreground.png` (rendered by `tool/render_launcher_icons_test.dart`) |
 | `assets/docs/` | Markdown from the website: three draft legal policies (verbatim) and the individual workspace guide (desktop-only wording edited for phones; see `tool/mobile_guide_edits.mjs`) |
 | `tool/mobile_guide_edits.mjs`, `tool/mobile_guide_edits2.mjs` | One-off wording edits applied to the bundled guide copy |
@@ -92,7 +92,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `test/features/m4_test.dart` | M4: Home sections, glance chips, overdue badge, Search types, counts and recent searches |
 | `test/features/m3_test.dart` | M3: Quick add picker chips (project, date, priority), tapped beats typed, carried-over project, one-time tip, long-press create menu, 48 dp chips, draft guard |
 | `test/features/m2_test.dart` | M2: complete and undo from Today, swipe, long-press menu, edit, delete, undo order, custom accessibility actions, task panel actions, session overlay purity and reset |
-| `test/features/phase7_test.dart` | Wide layout (rail, docked panel, portrait and landscape), reduced motion, dark scaffold, preview states on every list screen |
+| `test/features/phase7_test.dart` | Wide layout (rail, docked panel, portrait and landscape), reduced motion, dark theme scaffold (superseded by m5_test), preview states on every list screen |
 | `test/features/workflows_test.dart` | The guide's everyday workflows (13.1 to 13.6) driven through the UI |
 | `test/` | Boot and tab tests, format tests, WCAG contrast test, shared widget and record widget tests, route tests, `parity_test.dart` (Dart results vs the website's), `store_test.dart` (session additions) |
 | `android/` | Android runner; launcher label "Tsumugi"; launch screen = website canvas colour with the "ts" mark (`drawable/launch_background.xml`, `splash_mark.png`); no `INTERNET` permission in the main manifest |

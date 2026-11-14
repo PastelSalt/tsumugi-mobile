@@ -1,6 +1,6 @@
 # Tsumugi Mobile: Mobile-Native UI Plan
 
-> **Status:** **M1 to M6 done (2026-11-14, with the gaps listed under each phase); M7 and M8 not started.** Decision D1 was settled on 2026-11-14: **real in-session actions are allowed; the app stays a play-demo with no backend and no online services** (see section 1a).
+> **Status:** **M1 to M6 done (2026-11-14, with the gaps listed under each phase); M7 and M8 not started** (hand-off brief in `CONTEXT.md`, "Next steps"). Decision D1 was settled on 2026-11-14: **real in-session actions are allowed; the app stays a play-demo with no backend and no online services** (see section 1a).
 > **Follows:** [`PLAN-FLUTTER-MOBILE.md`](PLAN-FLUTTER-MOBILE.md), the faithful port of the website demo (all phases done on 2026-11-14).
 > **Purpose:** take the app from "the website, rebuilt in Flutter" to "an app that feels made for a phone".
 > **Last updated:** 2026-11-14
