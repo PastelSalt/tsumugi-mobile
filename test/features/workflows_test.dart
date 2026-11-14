@@ -101,7 +101,10 @@ void main() {
 
       router.go('/tasks');
       await tester.pumpAndSettle();
-      expect(find.text('Overdue'), findsWidgets); // back to Today each morning
+      expect(
+        find.textContaining('Overdue', findRichText: true),
+        findsWidgets,
+      ); // back to Today each morning
     },
   );
 

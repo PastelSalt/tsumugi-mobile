@@ -32,7 +32,7 @@ Color projectTint(BuildContext context, String tone) {
     'pink' => t.pinkSoft,
     'blue' => t.blueSoft,
     'lilac' => t.lilac,
-    'yellow' => const Color(0xFFFFF2CF),
+    'yellow' => t.butterSoft,
     'green' => t.greenSoft,
     _ => t.paper,
   };

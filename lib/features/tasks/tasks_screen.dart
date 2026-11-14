@@ -3,17 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/query_params.dart';
+import '../../app/shell/shell_actions.dart';
 import '../../app/sheet_selection.dart';
 import '../../core/data/format.dart';
 import '../../core/data/models.dart';
 import '../../core/data/selectors.dart';
 import '../../core/data/status.dart';
 import '../../core/data/workspace_store.dart';
+import '../../core/settings/preferences.dart';
+import '../../core/state/preview_state.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/filters.dart';
+import '../../shared/widgets/large_title_scaffold.dart';
 import '../../shared/widgets/layout.dart';
 import '../../shared/widgets/record_sheets.dart';
 import '../../shared/widgets/records.dart';
+import '../../shared/widgets/task_tile.dart';
 import '../../shared/widgets/states.dart';
 import 'calendar_view.dart';
 
@@ -76,70 +81,127 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
     final filterCount =
         (project != 'all' ? 1 : 0) + (view == 'all' && status != 'all' ? 1 : 0);
 
-    return ListView(
-      padding: const EdgeInsets.all(AppTokens.pageGutter),
-      children: [
-        const PageHeader(
-          title: 'Tasks',
-          description: 'Everything you have to do, across all projects.',
-        ),
-        ViewTabs(
-          tabs: _views,
-          value: view,
-          onChanged: (v) => context.setQueryParams({
-            'view': v == 'today' ? null : v,
-            'select': null,
-          }),
-        ),
-        StateGate(
-          empty: const EmptyState(
-            title: 'No tasks yet',
-            body: 'Tap + to add your first one.',
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SearchFilterBar(
-                hint: 'Search tasks',
-                onSearch: (v) => setState(() => _search = v),
-                filterCount: filterCount,
-                onFilter: () => showFilterSheet(
-                  context,
-                  onReset: () =>
-                      context.setQueryParams({'project': null, 'status': null}),
-                  builder: (context, refresh) => _Filters(
-                    view: view,
-                    project: project,
-                    status: status,
-                    projects: data.activeProjects,
-                    onChanged: (changes) {
-                      context.setQueryParams(changes);
-                      refresh();
-                    },
-                  ),
-                ),
+    final preview = ref.watch(previewStateProvider);
+    final header = Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTokens.pageGutter,
+        AppTokens.space4,
+        AppTokens.pageGutter,
+        0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SearchFilterBar(
+            hint: 'Search tasks',
+            onSearch: (v) => setState(() => _search = v),
+            filterCount: filterCount,
+            onFilter: () => showFilterSheet(
+              context,
+              onReset: () =>
+                  context.setQueryParams({'project': null, 'status': null}),
+              builder: (context, refresh) => _Filters(
+                view: view,
+                project: project,
+                status: status,
+                projects: data.activeProjects,
+                onChanged: (changes) {
+                  context.setQueryParams(changes);
+                  refresh();
+                },
               ),
-              if (view == 'all')
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppTokens.space4),
-                  child: SegmentedToggle(
-                    label: 'Layout',
-                    value: mode,
-                    onChanged: (v) => context.setQueryParams({
-                      'mode': v == 'list' ? null : v,
-                    }),
-                    options: const [('list', 'List'), ('board', 'Board')],
-                  ),
-                ),
-              _body(data, view, project, mode, matches),
-            ],
+            ),
           ),
-        ),
-      ],
+          if (view == 'all')
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppTokens.space4),
+              child: SegmentedToggle(
+                label: 'Layout',
+                value: mode,
+                onChanged: (v) =>
+                    context.setQueryParams({'mode': v == 'list' ? null : v}),
+                options: const [('list', 'List'), ('board', 'Board')],
+              ),
+            ),
+        ],
+      ),
+    );
+
+    return LargeTitleScaffold(
+      title: 'Tasks',
+      restorationId: 'tasks-scroll',
+      actions: shellActions(context),
+      onRefresh: () async {
+        // Demo: the sample data is local, so there is nothing to fetch. A short pause keeps the
+        // gesture feeling like a refresh.
+        await Future<void>.delayed(const Duration(milliseconds: 450));
+      },
+      pinnedHeader: ViewTabs(
+        tabs: _views,
+        value: view,
+        margin: EdgeInsets.zero,
+        onChanged: (v) => context.setQueryParams({
+          'view': v == 'today' ? null : v,
+          'select': null,
+        }),
+      ),
+      slivers: switch (preview) {
+        PreviewState.loading => [_box(const LoadingState())],
+        PreviewState.error => [_box(const ErrorState())],
+        PreviewState.empty => [_box(_noTasks)],
+        PreviewState.normal =>
+          data.tasks.isEmpty
+              ? [_box(_noTasks)]
+              : [
+                  SliverToBoxAdapter(child: header),
+                  ..._body(data, view, project, mode, matches),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppTokens.space5),
+                  ),
+                ],
+      },
     );
   }
 
-  Widget _body(
+  static const _noTasks = EmptyState(
+    title: 'No tasks yet',
+    body: 'Tap + to add your first one.',
+  );
+
+  /// One group of tiles with a header that stays pinned under the view tabs while its tiles scroll.
+  Widget _group(String title, int count, List<Widget> tiles) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: AppTokens.pageGutter),
+      sliver: SliverMainAxisGroup(
+        slivers: [
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: _GroupHeaderDelegate(title: title, count: count),
+          ),
+          SliverList.builder(
+            itemCount: tiles.length,
+            itemBuilder: (context, i) => tiles[i],
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppTokens.space3)),
+        ],
+      ),
+    );
+  }
+
+  Widget _box(Widget child) => SliverPadding(
+    padding: const EdgeInsets.symmetric(horizontal: AppTokens.pageGutter),
+    sliver: SliverToBoxAdapter(child: child),
+  );
+
+  TaskTile _tile(Task task) => TaskTile(
+    key: ValueKey(task.id),
+    task: task,
+    showProject: true,
+    selected: widget.params['select'] == task.id,
+    onTap: () => select(task.id),
+  );
+
+  List<Widget> _body(
     WorkspaceData data,
     String view,
     String project,
@@ -150,16 +212,21 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
       case 'upcoming':
         return _upcoming(data, project, matches);
       case 'calendar':
-        return CalendarView(
-          data: data,
-          month: widget.params['month'],
-          day: widget.params['day'],
-          matches: matches,
-          project: project,
-          onMonth: (m) => context.setQueryParams({'month': m, 'day': null}),
-          onDay: (d) => context.setQueryParams({'day': d}),
-          onSelectTask: select,
-        );
+        return [
+          _box(
+            CalendarView(
+              data: data,
+              month: widget.params['month'],
+              day: widget.params['day'],
+              matches: matches,
+              project: project,
+              onMonth: (m) => context.setQueryParams({'month': m, 'day': null}),
+              onDay: (d) => context.setQueryParams({'day': d}),
+              onSelectTask: select,
+              sundayStart: ref.watch(preferencesProvider).weekStartsSunday,
+            ),
+          ),
+        ];
       case 'all':
         return _all(data, mode, matches);
       default:
@@ -167,49 +234,50 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
     }
   }
 
-  Widget _today(
+  List<Widget> _today(
     WorkspaceData data,
     String project,
     bool Function(Task) matches,
   ) {
     final t = data.todayList(project);
+    // Tasks finished during this session leave their group at once; they gather here so a person
+    // can see them and Undo remains reachable.
+    final session = ref.watch(sessionProvider).taskOverrides;
+    final finished = data.tasks
+        .where(
+          (task) =>
+              task.status == 'Done' &&
+              session.containsKey(task.id) &&
+              matches(task),
+        )
+        .toList();
     final groups = [
       ('Overdue', t.overdue.where(matches).toList()),
       ('Today', t.today.where(matches).toList()),
       ('In progress', t.doing.where(matches).toList()),
+      ('Done this session', finished),
     ].where((g) => g.$2.isNotEmpty).toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _InlineAdd(projectId: project == 'all' ? null : project),
-        const SizedBox(height: AppTokens.space4),
-        if (groups.isEmpty)
+    return [
+      _box(
+        Padding(
+          padding: const EdgeInsets.only(bottom: AppTokens.space4),
+          child: _InlineAdd(projectId: project == 'all' ? null : project),
+        ),
+      ),
+      if (groups.isEmpty)
+        _box(
           const EmptyState(
             title: 'All clear for today',
             body: 'Add a task above, or look at Upcoming.',
-          )
-        else
-          for (final (label, list) in groups)
-            Section(
-              title: label,
-              child: Column(
-                spacing: AppTokens.space2,
-                children: [
-                  for (final task in list)
-                    TaskRow(
-                      task: task,
-                      showProject: true,
-                      selected: widget.params['select'] == task.id,
-                      onTap: () => select(task.id),
-                    ),
-                ],
-              ),
-            ),
-      ],
-    );
+          ),
+        )
+      else
+        for (final (label, list) in groups)
+          _group(label, list.length, [for (final task in list) _tile(task)]),
+    ];
   }
 
-  Widget _upcoming(
+  List<Widget> _upcoming(
     WorkspaceData data,
     String project,
     bool Function(Task) matches,
@@ -219,11 +287,15 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
         .where((i) => !i.isTask || matches(i.task!))
         .toList();
     if (items.isEmpty) {
-      return const EmptyState(
-        icon: LucideIcons.calendarDays,
-        title: 'Nothing coming up',
-        body: 'No tasks or milestones are due in the next 30 days.',
-      );
+      return [
+        _box(
+          const EmptyState(
+            icon: LucideIcons.calendarDays,
+            title: 'Nothing coming up',
+            body: 'No tasks or milestones are due in the next 30 days.',
+          ),
+        ),
+      ];
     }
     String label(String due) =>
         daysFromToday(due) == 1 ? 'Tomorrow' : formatDate(due);
@@ -240,138 +312,170 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
       fontSize: AppTokens.textMeta,
       color: context.tokens.muted,
     );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        for (final (key, list) in groups)
-          Section(
-            title: key,
-            child: Column(
-              spacing: AppTokens.space2,
-              children: [
-                for (final item in list)
-                  if (item.isTask)
-                    TaskRow(
-                      task: item.task!,
-                      showProject: true,
-                      selected: widget.params['select'] == item.task!.id,
-                      onTap: () => select(item.id),
-                    )
-                  else
-                    RowCard(
-                      onTap: () =>
-                          showRecordSheet(context, 'Milestone', item.id),
-                      child: Row(
-                        children: [
-                          const Icon(LucideIcons.flag, size: 18),
-                          const SizedBox(width: AppTokens.space2),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                Text(
-                                  'Milestone · ${data.projectById(item.projectId)?.name ?? ''}',
-                                  style: muted,
-                                ),
-                              ],
+    return [
+      for (final (key, list) in groups)
+        _group(key, list.length, [
+          for (final item in list)
+            if (item.isTask)
+              _tile(item.task!)
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: RowCard(
+                  onTap: () => showRecordSheet(context, 'Milestone', item.id),
+                  child: Row(
+                    children: [
+                      const Icon(LucideIcons.flag, size: 18),
+                      const SizedBox(width: AppTokens.space2),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ),
-                        ],
+                            Text(
+                              'Milestone · ${data.projectById(item.projectId)?.name ?? ''}',
+                              style: muted,
+                            ),
+                          ],
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+        ]),
+    ];
+  }
+
+  List<Widget> _all(
+    WorkspaceData data,
+    String mode,
+    bool Function(Task) matches,
+  ) {
+    final list = data.tasks.where(matches).toList();
+    if (list.isEmpty) {
+      return [
+        _box(
+          NoResults(
+            onClear: () {
+              setState(() => _search = '');
+              context.setQueryParams({'project': null, 'status': null});
+            },
+          ),
+        ),
+      ];
+    }
+    if (mode == 'board') {
+      return [
+        _box(
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final status in workStatuses)
+                  Container(
+                    width: 300,
+                    margin: const EdgeInsets.only(right: AppTokens.space3),
+                    child: _BoardColumn(
+                      status: status,
+                      tasks: list.where((t) => t.status == status).toList(),
+                      onSelect: select,
                     ),
+                  ),
               ],
             ),
           ),
-      ],
-    );
-  }
-
-  Widget _all(WorkspaceData data, String mode, bool Function(Task) matches) {
-    final list = data.tasks.where(matches).toList();
-    if (list.isEmpty) {
-      return NoResults(
-        onClear: () {
-          setState(() => _search = '');
-          context.setQueryParams({'project': null, 'status': null});
-        },
-      );
-    }
-    if (mode == 'board') {
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final status in workStatuses)
-              Container(
-                width: 300,
-                margin: const EdgeInsets.only(right: AppTokens.space3),
-                child: _BoardColumn(
-                  status: status,
-                  tasks: list.where((t) => t.status == status).toList(),
-                  onSelect: select,
-                ),
-              ),
-          ],
         ),
-      );
+      ];
     }
     final open = stableSorted(list.where(isOpen), (a, b) {
       final o = (isOverdue(b) ? 1 : 0) - (isOverdue(a) ? 1 : 0);
       return o != 0 ? o : (a.due ?? '9').compareTo(b.due ?? '9');
     });
     final done = list.where((t) => !isOpen(t)).toList();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          spacing: AppTokens.space2,
-          children: [
-            for (final t in open)
-              TaskRow(
-                task: t,
-                showProject: true,
-                selected: widget.params['select'] == t.id,
-                onTap: () => select(t.id),
-              ),
-          ],
-        ),
-        if (done.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: AppTokens.space3),
-            child: Theme(
-              data: Theme.of(context)
-                  .copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(
-                  'Done (${done.length})',
-                  style: const TextStyle(fontWeight: FontWeight.w700),
+    return [
+      if (open.isNotEmpty)
+        _group('Open', open.length, [for (final t in open) _tile(t)]),
+      if (done.isNotEmpty)
+        _group('Done', done.length, [for (final t in done) _tile(t)]),
+    ];
+  }
+}
+
+class _GroupHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _GroupHeaderDelegate({required this.title, required this.count});
+
+  final String title;
+  final int count;
+
+  static const _height = 40.0;
+
+  @override
+  double get minExtent => _height;
+
+  @override
+  double get maxExtent => _height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) => SizedBox(
+    height: _height,
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: _GroupHeader(title: title, count: count),
+    ),
+  );
+
+  @override
+  bool shouldRebuild(_GroupHeaderDelegate old) =>
+      old.title != title || old.count != count;
+}
+
+/// Header of a task group: the label and a count, on the page background so tiles slide under it.
+class _GroupHeader extends StatelessWidget {
+  const _GroupHeader({required this.title, required this.count});
+
+  final String title;
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Semantics(
+      header: true,
+      label: '$title, $count',
+      child: ExcludeSemantics(
+        child: Container(
+          color: t.background,
+          padding: const EdgeInsets.symmetric(vertical: AppTokens.space2),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: title,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                children: [
-                  Column(
-                    spacing: AppTokens.space2,
-                    children: [
-                      for (final t in done)
-                        TaskRow(
-                          task: t,
-                          showProject: true,
-                          selected: widget.params['select'] == t.id,
-                          onTap: () => select(t.id),
-                        ),
-                    ],
+                TextSpan(
+                  text: '  $count',
+                  style: TextStyle(
+                    color: t.onSurfaceMuted,
+                    fontSize: AppTokens.textMeta,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-      ],
+        ),
+      ),
     );
   }
 }
@@ -462,7 +566,7 @@ class _BoardColumn extends StatelessWidget {
               spacing: AppTokens.space2,
               children: [
                 for (final task in tasks)
-                  TaskRow(
+                  TaskTile(
                     task: task,
                     showProject: true,
                     onTap: () => onSelect(task.id),

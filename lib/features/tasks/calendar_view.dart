@@ -7,6 +7,7 @@ import '../../core/data/selectors.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/record_sheets.dart';
 import '../../shared/widgets/records.dart';
+import '../../shared/widgets/task_tile.dart';
 
 String _pad(int n) => n.toString().padLeft(2, '0');
 String _iso(DateTime d) => '${d.year}-${_pad(d.month)}-${_pad(d.day)}';
@@ -36,9 +37,12 @@ const _monthNames = [
 ];
 
 /// Month grid starting on Monday, always whole weeks so the layout never jumps between months.
-List<String> buildMonthGrid(String key) {
+List<String> buildMonthGrid(String key, {bool sundayStart = false}) {
   final first = _monthStart(key);
-  final offset = (first.weekday + 6) % 7; // Monday = 0
+  final offset = sundayStart
+      ? first.weekday %
+            7 // Sunday = 0
+      : (first.weekday + 6) % 7; // Monday = 0
   final start = first.subtract(Duration(days: offset));
   final last = DateTime(first.year, first.month + 1, 0);
   final weeks = ((offset + last.day) / 7).ceil();
@@ -61,6 +65,7 @@ class CalendarView extends StatelessWidget {
     required this.onMonth,
     required this.onDay,
     this.onSelectTask,
+    this.sundayStart = false,
   });
 
   final WorkspaceData data;
@@ -72,11 +77,14 @@ class CalendarView extends StatelessWidget {
   final ValueChanged<String> onDay;
   final ValueChanged<String>? onSelectTask;
 
+  /// Weeks start on Sunday (the Account preference).
+  final bool sundayStart;
+
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
     final key = month ?? demoToday.substring(0, 7);
-    final cells = buildMonthGrid(key);
+    final cells = buildMonthGrid(key, sundayStart: sundayStart);
     final tasks = [
       for (final task in data.tasks)
         if (task.due != null && matches(task)) task,
@@ -132,7 +140,8 @@ class CalendarView extends StatelessWidget {
         ExcludeSemantics(
           child: Row(
             children: [
-              for (final w in _weekdays)
+              for (final w
+                  in sundayStart ? ['Sun', ..._weekdays.take(6)] : _weekdays)
                 Expanded(
                   child: Center(
                     child: Text(
@@ -226,7 +235,7 @@ class CalendarView extends StatelessWidget {
                   ),
                 ),
               for (final task in agenda.tasks)
-                TaskRow(
+                TaskTile(
                   task: task,
                   showProject: true,
                   onTap: onSelectTask == null
@@ -268,9 +277,7 @@ class _DayCell extends StatelessWidget {
       for (final task in items.tasks)
         task.status == 'Done'
             ? t.green
-            : (task.due!.compareTo(demoToday) < 0
-                  ? const Color(0xFFA3205C)
-                  : t.pink),
+            : (task.due!.compareTo(demoToday) < 0 ? t.dangerText : t.pink),
     ];
     return Semantics(
       button: true,

@@ -61,10 +61,10 @@ class PhaseStepper extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: i < currentIndex
-                            ? const Icon(
+                            ? Icon(
                                 LucideIcons.check,
                                 size: 14,
-                                color: Colors.white,
+                                color: t.onAccent,
                               )
                             : Text(
                                 '${i + 1}',
@@ -72,7 +72,7 @@ class PhaseStepper extends StatelessWidget {
                                   fontSize: AppTokens.textMeta,
                                   fontWeight: FontWeight.w700,
                                   color: i == currentIndex
-                                      ? Colors.white
+                                      ? t.onAccent
                                       : t.muted,
                                 ),
                               ),

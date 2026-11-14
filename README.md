@@ -2,7 +2,7 @@
 
 Flutter mobile app for **Tsumugi** ("Weaving ideas into finished work"), a creative and technical production-management platform by Moeko Works.
 
-This is a **frontend-only demo**, a mobile port of the website demo in `../CTINASSL_Activity/client`. Nothing is saved or sent anywhere, there is no backend, and actions that would write open a "Preview only" sheet. The full plan, scope and phases are in [docs/PLAN-FLUTTER-MOBILE.md](docs/PLAN-FLUTTER-MOBILE.md).
+This is a **frontend-only demo**, a mobile port of the website demo in `../CTINASSL_Activity/client`. Nothing is saved or sent anywhere, there is no backend, and actions that would write open a "Preview only" sheet. The full plan, scope and phases are in [docs/PLAN-FLUTTER-MOBILE.md](docs/PLAN-FLUTTER-MOBILE.md). The follow-up plan for a more mobile-native UI (collapsing bars, gestures, real in-session actions, dark mode) is [docs/PLAN-MOBILE-UI.md](docs/PLAN-MOBILE-UI.md); M1 to M6 are done (foundations, task tile and undo, Quick add pickers, Home and Search, dark mode and settings, project page and reader); M7 and M8 are not started. Each phase's gaps are listed in the plan.
 
 ## Status
 

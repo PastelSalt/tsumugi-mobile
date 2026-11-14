@@ -9,6 +9,25 @@ import '../../core/theme/tokens.dart';
 import '../projects/new_project_sheet.dart';
 import '../quickadd/quick_add_sheet.dart';
 
+/// Searches the person ran this session (newest first, at most five). Not saved on the device.
+class RecentSearchesNotifier extends Notifier<List<String>> {
+  @override
+  List<String> build() => const [];
+
+  void add(String query) {
+    final q = query.trim();
+    if (q.isEmpty) return;
+    state = [q, ...state.where((e) => e != q)].take(5).toList();
+  }
+
+  void clear() => state = const [];
+}
+
+final recentSearchesProvider =
+    NotifierProvider<RecentSearchesNotifier, List<String>>(
+      RecentSearchesNotifier.new,
+    );
+
 class _Item {
   const _Item(this.id, this.group, this.label, this.run);
 
@@ -29,6 +48,24 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   String _query = '';
+  String _type = 'All';
+  final _field = TextEditingController();
+
+  @override
+  void dispose() {
+    _field.dispose();
+    super.dispose();
+  }
+
+  static const _types = ['All', 'Tasks', 'Projects', 'Files', 'Actions'];
+
+  bool _typeMatches(String group) => switch (_type) {
+    'Tasks' => group == 'Tasks',
+    'Projects' => group == 'Projects',
+    'Files' => group == 'Library',
+    'Actions' => group == 'Actions' || group == 'Go to',
+    _ => true,
+  };
 
   List<_Item> _items(BuildContext context) {
     final data = ref.read(workspaceDataProvider);
@@ -64,6 +101,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _Item('g-help', 'Go to', 'Help', () => page('/help')),
       for (final p in data.activeProjects)
         _Item(p.id, 'Projects', p.name, () => tab('/projects/${p.id}')),
+      for (final task in data.tasks)
+        _Item(
+          task.id,
+          'Tasks',
+          task.title,
+          () => tab('/tasks?select=${task.id}'),
+        ),
       for (final f in data.files)
         _Item(
           f.id,
@@ -75,6 +119,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ),
     ];
     final q = _query.trim().toLowerCase();
+    if (q.isEmpty && _type != 'All') {
+      return base.where((i) => _typeMatches(i.group)).take(30).toList();
+    }
     if (q.isEmpty) {
       final recentIds = {for (final r in data.recents(4)) r.id};
       return [
@@ -85,8 +132,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       ];
     }
     return base
-        .where((i) => i.label.toLowerCase().contains(q))
-        .take(12)
+        .where(
+          (i) => _typeMatches(i.group) && i.label.toLowerCase().contains(q),
+        )
+        .take(30)
         .toList();
   }
 
@@ -94,7 +143,55 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final t = context.tokens;
     final items = _items(context);
+    final recentSearches = ref.watch(recentSearchesProvider);
+    final counts = <String, int>{};
+    for (final i in items) {
+      counts[i.group] = (counts[i.group] ?? 0) + 1;
+    }
     final rows = <Widget>[];
+    if (_query.trim().isEmpty && recentSearches.isNotEmpty) {
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.only(top: AppTokens.space3, bottom: 4),
+          child: Row(
+            children: [
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    'Recent searches',
+                    style: TextStyle(
+                      fontSize: AppTokens.textMeta,
+                      color: t.muted,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () =>
+                    ref.read(recentSearchesProvider.notifier).clear(),
+                child: const Text('Clear'),
+              ),
+            ],
+          ),
+        ),
+      );
+      for (final r in recentSearches) {
+        rows.add(
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            minTileHeight: AppTokens.minTarget,
+            leading: const Icon(LucideIcons.history, size: 18),
+            title: Text(r),
+            onTap: () => setState(() {
+              _field.text = r;
+              _query = r;
+            }),
+          ),
+        );
+      }
+    }
     String? last;
     for (final item in items) {
       if (item.group != last) {
@@ -105,7 +202,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: Semantics(
               header: true,
               child: Text(
-                item.group,
+                _query.trim().isEmpty
+                    ? item.group
+                    : '${item.group} (${counts[item.group]})',
                 style: TextStyle(
                   fontSize: AppTokens.textMeta,
                   color: t.muted,
@@ -121,7 +220,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           contentPadding: EdgeInsets.zero,
           minTileHeight: AppTokens.minTarget,
           title: Text(item.label),
-          onTap: item.run,
+          onTap: () {
+            ref.read(recentSearchesProvider.notifier).add(_query);
+            item.run();
+          },
         ),
       );
     }
@@ -132,6 +234,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Padding(
             padding: const EdgeInsets.all(AppTokens.pageGutter),
             child: TextField(
+              controller: _field,
               autofocus: true,
               onChanged: (v) => setState(() => _query = v),
               textInputAction: TextInputAction.search,
@@ -153,6 +256,23 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   borderSide: BorderSide(color: t.ink, width: 2),
                 ),
               ),
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppTokens.pageGutter,
+            ),
+            child: Row(
+              spacing: AppTokens.space2,
+              children: [
+                for (final type in _types)
+                  ChoiceChip(
+                    label: Text(type),
+                    selected: _type == type,
+                    onSelected: (_) => setState(() => _type = type),
+                  ),
+              ],
             ),
           ),
           Expanded(

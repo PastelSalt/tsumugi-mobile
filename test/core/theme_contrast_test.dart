@@ -14,13 +14,16 @@ void main() {
   const t = AppTokens();
   const aa = 4.5;
 
-  test('status tone pairs meet WCAG AA for small text', () {
-    for (final tone in StatusTone.values) {
-      expect(
-        _ratio(tone.background, tone.foreground),
-        greaterThanOrEqualTo(aa),
-        reason: '${tone.name} pill',
-      );
+  test('status tone pairs meet WCAG AA for small text in both themes', () {
+    for (final tokens in [const AppTokens(), AppTokens.dark]) {
+      for (final tone in StatusTone.values) {
+        final c = tokens.tone(tone);
+        expect(
+          _ratio(c.background, c.foreground),
+          greaterThanOrEqualTo(aa),
+          reason: '${tone.name} pill (${tokens.brightness.name})',
+        );
+      }
     }
   });
 

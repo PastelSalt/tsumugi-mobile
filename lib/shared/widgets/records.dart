@@ -11,6 +11,7 @@ import '../../core/data/workspace_store.dart';
 import '../../core/theme/tokens.dart';
 import 'badges.dart';
 import 'record_sheets.dart';
+import 'task_tile.dart';
 
 /// Shared card shell for list rows: paper card, thin border, ink outline when selected.
 class RowCard extends StatelessWidget {
@@ -62,88 +63,6 @@ Widget _meta(BuildContext context, String text) => Text(
   text,
   style: TextStyle(fontSize: AppTokens.textMeta, color: context.tokens.muted),
 );
-
-/// Task row (website `TaskRow`): status icon, title, project / milestone / subtask meta, flags and due date.
-class TaskRow extends ConsumerWidget {
-  const TaskRow({
-    super.key,
-    required this.task,
-    this.onTap,
-    this.selected = false,
-    this.showProject = false,
-  });
-
-  final Task task;
-  final VoidCallback? onTap;
-  final bool selected;
-  final bool showProject;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(workspaceDataProvider);
-    final milestone = task.milestoneId == null
-        ? null
-        : data.milestoneById(task.milestoneId!);
-    final project = data.projectById(task.projectId);
-    final subDone = task.subtasks.where((s) => s.done).length;
-    final style = statusStyles[StatusDomain.work]![task.status]!;
-    final t = context.tokens;
-    final done = task.status == 'Done';
-    return RowCard(
-      selected: selected,
-      onTap: onTap ?? () => showRecordSheet(context, 'Task', task.id),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 2, right: AppTokens.space3),
-            child: Icon(style.icon, size: 20, color: done ? t.green : t.ink),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Semantics(
-                  label: '${task.title} (${task.status})',
-                  excludeSemantics: true,
-                  child: Text(
-                    task.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: done ? t.muted : t.ink,
-                      decoration: done ? TextDecoration.lineThrough : null,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Wrap(
-                  spacing: AppTokens.space2,
-                  runSpacing: 4,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    if (showProject && project != null)
-                      _meta(context, project.name),
-                    if (milestone != null) _meta(context, milestone.title),
-                    if (task.subtasks.isNotEmpty)
-                      _meta(
-                        context,
-                        '$subDone/${task.subtasks.length} subtasks',
-                      ),
-                    if (task.session) const SessionTag(),
-                    if (task.blocked) const Flag('Blocked'),
-                    if (task.priority == 'high')
-                      const Flag('High', label: 'High priority'),
-                    DueLabel(due: task.due, done: done),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 /// A milestone with its tasks underneath (project Work tab).
 class MilestoneGroup extends ConsumerWidget {
@@ -245,7 +164,7 @@ class MilestoneGroup extends ConsumerWidget {
               for (final task in tasks)
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppTokens.space2),
-                  child: TaskRow(
+                  child: TaskTile(
                     task: task,
                     selected: selectedId == task.id,
                     onTap: onSelectTask == null
@@ -349,7 +268,7 @@ Color _kindColor(BuildContext context, String kind) {
   final t = context.tokens;
   return switch (kind) {
     'image' => t.blueSoft,
-    'document' => const Color(0xFFFFF2CF),
+    'document' => t.butterSoft,
     'media' => t.lilac,
     'data' => t.greenSoft,
     'link' => t.pinkSoft,

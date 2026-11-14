@@ -13,6 +13,8 @@ Future<void> loadAppFonts() async {
 
   await load('Fredoka', [
     'assets/fonts/Fredoka-Regular.ttf',
+    'assets/fonts/Fredoka-Medium.ttf',
+    'assets/fonts/Fredoka-SemiBold.ttf',
     'assets/fonts/Fredoka-Bold.ttf',
   ]);
   await load('packages/lucide_icons_flutter/Lucide', [

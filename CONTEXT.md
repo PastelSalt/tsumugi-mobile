@@ -6,10 +6,11 @@
 
 ## How to resume
 
-The app is a complete frontend-only Flutter port of the website demo in `../CTINASSL_Activity/client` (the Tsumugi "individual workspace"). Read this file, then [`CODEMAP.md`](CODEMAP.md) for the file index and the newest entries of [`LOG.md`](LOG.md) for what changed last. The plan, decisions and the website analysis are in [`docs/PLAN-FLUTTER-MOBILE.md`](docs/PLAN-FLUTTER-MOBILE.md). Nothing is committed unless the owner asks.
+The app is a complete frontend-only Flutter port of the website demo in `../CTINASSL_Activity/client` (the Tsumugi "individual workspace"). Read this file, then [`CODEMAP.md`](CODEMAP.md) for the file index and the newest entries of [`LOG.md`](LOG.md) for what changed last. The plan, decisions and the website analysis are in [`docs/PLAN-FLUTTER-MOBILE.md`](docs/PLAN-FLUTTER-MOBILE.md). A second plan, [`docs/PLAN-MOBILE-UI.md`](docs/PLAN-MOBILE-UI.md), proposes moving the UI away from web-style layout toward mobile-native patterns; M1 to M6 are done (see the status line under each phase for what was left out); M7 and M8 are not started. Nothing is committed unless the owner asks.
 
 Rules that apply to all work (carried over from the website):
 
+- **Play-demo (decision 2026-11-14, applies to all future work):** the app never gets a backend or any online service, never saves anything on the device and requests no permissions. Everything the person does lives in memory and resets on restart. The follow-up UI plan will make most write actions *real inside the session* (complete a task, reschedule, edit, mark met and so on); see `docs/PLAN-MOBILE-UI.md` section 1a. Today, before that work lands:
 - Frontend only: no authentication, API, database, persistence, uploads or analytics. Write actions open a **Preview only** sheet. Quick add and templates add **session-only** records (in memory, labelled "Session only", gone on restart).
 - The individual workspace never shows team concepts (people, assignees, roles, access). A team workspace would be a separate, future workspace type.
 - Look: Fredoka, warm paper canvas, flat colour (no gradients), ink outlines for selected elements, pastel accents, Lucide icons, text of at least 12 sp, targets of at least 48 dp, status always icon plus text. Motion is restrained and is skipped when the device disables animations.

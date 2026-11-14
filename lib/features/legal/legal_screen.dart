@@ -59,17 +59,13 @@ class LegalScreen extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: AppTokens.space4),
                 padding: const EdgeInsets.all(AppTokens.space3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF2CF),
+                  color: t.warningContainer,
                   borderRadius: BorderRadius.circular(AppTokens.radiusMd),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
-                      LucideIcons.triangleAlert,
-                      size: 20,
-                      color: Color(0xFF7A5600),
-                    ),
+                    Icon(LucideIcons.triangleAlert, size: 20, color: t.warning),
                     const SizedBox(width: AppTokens.space2),
                     Expanded(
                       child: Text.rich(
@@ -86,7 +82,7 @@ class LegalScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        style: const TextStyle(color: Color(0xFF7A5600)),
+                        style: TextStyle(color: t.warning),
                       ),
                     ),
                   ],

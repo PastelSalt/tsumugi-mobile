@@ -134,7 +134,7 @@ class InsightsScreen extends ConsumerWidget {
                                   ],
                                 ),
                               ),
-                              DueLabel(due: o.due),
+                              Flexible(child: DueLabel(due: o.due)),
                             ],
                           ),
                         ),

@@ -10,11 +10,10 @@ ThemeData buildTheme({
   Brightness brightness = Brightness.light,
 }) {
   final t = tokens;
-  final dark = brightness == Brightness.dark;
   final scheme = ColorScheme.fromSeed(seedColor: t.pink, brightness: brightness)
       .copyWith(
         primary: t.pink,
-        onPrimary: dark ? t.canvas : Colors.white,
+        onPrimary: t.onAccent,
         primaryContainer: t.pinkSoft,
         onPrimaryContainer: t.ink,
         secondary: t.green,
@@ -34,28 +33,53 @@ ThemeData buildTheme({
     fontFamily: fontFamily,
   );
   // Apply the family last so the size/weight overrides below keep Fredoka too.
+  // Mobile type scale (docs/PLAN-MOBILE-UI.md section 4.2). Display collapses into Title in the
+  // large-title app bar; Row title is lighter than Title so lists read calmly.
   final text = base.textTheme
       .copyWith(
+        // Display: large page title.
         headlineMedium: const TextStyle(
           fontSize: AppTokens.textDisplay,
           fontWeight: FontWeight.w700,
+          height: 1.15,
           letterSpacing: -0.6,
         ),
+        headlineSmall: const TextStyle(
+          fontSize: 26,
+          fontWeight: FontWeight.w700,
+          height: 1.2,
+          letterSpacing: -0.4,
+        ),
+        // Title: sheet and section titles, collapsed app bar title.
         titleLarge: const TextStyle(
           fontSize: AppTokens.textTitle,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
+          height: 1.25,
           letterSpacing: -0.3,
         ),
-        titleMedium: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        bodyMedium: const TextStyle(fontSize: AppTokens.textBody, height: 1.45),
-        bodySmall: const TextStyle(fontSize: AppTokens.textMeta, height: 1.4),
+        titleMedium: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          height: 1.3,
+        ),
+        // Row title: list rows.
+        titleSmall: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          height: 1.3,
+        ),
+        bodyLarge: const TextStyle(fontSize: 16, height: 1.5),
+        bodyMedium: const TextStyle(fontSize: 15, height: 1.45),
+        // Meta: secondary lines.
+        bodySmall: const TextStyle(fontSize: 13, height: 1.4),
         labelLarge: const TextStyle(
           fontSize: AppTokens.textBody,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
+        labelMedium: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
         labelSmall: const TextStyle(
           fontSize: AppTokens.textMeta,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w600,
         ),
       )
       .apply(bodyColor: t.ink, displayColor: t.ink, fontFamily: fontFamily);
@@ -95,7 +119,7 @@ ThemeData buildTheme({
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: t.pink,
-        foregroundColor: dark ? t.canvas : Colors.white,
+        foregroundColor: t.onAccent,
         minimumSize: const Size(AppTokens.minTarget, AppTokens.minTarget),
         shape: StadiumBorder(side: BorderSide(color: t.ink, width: 2)),
         textStyle: text.labelLarge,

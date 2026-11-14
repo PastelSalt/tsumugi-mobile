@@ -156,6 +156,36 @@ class Task {
   final List<String> changeIds;
   final bool session;
 
+  /// A copy with some fields changed. [due] and [milestoneId] can be cleared with [clearDue] and
+  /// [clearMilestone] (passing null alone means "keep").
+  Task copyWith({
+    String? title,
+    String? notes,
+    String? status,
+    String? priority,
+    String? due,
+    bool clearDue = false,
+    String? milestoneId,
+    bool clearMilestone = false,
+    bool? blocked,
+    List<Subtask>? subtasks,
+  }) => Task(
+    id: id,
+    projectId: projectId,
+    milestoneId: clearMilestone ? null : (milestoneId ?? this.milestoneId),
+    title: title ?? this.title,
+    notes: notes ?? this.notes,
+    status: status ?? this.status,
+    priority: priority ?? this.priority,
+    due: clearDue ? null : (due ?? this.due),
+    blocked: blocked ?? this.blocked,
+    subtasks: subtasks ?? this.subtasks,
+    requirementIds: requirementIds,
+    fileIds: fileIds,
+    changeIds: changeIds,
+    session: session,
+  );
+
   factory Task.fromJson(Map<String, dynamic> j) => Task(
     id: j['id'] as String,
     projectId: j['projectId'] as String,

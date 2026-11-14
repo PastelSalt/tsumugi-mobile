@@ -133,20 +133,21 @@ class FormBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const fg = Color(0xFFA3205C);
+    final t = context.tokens;
+    final fg = t.dangerText;
     return Semantics(
       liveRegion: true,
       child: Container(
         margin: const EdgeInsets.only(bottom: AppTokens.space4),
         padding: const EdgeInsets.all(AppTokens.space3),
         decoration: BoxDecoration(
-          color: const Color(0xFFFFE8F5),
+          color: t.dangerContainer,
           borderRadius: BorderRadius.circular(AppTokens.radiusMd),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(LucideIcons.triangleAlert, size: 20, color: fg),
+            Icon(LucideIcons.triangleAlert, size: 20, color: fg),
             const SizedBox(width: AppTokens.space2),
             Expanded(
               child: Column(
@@ -154,12 +155,9 @@ class FormBanner extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: fg,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w700, color: fg),
                   ),
-                  Text(message, style: const TextStyle(color: fg)),
+                  Text(message, style: TextStyle(color: fg)),
                 ],
               ),
             ),

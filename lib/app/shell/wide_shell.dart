@@ -75,12 +75,12 @@ class WideShell extends ConsumerWidget {
                         child: InkWell(
                           customBorder: const CircleBorder(),
                           onTap: () => showQuickAddSheet(context),
-                          child: const SizedBox(
+                          child: SizedBox(
                             width: 52,
                             height: 52,
                             child: Icon(
                               LucideIcons.plus,
-                              color: Colors.white,
+                              color: t.onAccent,
                               size: 26,
                             ),
                           ),

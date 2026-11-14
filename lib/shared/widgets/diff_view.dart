@@ -73,8 +73,8 @@ class DiffView extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               color: line.mark == '+'
-                                  ? const Color(0xFF2F6A42)
-                                  : const Color(0xFFA3205C),
+                                  ? t.successText
+                                  : t.dangerText,
                             ),
                           ),
                         ),

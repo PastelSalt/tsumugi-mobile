@@ -136,9 +136,10 @@ class TimelineList extends StatelessWidget {
                             bottom: 0,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: style.tone.foreground.withValues(
-                                  alpha: 0.75,
-                                ),
+                                color: t
+                                    .tone(style.tone)
+                                    .foreground
+                                    .withValues(alpha: 0.75),
                                 borderRadius: BorderRadius.circular(999),
                               ),
                             ),

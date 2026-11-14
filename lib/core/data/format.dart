@@ -10,6 +10,16 @@ int daysBetween(String from, String to) =>
 
 int daysFromToday(String iso) => daysBetween(demoToday, iso);
 
+/// The day [days] after [iso] (or before, when negative), as "yyyy-MM-dd".
+String addDays(String iso, int days) {
+  final d = parseDay(iso).add(Duration(days: days));
+  String two(int v) => v.toString().padLeft(2, '0');
+  return '${d.year}-${two(d.month)}-${two(d.day)}';
+}
+
+/// Tomorrow, relative to the fixed demo date.
+String get tomorrowIso => addDays(demoToday, 1);
+
 // English month abbreviations; avoids needing intl locale data for a fixed en-GB format.
 const _months = [
   'Jan',

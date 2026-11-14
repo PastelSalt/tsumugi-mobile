@@ -115,10 +115,7 @@ void main() {
       final (router, _) = await _app(tester, logical: _tablet);
       await tester.tap(find.text('Tasks').first);
       await tester.pumpAndSettle();
-      expect(
-        find.text('Everything you have to do, across all projects.'),
-        findsOneWidget,
-      );
+      expect(find.text('Upcoming'), findsOneWidget);
       await tester.tap(find.text('Insights').first);
       await tester.pumpAndSettle();
       expect(

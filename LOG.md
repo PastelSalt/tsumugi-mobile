@@ -59,3 +59,48 @@ Chronological record of actions in this repository.
   - Release build: `flutter build apk --release` succeeds, 54.4 MB (three ABIs, fonts and icons tree-shaken). `aapt` shows the only permission is the app's own AndroidX receiver permission; there is no `INTERNET` permission.
   - Totals: `flutter analyze` clean, 126 tests pass. Created `CONTEXT.md`; the plan's definition-of-done checklist now records what is verified.
   - **Not done (needs a device or a person):** running on a phone or emulator (none is connected), a TalkBack pass, Android back behaviour, reduced motion on a device, and a side-by-side visual check against the live website.
+
+- Wrote `docs/PLAN-MOBILE-UI.md`: an audit of the current UI against mobile principles, a design direction, a screen-by-screen redesign, an interaction layer, eight phases (M1 to M8), validation metrics and seven open decisions. Linked from `README.md` and `CONTEXT.md`. No code changed.
+
+- Recorded decision D1 in `docs/PLAN-MOBILE-UI.md` (new section 1a) and `CONTEXT.md`: real in-session actions are allowed, the app stays a play-demo with no backend or online services, nothing saved on the device and no permissions. Share (`share_plus`) is out. No code changed.
+
+- **M1 of the mobile UI plan (foundations):**
+  - Tokens: semantic roles on `AppTokens`, a complete dark palette (including status tones and text colours), and every literal colour removed from widgets (`Color(0x...)` and `Colors.white/black` are now banned outside `tokens.dart` and the logo by a test). Pills read their colours from the theme.
+  - Type: bundled Fredoka 500 and 600; scale is display 32/700, title 20/600, row title 16/500, body 15, meta 13 (min 12).
+  - System: edge-to-edge with transparent bars and theme-matched icons; `enableOnBackInvokedCallback` for predictive back; app `restorationScopeId`; `PopScope` with a discard confirmation on Quick add and New project.
+  - `LargeTitleScaffold` (collapsing title, pinned tabs, pull to refresh, scroll restoration) now drives Tasks; the shell hides its logo bar on that tab and the subtitle was dropped. Tests that looked for the old subtitle now look for the view tabs.
+  - Found while checking the screenshot: `SliverAppBar.large` showed the expanded title at 20 sp because it ignored our type scale, so the title is drawn with `FlexibleSpaceBar` scaled 1.6x instead.
+  - Tests: 143 pass (17 new in `m1_test.dart`); goldens regenerated because the type scale changed every screen. `flutter analyze` clean.
+  - Not done: other screens still use the old header; dark mode is not switched on; nothing run on a device.
+
+- **M2 of the mobile UI plan (task tile and lists):**
+  - `TaskTile` replaces `TaskRow` everywhere: tappable status circle (empty, half for Doing, green check for Done), swipe right to complete or reopen, swipe left to move to tomorrow, long-press action sheet (status, tomorrow, pick a date, remove the date, priority, block, edit, details, delete), hairline dividers, and custom accessibility actions on every tile.
+  - Session overlay now supports real actions with a 20-step undo stack; an overlay `UndoToast` (visible above sheets) offers Undo after each action. Haptics go through `AppFeedback` (switchable, no permission needed).
+  - The task detail sheet acts for real: Mark done or Reopen, Edit task (title and notes), Change status, Mark blocked, and tappable subtasks.
+  - Tasks is now lazy slivers with pinned group headers (label and count) and a "Done this session" group in Today; Upcoming and All use the same groups. Calendar and Board stay boxed.
+  - Real bugs found by the new tests and fixed: (1) a circular provider dependency (the session notifier read `workspaceDataProvider`, which watches the session); (2) Undo and the editor's Save read the `ref` of a tile that had already moved to another group and unmounted, so `TaskActions` now captures the session, haptics, overlay and root navigator when it is created; (3) the tile overflowed at 1.5x text (trailing column is bounded and wraps).
+  - Tests: 157 pass (14 new in `m2_test.dart`); goldens regenerated (stale `test/goldens/failures` files removed). `flutter analyze` clean.
+  - Not done: animated insert and remove of tiles, lazy Library and Projects lists, and a check on a device (none connected).
+
+- **M3 of the mobile UI plan (Quick add v2):**
+  - `lib/features/quickadd/quick_add_sheet.dart` rewritten: project, date and priority chips are tappable 48 dp pickers (project list; Today, Tomorrow, Next week, system date picker, No date; priority toggle). Typed `#project`, day words and `!` still fill the chips; a tapped chip wins.
+  - The last project is remembered for the session (`lastProjectProvider`) and carries over to the next task. The syntax hint is a one-time dismissible tip (`quickAddTipDismissedProvider`). A light haptic confirms each add.
+  - Long-press on the bottom bar's + opens New task, New project and New note (note is a preview) (`showCreateMenu`).
+  - Tests: 164 pass (7 new in `m3_test.dart`); `flutter analyze` clean; goldens unchanged.
+  - Not done: the optional Milestone chip; long-press menu on the tablet rail; nothing run on a device.
+
+- **M4 (Home, navigation, search):**
+  - Home: tappable "At a glance" chips, "Up now" (top three tasks, "All tasks (N)"), "Continue" card, horizontal project carousel, pull to refresh. Overdue badge on the Tasks tab (`AppShell` is now a `ConsumerWidget`). Search: type chips, task results, group counts, recent searches (`recentSearchesProvider`, session only).
+  - Not done: swipeable tab views, hide-on-scroll bottom bar, tab re-tap scroll-to-top, match highlighting, Home title in place of the logo.
+
+- **M5 (dark mode and polish):**
+  - `preferencesProvider` (`lib/core/settings/preferences.dart`): theme mode (System, Light, Dark), text size, reduce motion, week start. `TsumugiApp` is now a `ConsumerStatefulWidget`: `darkTheme: buildDarkTheme()`, `themeMode`, a text-scale multiplier and a motion override applied in the app builder.
+  - Dark passes the tap-target, label and contrast guidelines on 25 routes at 100% and 160% text. Layout bugs found at 160%: section headers with a long action (the action is now flexible and right-aligned) and due-date pills in rows (wrapped in `Flexible`; not inside a `Wrap`, where `Flexible` is invalid, which a test caught).
+  - Not done: tonal surfaces, illustrations, shared-element transition, device colours.
+
+- **M6 (project page, reader, settings):**
+  - Project page uses `LargeTitleScaffold` (new `leading` back button; the shell hides its logo bar on `/projects/<id>`), tabs pinned.
+  - Reader: reading-progress bar, A- and A+, "Outline" button and sheet, Source with line numbers. The inline "On this page" accordion was removed from the reader (Help and Legal still use it).
+  - Account: real settings (theme, text size, reduce motion, week start, vibration, reset). Calendar honours Sunday week start. Density and reminders removed.
+  - Not done: coverage rings, traceability timeline, week strip, tinted project header, lazy Projects and Library.
+  - Tests: 195 pass (11 new in `m4_test.dart`, 8 in `m5_test.dart`, 8 in `m6_test.dart`); goldens regenerated and four dark goldens added; `flutter analyze` clean. Nothing run on a device.

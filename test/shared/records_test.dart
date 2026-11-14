@@ -9,6 +9,7 @@ import 'package:tsumugi_mobile/core/data/workspace_store.dart';
 import 'package:tsumugi_mobile/core/theme/theme.dart';
 import 'package:tsumugi_mobile/shared/widgets/filters.dart';
 import 'package:tsumugi_mobile/shared/widgets/records.dart';
+import 'package:tsumugi_mobile/shared/widgets/task_tile.dart';
 
 import '../support/fixtures.dart';
 
@@ -31,15 +32,15 @@ void _tall(WidgetTester tester) {
 }
 
 void main() {
-  testWidgets('TaskRow shows project, flags and due wording', (tester) async {
+  testWidgets('TaskTile shows project, flags and due wording', (tester) async {
     _tall(tester);
     await tester.pumpWidget(
       _host((ref) {
         final d = ref.watch(workspaceDataProvider);
         return Column(
           children: [
-            TaskRow(task: d.taskById('t7')!, showProject: true),
-            TaskRow(task: d.taskById('t3')!),
+            TaskTile(task: d.taskById('t7')!, showProject: true),
+            TaskTile(task: d.taskById('t3')!),
           ],
         );
       }),
@@ -47,7 +48,7 @@ void main() {
     expect(find.text('Map sign-in states'), findsOneWidget);
     expect(find.text('Tsumugi API'), findsOneWidget);
     expect(find.text('Blocked'), findsOneWidget);
-    expect(find.text('High priority'), findsWidgets);
+    expect(find.text('High'), findsWidgets);
     expect(find.text('3 days overdue'), findsOneWidget);
   });
 
@@ -58,7 +59,7 @@ void main() {
       await tester.pumpWidget(
         _host(
           (ref) =>
-              TaskRow(task: ref.watch(workspaceDataProvider).taskById('t1')!),
+              TaskTile(task: ref.watch(workspaceDataProvider).taskById('t1')!),
         ),
       );
       await tester.tap(find.text('Review opening scene notes'));
@@ -183,7 +184,7 @@ void main() {
         await app(tester);
         await tester.tap(find.byTooltip('Account menu'));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Insights'));
+        await tester.tap(find.text('Insights').last);
         await tester.pumpAndSettle();
         expect(
           find.text('Three numbers that tell you where things stand.'),
@@ -204,18 +205,17 @@ void main() {
       final router = await app(tester);
       router.go('/tasks');
       await tester.pumpAndSettle();
-      final ctx = tester.element(
-        find.text('Everything you have to do, across all projects.'),
-      );
+      final ctx = tester.element(find.text('Upcoming'));
       ctx.setQueryParams({'view': 'calendar', 'project': 'tsumugi-api'});
       await tester.pumpAndSettle();
       expect(router.state.uri.queryParameters, {
         'view': 'calendar',
         'project': 'tsumugi-api',
       });
-      tester
-          .element(find.text('Everything you have to do, across all projects.'))
-          .setQueryParams({'view': null, 'project': null});
+      tester.element(find.text('Upcoming')).setQueryParams({
+        'view': null,
+        'project': null,
+      });
       await tester.pumpAndSettle();
       expect(router.state.uri.toString(), '/tasks');
     });

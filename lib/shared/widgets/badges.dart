@@ -22,17 +22,18 @@ class TonePill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.tokens.tone(tone);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: tone.background,
+        color: colors.background,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 13, color: tone.foreground),
+            Icon(icon, size: 13, color: colors.foreground),
             const SizedBox(width: 4),
           ],
           Flexible(
@@ -43,7 +44,7 @@ class TonePill extends StatelessWidget {
               style: TextStyle(
                 fontSize: AppTokens.textMeta,
                 fontWeight: quiet ? FontWeight.w400 : FontWeight.w700,
-                color: tone.foreground,
+                color: colors.foreground,
                 height: 1.2,
               ),
             ),

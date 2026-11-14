@@ -18,27 +18,168 @@ final fixturesProvider = Provider<Fixtures>(
   (ref) => throw UnimplementedError('fixturesProvider must be overridden'),
 );
 
-/// Records added during this run (Quick add, templates). Nothing is persisted: it all disappears
-/// when the app restarts, and every such record carries `session: true`.
+/// Everything the person has done in this run, kept **in memory only** (docs/PLAN-MOBILE-UI.md,
+/// section 1a). It is an overlay on top of the pristine sample data:
+///
+/// - records added with Quick add or a template ([projects], [milestones], [tasks]);
+/// - edits to any task, sample or added, as whole replacement records in [taskOverrides];
+/// - deletions of sample tasks in [deletedTaskIds].
+///
+/// The sample data is never mutated, so "Reset session data" restores it exactly. Nothing is saved:
+/// closing the app discards all of it.
 class SessionState {
   const SessionState({
     this.projects = const [],
     this.milestones = const [],
     this.tasks = const [],
+    this.taskOverrides = const {},
+    this.deletedTaskIds = const {},
   });
 
   final List<Project> projects;
   final List<Milestone> milestones;
   final List<Task> tasks;
+  final Map<String, Task> taskOverrides;
+  final Set<String> deletedTaskIds;
 
-  int get count => projects.length + tasks.length;
+  SessionState copyWith({
+    List<Project>? projects,
+    List<Milestone>? milestones,
+    List<Task>? tasks,
+    Map<String, Task>? taskOverrides,
+    Set<String>? deletedTaskIds,
+  }) => SessionState(
+    projects: projects ?? this.projects,
+    milestones: milestones ?? this.milestones,
+    tasks: tasks ?? this.tasks,
+    taskOverrides: taskOverrides ?? this.taskOverrides,
+    deletedTaskIds: deletedTaskIds ?? this.deletedTaskIds,
+  );
+
+  /// Number of changes made in this session (shown on "Reset session data").
+  int get count =>
+      projects.length +
+      tasks.length +
+      taskOverrides.length +
+      deletedTaskIds.length;
 }
 
 class SessionNotifier extends Notifier<SessionState> {
   int _sequence = 0;
+  static const _historyLimit = 20;
+  final List<SessionState> _history = [];
 
   @override
   SessionState build() => const SessionState();
+
+  // ---- undo ----
+
+  /// Whether there is an action to undo.
+  bool get canUndo => _history.isNotEmpty;
+
+  /// Reverts the latest change (add, edit or delete). Up to 20 steps.
+  void undo() {
+    if (_history.isEmpty) return;
+    state = _history.removeLast();
+  }
+
+  void _remember() {
+    _history.add(state);
+    if (_history.length > _historyLimit) _history.removeAt(0);
+  }
+
+  void _commit(SessionState next) {
+    _remember();
+    state = next;
+  }
+
+  // ---- task actions (all in memory) ----
+
+  /// Looks the task up from the fixtures and this overlay directly. (Reading `workspaceDataProvider`
+  /// here would make the session depend on a provider that depends on the session.)
+  Task? _task(String id) {
+    if (state.deletedTaskIds.contains(id)) return null;
+    final override = state.taskOverrides[id];
+    if (override != null) return override;
+    for (final t in [
+      ...ref.read(fixturesProvider).data.tasks,
+      ...state.tasks,
+    ]) {
+      if (t.id == id) return t;
+    }
+    return null;
+  }
+
+  bool _edit(String id, Task Function(Task) change) {
+    final task = _task(id);
+    if (task == null) return false;
+    _commit(
+      state.copyWith(taskOverrides: {...state.taskOverrides, id: change(task)}),
+    );
+    return true;
+  }
+
+  /// Sets "To do", "Doing" or "Done".
+  bool setTaskStatus(String id, String status) =>
+      _edit(id, (t) => t.copyWith(status: status));
+
+  /// Done becomes "To do" again; anything else becomes Done. Returns the new status, or null if the
+  /// task does not exist.
+  String? toggleComplete(String id) {
+    final task = _task(id);
+    if (task == null) return null;
+    final next = task.status == 'Done' ? 'To do' : 'Done';
+    setTaskStatus(id, next);
+    return next;
+  }
+
+  /// Moves the due date (null clears it).
+  bool rescheduleTask(String id, String? due) => _edit(
+    id,
+    (t) => due == null ? t.copyWith(clearDue: true) : t.copyWith(due: due),
+  );
+
+  /// "normal" or "high".
+  bool setTaskPriority(String id, String priority) =>
+      _edit(id, (t) => t.copyWith(priority: priority));
+
+  bool setTaskBlocked(String id, bool blocked) =>
+      _edit(id, (t) => t.copyWith(blocked: blocked));
+
+  bool editTask(String id, {String? title, String? notes}) =>
+      _edit(id, (t) => t.copyWith(title: title, notes: notes));
+
+  bool toggleSubtask(String id, int index) => _edit(id, (t) {
+    if (index < 0 || index >= t.subtasks.length) return t;
+    return t.copyWith(
+      subtasks: [
+        for (var i = 0; i < t.subtasks.length; i++)
+          i == index
+              ? Subtask(t.subtasks[i].text, !t.subtasks[i].done)
+              : t.subtasks[i],
+      ],
+    );
+  });
+
+  /// Deletes a task for this session. A sample task comes back on reset; a task added this session
+  /// is gone for good.
+  bool deleteTask(String id) {
+    if (_task(id) == null) return false;
+    final addedHere = state.tasks.any((t) => t.id == id);
+    _commit(
+      state.copyWith(
+        tasks: [
+          for (final t in state.tasks)
+            if (t.id != id) t,
+        ],
+        taskOverrides: {...state.taskOverrides}..remove(id),
+        deletedTaskIds: addedHere
+            ? state.deletedTaskIds
+            : {...state.deletedTaskIds, id},
+      ),
+    );
+    return true;
+  }
 
   /// Adds a task for this session only and returns its id.
   String addTask({
@@ -48,9 +189,8 @@ class SessionNotifier extends Notifier<SessionState> {
     String? due,
   }) {
     final id = 's-t${++_sequence}';
-    state = SessionState(
-      projects: state.projects,
-      milestones: state.milestones,
+    _remember();
+    state = state.copyWith(
       tasks: [
         ...state.tasks,
         Task(
@@ -112,7 +252,8 @@ class SessionNotifier extends Notifier<SessionState> {
       for (final t in taskTitles)
         Task(id: 's-t${++_sequence}', projectId: id, title: t, session: true),
     ];
-    state = SessionState(
+    _remember();
+    state = state.copyWith(
       projects: [...state.projects, project],
       milestones: [...state.milestones, ...newMilestones],
       tasks: [...state.tasks, ...newTasks],
@@ -120,7 +261,10 @@ class SessionNotifier extends Notifier<SessionState> {
     return id;
   }
 
-  void reset() => state = const SessionState();
+  void reset() {
+    _history.clear();
+    state = const SessionState();
+  }
 }
 
 final sessionProvider = NotifierProvider<SessionNotifier, SessionState>(
@@ -134,7 +278,13 @@ final workspaceDataProvider = Provider<WorkspaceData>((ref) {
   return WorkspaceData(
     projects: [...base.projects, ...session.projects],
     milestones: [...base.milestones, ...session.milestones],
-    tasks: [...base.tasks, ...session.tasks],
+    tasks: [
+      for (final t in [
+        ...base.tasks.where((t) => !session.deletedTaskIds.contains(t.id)),
+        ...session.tasks,
+      ])
+        session.taskOverrides[t.id] ?? t,
+    ],
     requirements: base.requirements,
     files: base.files,
     changes: base.changes,

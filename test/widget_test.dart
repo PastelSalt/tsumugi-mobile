@@ -35,10 +35,7 @@ void main() {
     await _boot(tester);
     await tester.tap(find.text('Tasks').last);
     await tester.pumpAndSettle();
-    expect(
-      find.text('Everything you have to do, across all projects.'),
-      findsOneWidget,
-    );
+    expect(find.text('Upcoming'), findsOneWidget);
 
     await tester.tap(find.text('Library').last);
     await tester.pumpAndSettle();

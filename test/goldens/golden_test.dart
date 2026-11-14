@@ -17,10 +17,14 @@ Future<void> _shot(
   String name, {
   Size logical = const Size(390, 844),
   double textScale = 1,
+  bool dark = false,
 }) async {
   tester.view.physicalSize = logical * 2;
   tester.view.devicePixelRatio = 2;
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
+  if (dark) {
+    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
+  }
   addTearDown(tester.view.reset);
   addTearDown(tester.platformDispatcher.clearAllTestValues);
   await tester.pumpWidget(
@@ -57,6 +61,17 @@ void main() {
       ('login', '/login'),
     ]) {
       testWidgets(name, (tester) => _shot(tester, route, name));
+    }
+  });
+
+  group('dark theme, phone 390 x 844', () {
+    for (final (name, route) in [
+      ('dark_home', '/home'),
+      ('dark_tasks', '/tasks'),
+      ('dark_project', '/projects/project-garden'),
+      ('dark_library', '/library'),
+    ]) {
+      testWidgets(name, (tester) => _shot(tester, route, name, dark: true));
     }
   });
 

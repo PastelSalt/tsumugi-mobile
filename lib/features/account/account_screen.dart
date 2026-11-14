@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/data/workspace_store.dart';
+import '../../core/feedback/app_feedback.dart';
+import '../../core/settings/preferences.dart';
 import '../../core/state/dev_tools.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/badges.dart';
-import '../../shared/widgets/filters.dart';
 import '../../shared/widgets/layout.dart';
 import '../../shared/widgets/states.dart';
 
@@ -118,6 +119,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final edited = _form != _defaults;
     final dev = ref.watch(devToolsProvider);
     final sessionCount = ref.watch(sessionProvider).count;
+    final prefs = ref.watch(preferencesProvider);
+    final notifier = ref.read(preferencesProvider.notifier);
     return ListView(
       padding: const EdgeInsets.all(AppTokens.pageGutter),
       children: [
@@ -143,7 +146,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     const Text(
-                      'Changes here are a preview. Nothing is saved yet.',
+                      'Profile edits last until you close the app. Nothing is saved.',
                     ),
                     if (edited) ...[
                       const TonePill(label: 'Edited', tone: StatusTone.info),
@@ -174,42 +177,79 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       setState(() => _form = _form.copyWith(email: v)),
                 ),
               ]),
-              _card('Preferences', [
-                FilterField(
-                  label: 'Week starts on',
-                  value: _form.week,
-                  options: const [('monday', 'Monday'), ('sunday', 'Sunday')],
-                  onChanged: (v) =>
-                      setState(() => _form = _form.copyWith(week: v)),
+              _card('Appearance', [
+                Semantics(
+                  header: true,
+                  child: Text(
+                    'Theme',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                 ),
-                FilterField(
-                  label: 'Density',
-                  value: _form.density,
+                const SizedBox(height: AppTokens.space2),
+                SegmentedToggle(
+                  label: 'Theme',
+                  value: prefs.themeMode.name,
+                  onChanged: (v) => notifier.setThemeMode(
+                    ThemeMode.values.firstWhere((m) => m.name == v),
+                  ),
                   options: const [
-                    ('comfortable', 'Comfortable'),
-                    ('compact', 'Compact'),
+                    ('system', 'System'),
+                    ('light', 'Light'),
+                    ('dark', 'Dark'),
                   ],
-                  onChanged: (v) =>
-                      setState(() => _form = _form.copyWith(density: v)),
+                ),
+                const SizedBox(height: AppTokens.space3),
+                Semantics(
+                  header: true,
+                  child: Text(
+                    'Text size',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+                const SizedBox(height: AppTokens.space2),
+                Wrap(
+                  spacing: AppTokens.space2,
+                  runSpacing: AppTokens.space2,
+                  children: [
+                    for (final (scale, label) in textScaleOptions)
+                      ChoiceChip(
+                        label: Text(label),
+                        selected: prefs.textScale == scale,
+                        onSelected: (_) => notifier.setTextScale(scale),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: AppTokens.space2),
+                Text(
+                  'The quick brown fox jumps over the lazy dog.',
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Remind me about tasks due today'),
-                  value: _form.reminders,
-                  onChanged: (v) =>
-                      setState(() => _form = _form.copyWith(reminders: v)),
+                  title: const Text('Reduce motion'),
+                  subtitle: const Text(
+                    'Turns animations off. Your device setting is respected too.',
+                  ),
+                  value: prefs.reduceMotion,
+                  onChanged: notifier.setReduceMotion,
                 ),
               ]),
-              _card('Appearance', [
-                FilterField(
-                  label: 'Motion',
-                  value: _form.motion,
-                  options: const [
-                    ('system', 'Follow my device'),
-                    ('reduced', 'Reduce motion'),
-                  ],
-                  onChanged: (v) =>
-                      setState(() => _form = _form.copyWith(motion: v)),
+              _card('Preferences', [
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Weeks start on Sunday'),
+                  subtitle: const Text('Changes the Calendar grid.'),
+                  value: prefs.weekStartsSunday,
+                  onChanged: notifier.setWeekStartsSunday,
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Vibration feedback'),
+                  subtitle: const Text(
+                    'A small tap when you complete a task or add one.',
+                  ),
+                  value: ref.watch(hapticsEnabledProvider),
+                  onChanged: ref.read(hapticsEnabledProvider.notifier).set,
                 ),
               ]),
               _card('Privacy', [
@@ -231,6 +271,10 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   title: const Text('Show developer tools'),
                   value: dev,
                   onChanged: (v) => ref.read(devToolsProvider.notifier).set(v),
+                ),
+                OutlinedButton(
+                  onPressed: prefs.isDefault ? null : notifier.reset,
+                  child: const Text('Reset preferences'),
                 ),
                 OutlinedButton(
                   onPressed: sessionCount == 0

@@ -10,18 +10,20 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `lib/app/router.dart` | Full route table. Pushed pages: `/` (Welcome), `/login`, `/register`, `/forgot-password`, `/reset-password` (the `preview` query selects a designed state), `/insights`, `/account`, `/help`, `/search`, `/legal/:doc`, `/gallery`. Four `StatefulShellRoute` tabs: `/home`, `/projects` (+ `:projectId`), `/tasks`, `/library` (+ `doc/:fileId`). `buildRouter(initialLocation)`; every screen receives its query parameters |
 | `lib/app/sheet_selection.dart` | `SheetSelection` mixin: a `select` query value opens that record's detail sheet on phones (nothing on wide screens, where the shell docks the panel) and is cleared when the sheet closes, unless the router has already moved on (used by Tasks, Projects, the project page and Library) |
 | `lib/app/query_params.dart` | `context.queryParam(key)` and `context.setQueryParams({...})`: view, filter and selection state lives in the URL query like on the website |
+| `lib/app/shell/shell_actions.dart` | `shellActions(context)`: search and account buttons for any bar (none on tablets, where the rail has them) |
 | `lib/app/layout_breakpoints.dart` | `wideBreakpoint` (840 dp), `dockWidth`, `isWideLayout` |
 | `lib/app/shell/wide_shell.dart` | Tablet layout: side rail (Home, Projects, Tasks, Library, Insights, Quick add, search, account) and the selected record's details docked on the right |
 | `lib/app/shell/app_shell.dart` | App bar (logo, search and account buttons), bottom bar with four destinations and the centre Quick add button (opens the Quick add sheet) |
 | `lib/app/placeholder_screen.dart` | Temporary screen used until each page is built |
-| `lib/core/theme/tokens.dart` | `AppTokens` theme extension (colours, spacing, radii, type scale), `AppTokens.dark` palette (scaffold) and `StatusTone` pill colours from the website |
+| `lib/core/theme/tokens.dart` | `AppTokens`: palette plus semantic roles (`background`, `surface`, `onSurface`, `accent`, `danger`, ...), light and complete dark values, `tone(StatusTone)` pill colours; no widget holds a literal colour |
+| `lib/core/theme/system_ui.dart` | Edge-to-edge setup and the per-theme system bar overlay style |
 | `lib/core/theme/theme.dart` | `buildTheme()`: Fredoka text theme, flat Material 3 theme, buttons, sheets, page transitions; `buildDarkTheme()` scaffold (not used) |
 | `lib/core/theme/motion.dart` | `TsumugiPageTransitionsBuilder` (short fade and slide, none when animations are disabled) and `motionDuration` |
 | `lib/core/data/status.dart` | Status vocabulary (domain, label, tone, icon) and flags, from the website `status.js` |
 | `lib/core/data/format.dart` | Fixed demo date (2026-11-12), `dueInfo`, `timeAgo`, `dayGroup`, `formatDate`, `formatBytes` |
 | `lib/core/data/models.dart` | Immutable records (Project, Milestone, Task, Requirement, WorkFile, Change, ProjectTemplate), `WorkspaceData`, `Fixtures.fromJson` |
 | `lib/core/data/selectors.dart` | All derived numbers and queries as an extension on `WorkspaceData`, plus `stableSorted`; port of the website `selectors.js` |
-| `lib/core/data/workspace_store.dart` | `loadFixtures`, `fixturesProvider`, session-only additions (`sessionProvider`: addTask, addProject, reset), merged `workspaceDataProvider`, `templatesProvider` |
+| `lib/core/data/workspace_store.dart` | `loadFixtures`, `fixturesProvider`, session overlay (`sessionProvider`: add, complete, status, reschedule, priority, block, edit, subtasks, delete, undo, reset), merged `workspaceDataProvider`, `templatesProvider` |
 | `lib/core/data/kinds.dart` | File kind labels |
 | `lib/core/quickadd/parse.dart` | Quick add line parser (#project, !, today/tomorrow/weekday) |
 | `assets/data/fixtures.json` | Sample data exported from the website (generated, do not hand-edit) |
@@ -35,8 +37,15 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `lib/shared/widgets/badges.dart` | `TonePill`, `StatusBadge`, `Flag`, `DueLabel`, `SessionTag`, `TsProgressBar` |
 | `lib/shared/widgets/states.dart` | `EmptyState`, `NoResults`, `ErrorState`, `LoadingState`, `StateGate` |
 | `lib/shared/widgets/layout.dart` | `PageHeader`, `Section`, `StatStrip`, `ViewTabs`, `SegmentedToggle`, `Fields`, `SearchFilterBar` |
-| `lib/shared/widgets/records.dart` | `RowCard`, `TaskRow`, `MilestoneGroup`, `RequirementRow`, `FileThumb`, `FileTile`, `FileRow`, `ChangeEntry`, `RelationChip`, `LensBlock` |
+| `lib/core/settings/preferences.dart` | `Preferences` (theme mode, text size, reduce motion, week start) and `preferencesProvider`; applied in `lib/app/app.dart` |
+| `lib/shared/widgets/task_tile.dart` | `TaskTile` (status circle, swipe, long press, custom accessibility actions), `StatusCircle`, `SubtaskRing`, `DueText` |
+| `lib/shared/widgets/task_actions.dart` | `TaskActions` (real in-session actions with haptics and Undo; captures its dependencies up front), the long-press action sheet, the task editor, `showUndoSnackBar` |
+| `lib/shared/widgets/undo_toast.dart` | `UndoToast`: root-overlay message with an Undo button, drawn above sheets |
+| `lib/core/feedback/app_feedback.dart` | `Haptic`, `AppFeedback`, `SystemFeedback`, `hapticsEnabledProvider`, `feedbackProvider` |
+| `lib/shared/widgets/records.dart` | `RowCard`, `MilestoneGroup`, `RequirementRow`, `FileThumb`, `FileTile`, `FileRow`, `ChangeEntry`, `RelationChip`, `LensBlock` |
 | `lib/shared/widgets/record_sheets.dart` | `openRecord`, `recordPanel` (the panel for a record, used by sheets and the dock), `showRecordSheet`, `showDetailSheet` (draggable sheet), `DetailPanel` and the Task / Milestone / Requirement / File / Change panels |
+| `lib/shared/widgets/large_title_scaffold.dart` | `LargeTitleScaffold`: collapsing large title (32 to 20 sp), pinned header, pull-to-refresh, scroll restoration; used by Tasks |
+| `lib/shared/widgets/confirm_discard.dart` | "Discard this draft?" dialog used with `PopScope` |
 | `lib/shared/widgets/timeline.dart` | `TimelineList`: milestones with a span bar and a Today marker (the website's narrow-screen timeline) |
 | `lib/shared/widgets/phase_stepper.dart` | `PhaseStepper`: done, current and next project phases |
 | `lib/shared/widgets/diff_view.dart` | `DiffView`: added and removed lines marked with + and -, announced to screen readers |
@@ -74,9 +83,15 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `test/support/fixtures.dart` | Loads the bundled sample data for tests |
 | `test/features/` | Home, Quick add, Tasks, Projects, project page, Library, reader, Insights, Account, Help, Legal, Search, Welcome and auth tests; `layout_sweep_test.dart` renders every screen at 360 x 640 dp at normal and 1.5x text size (figures, today list, first run, Quick add flow, tabs and URL, calendar, All and Board, project filter, select in URL) |
 | `test/features/accessibility_test.dart` | Flutter accessibility guidelines (48 dp tap targets, labelled targets, text contrast) on 24 routes |
-| `test/goldens/` | 16 golden screenshots with the real fonts and icons: key screens at 390 x 844, three screens at 200% text on 360 x 640, and the tablet layout |
+| `test/goldens/` | golden screenshots with the real fonts and icons: key screens at 390 x 844, four dark screens, three screens at 200% text on 360 x 640, and the tablet layout |
 | `test/privacy_test.dart`, `test/design_rules_test.dart` | No network or storage code, no manifest permissions, no text under 12 sp, no team wording |
 | `test/support/fonts.dart` | Loads Fredoka and the Lucide font for golden tests |
+| `test/features/m1_test.dart` | M1: collapsing title, pinned tabs, pull to refresh, scroll restoration, tokens and type scale, no literal colours, edge-to-edge, predictive back flag, draft protection |
+| `test/features/m6_test.dart` | M6: project page (first 40%, collapse, pinned tabs, back), reader (progress, outline sheet, text size, line numbers) |
+| `test/features/m5_test.dart` | M5: theme preference, text size, reduce motion, week start, dark sweep of 25 routes at 100% and 160% text |
+| `test/features/m4_test.dart` | M4: Home sections, glance chips, overdue badge, Search types, counts and recent searches |
+| `test/features/m3_test.dart` | M3: Quick add picker chips (project, date, priority), tapped beats typed, carried-over project, one-time tip, long-press create menu, 48 dp chips, draft guard |
+| `test/features/m2_test.dart` | M2: complete and undo from Today, swipe, long-press menu, edit, delete, undo order, custom accessibility actions, task panel actions, session overlay purity and reset |
 | `test/features/phase7_test.dart` | Wide layout (rail, docked panel, portrait and landscape), reduced motion, dark scaffold, preview states on every list screen |
 | `test/features/workflows_test.dart` | The guide's everyday workflows (13.1 to 13.6) driven through the UI |
 | `test/` | Boot and tab tests, format tests, WCAG contrast test, shared widget and record widget tests, route tests, `parity_test.dart` (Dart results vs the website's), `store_test.dart` (session additions) |

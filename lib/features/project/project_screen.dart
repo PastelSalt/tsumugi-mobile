@@ -12,12 +12,15 @@ import '../../core/data/status.dart';
 import '../../core/data/workspace_store.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/badges.dart';
+import '../../app/shell/shell_actions.dart';
 import '../../shared/widgets/diff_view.dart';
+import '../../shared/widgets/large_title_scaffold.dart';
 import '../../shared/widgets/layout.dart';
 import '../../shared/widgets/phase_stepper.dart';
 import '../../shared/widgets/preview_sheet.dart';
 import '../../shared/widgets/record_sheets.dart';
 import '../../shared/widgets/records.dart';
+import '../../shared/widgets/task_tile.dart';
 import '../../shared/widgets/states.dart';
 import '../../shared/widgets/timeline.dart';
 
@@ -103,66 +106,111 @@ class _ProjectScreenState extends ConsumerState<ProjectScreen>
       TabItem('files', 'Files', count: counts.files),
       TabItem('history', 'History', count: counts.changes),
     ];
-    return ListView(
-      padding: const EdgeInsets.all(AppTokens.pageGutter),
-      children: [
-        Align(alignment: Alignment.centerLeft, child: back),
-        PageHeader(
-          title: project.name,
-          description: project.description,
-          actions: [
-            StatusBadge(
-              StatusDomain.project,
-              project.archived ? 'Archived' : project.status,
-            ),
-            if (project.status == 'Active')
-              StatusBadge(StatusDomain.health, data.projectHealth(project.id)),
-            const PreviewAction(label: 'Edit project'),
-          ],
-        ),
-        if (project.session)
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppTokens.space3),
-            child: Text(
-              'Created for this session only. It disappears when you restart the app.',
-              style: TextStyle(
-                color: context.tokens.muted,
-                fontSize: AppTokens.textMeta,
-              ),
+    return LargeTitleScaffold(
+      title: project.name,
+      restorationId: 'project-${project.id}-scroll',
+      expandedHeight: 96,
+      leading: IconButton(
+        tooltip: 'Back to Projects',
+        onPressed: () =>
+            context.canPop() ? context.pop() : context.go('/projects'),
+        icon: const Icon(LucideIcons.chevronLeft),
+      ),
+      actions: shellActions(context),
+      pinnedHeader: ViewTabs(
+        tabs: tabs,
+        value: tabs.any((t) => t.id == view) ? view : 'overview',
+        margin: EdgeInsets.zero,
+        onChanged: (v) => context.setQueryParams({
+          'view': v == 'overview' ? null : v,
+          'select': null,
+          'mode': null,
+          'rev': null,
+        }),
+      ),
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(
+            AppTokens.pageGutter,
+            AppTokens.space3,
+            AppTokens.pageGutter,
+            0,
+          ),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: AppTokens.space2,
+                  runSpacing: AppTokens.space2,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    StatusBadge(
+                      StatusDomain.project,
+                      project.archived ? 'Archived' : project.status,
+                    ),
+                    if (project.status == 'Active')
+                      StatusBadge(
+                        StatusDomain.health,
+                        data.projectHealth(project.id),
+                      ),
+                    const PreviewAction(label: 'Edit project'),
+                  ],
+                ),
+                if (project.description.isNotEmpty) ...[
+                  const SizedBox(height: AppTokens.space2),
+                  Text(
+                    project.description,
+                    style: Theme.of(context).textTheme.bodyMedium
+                        ?.copyWith(color: context.tokens.onSurfaceMuted),
+                  ),
+                ],
+                if (project.session)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppTokens.space2),
+                    child: Text(
+                      'Created for this session only. It disappears when you restart the app.',
+                      style: TextStyle(
+                        color: context.tokens.muted,
+                        fontSize: AppTokens.textMeta,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: AppTokens.space4),
+                StateGate(
+                  empty: const EmptyState(
+                    title: 'Nothing here yet',
+                    body: 'Add the first record to get started.',
+                  ),
+                  child: switch (view) {
+                    'work' => _Work(
+                      project: project,
+                      data: data,
+                      params: widget.params,
+                      onSelect: select,
+                    ),
+                    'specs' => _Specs(
+                      project: project,
+                      data: data,
+                      onSelect: select,
+                    ),
+                    'files' => _Files(
+                      project: project,
+                      data: data,
+                      onSelect: select,
+                    ),
+                    'history' => _History(
+                      project: project,
+                      data: data,
+                      params: widget.params,
+                      onSelect: select,
+                    ),
+                    _ => _Overview(project: project, data: data),
+                  },
+                ),
+              ],
             ),
           ),
-        ViewTabs(
-          tabs: tabs,
-          value: tabs.any((t) => t.id == view) ? view : 'overview',
-          onChanged: (v) => context.setQueryParams({
-            'view': v == 'overview' ? null : v,
-            'select': null,
-            'mode': null,
-            'rev': null,
-          }),
-        ),
-        StateGate(
-          empty: const EmptyState(
-            title: 'Nothing here yet',
-            body: 'Add the first record to get started.',
-          ),
-          child: switch (view) {
-            'work' => _Work(
-              project: project,
-              data: data,
-              params: widget.params,
-              onSelect: select,
-            ),
-            'specs' => _Specs(project: project, data: data, onSelect: select),
-            'files' => _Files(project: project, data: data, onSelect: select),
-            'history' => _History(
-              project: project,
-              data: data,
-              params: widget.params,
-              onSelect: select,
-            ),
-            _ => _Overview(project: project, data: data),
-          },
         ),
       ],
     );
@@ -226,7 +274,7 @@ class _Overview extends StatelessWidget {
                           ],
                         ),
                       ),
-                      DueLabel(due: next.due),
+                      Flexible(child: DueLabel(due: next.due)),
                     ],
                   ),
                 ),
@@ -359,7 +407,7 @@ class _Work extends StatelessWidget {
                       spacing: AppTokens.space2,
                       children: [
                         for (final t in loose)
-                          TaskRow(
+                          TaskTile(
                             task: t,
                             selected: select == t.id,
                             onTap: () => onSelect(t.id),

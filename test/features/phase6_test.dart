@@ -134,7 +134,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Opening brief'), findsWidgets);
       expect(find.textContaining('v4'), findsWidgets);
-      expect(find.text('On this page'), findsOneWidget);
+      expect(find.text('Outline'), findsOneWidget);
 
       await tester.tap(find.text('Source'));
       await tester.pumpAndSettle();
@@ -142,7 +142,7 @@ void main() {
         find.textContaining('# Opening brief', findRichText: true),
         findsOneWidget,
       );
-      expect(find.text('On this page'), findsNothing);
+      expect(find.text('Outline'), findsNothing);
 
       await tester.tap(find.text('Preview'));
       await tester.pumpAndSettle();

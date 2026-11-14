@@ -14,6 +14,7 @@ import 'layout.dart';
 import 'preview_sheet.dart';
 import 'records.dart';
 import 'states.dart';
+import 'task_actions.dart';
 
 /// Opens a record from anywhere (relation chips, search, links between records).
 /// A project opens its page; every other record opens its detail sheet over the current screen.
@@ -158,9 +159,22 @@ class TaskPanel extends ConsumerWidget {
       title: task.title,
       kicker: 'Task · ${project?.name ?? ''}',
       actions: [
-        const PreviewAction(label: 'Edit task', primary: true),
-        const PreviewAction(label: 'Change status'),
-        PreviewAction(label: task.blocked ? 'Unblock' : 'Mark blocked'),
+        FilledButton(
+          onPressed: () => TaskActions(context, ref).toggleComplete(task),
+          child: Text(task.status == 'Done' ? 'Reopen' : 'Mark done'),
+        ),
+        OutlinedButton(
+          onPressed: () => TaskActions(context, ref).edit(task),
+          child: const Text('Edit task'),
+        ),
+        OutlinedButton(
+          onPressed: () => TaskActions(context, ref).showMenu(task),
+          child: const Text('Change status'),
+        ),
+        OutlinedButton(
+          onPressed: () => TaskActions(context, ref).toggleBlocked(task),
+          child: Text(task.blocked ? 'Unblock' : 'Mark blocked'),
+        ),
       ],
       children: [
         _chips([
@@ -181,20 +195,25 @@ class TaskPanel extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Subtasks', style: Theme.of(context).textTheme.titleMedium),
-              for (final s in task.subtasks)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      Icon(
-                        s.done ? LucideIcons.check : LucideIcons.circle,
-                        size: 16,
-                        semanticLabel: s.done ? 'Done' : 'Not done',
-                        color: s.done ? t.green : t.muted,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(s.text)),
-                    ],
+              for (final (i, s) in task.subtasks.indexed)
+                InkWell(
+                  onTap: () => TaskActions(context, ref).toggleSubtask(task, i),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: AppTokens.minTarget,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          s.done ? LucideIcons.check : LucideIcons.circle,
+                          size: 18,
+                          semanticLabel: s.done ? 'Done' : 'Not done',
+                          color: s.done ? t.green : t.muted,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(child: Text(s.text)),
+                      ],
+                    ),
                   ),
                 ),
             ],
@@ -532,10 +551,7 @@ class _Note extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: TextStyle(
-          fontSize: AppTokens.textMeta,
-          color: const Color(0xFF1D5F80),
-        ),
+        style: TextStyle(fontSize: AppTokens.textMeta, color: t.infoText),
       ),
     );
   }

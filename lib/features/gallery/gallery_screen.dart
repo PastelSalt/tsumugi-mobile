@@ -6,6 +6,7 @@ import '../../core/theme/tokens.dart';
 import '../../shared/widgets/badges.dart';
 import '../../shared/widgets/filters.dart';
 import '../../shared/widgets/records.dart';
+import '../../shared/widgets/task_tile.dart';
 import '../../core/data/selectors.dart';
 import '../../core/data/workspace_store.dart';
 
@@ -221,11 +222,11 @@ class _RecordsGalleryState extends ConsumerState<_RecordsGallery> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TaskRow(task: d.taskById('t1')!, showProject: true),
+          TaskTile(task: d.taskById('t1')!, showProject: true),
           gap(),
-          TaskRow(task: d.taskById('t3')!),
+          TaskTile(task: d.taskById('t3')!),
           gap(),
-          TaskRow(task: d.taskById('t7')!),
+          TaskTile(task: d.taskById('t7')!),
           gap(),
           MilestoneGroup(
             milestone: d.milestoneById('m1')!,

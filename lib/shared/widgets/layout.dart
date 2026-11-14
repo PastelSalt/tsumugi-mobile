@@ -80,7 +80,10 @@ class Section extends StatelessWidget {
                   ),
                 ),
               ),
-              ?action,
+              if (action != null)
+                Flexible(
+                  child: Align(alignment: Alignment.centerRight, child: action),
+                ),
             ],
           ),
           const SizedBox(height: AppTokens.space2),
@@ -178,17 +181,21 @@ class ViewTabs extends StatelessWidget {
     required this.tabs,
     required this.value,
     required this.onChanged,
+    this.margin = const EdgeInsets.only(bottom: AppTokens.space4),
   });
 
   final List<TabItem> tabs;
   final String value;
   final ValueChanged<String> onChanged;
 
+  /// Space around the tabs. Zero when they sit in a pinned header.
+  final EdgeInsetsGeometry margin;
+
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
     return Container(
-      margin: const EdgeInsets.only(bottom: AppTokens.space4),
+      margin: margin,
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: t.line)),
       ),

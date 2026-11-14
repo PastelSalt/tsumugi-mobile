@@ -33,14 +33,16 @@ void main() {
       (tester) async {
         await _app(tester);
         expect(find.text('Due today'), findsOneWidget);
-        expect(find.text('Overdue'), findsWidgets);
+        expect(
+          find.textContaining('Overdue', findRichText: true),
+          findsWidgets,
+        );
         expect(find.text('Needs a look'), findsOneWidget);
-        // Overdue (t3, t4), today (t1), doing (t7, t10, t11): six rows, as on the website.
+        // "Up now" shows the top three: overdue t3 and t4, then today's t1.
         for (final title in [
           'Write character profiles',
           'Collect reference art',
           'Review opening scene notes',
-          'Map sign-in states',
         ]) {
           expect(find.text(title), findsWidgets, reason: title);
         }
@@ -61,7 +63,7 @@ void main() {
     testWidgets(
       'Quick add parses the line, adds a session task and Home reflects it',
       (tester) async {
-        await _app(tester);
+        final (router, _) = await _app(tester);
         await tester.tap(find.bySemanticsLabel('Quick add'));
         await tester.pumpAndSettle();
         expect(find.text('Quick add a task'), findsOneWidget);
@@ -92,6 +94,14 @@ void main() {
 
         await tester.tap(find.text('Close'));
         await tester.pumpAndSettle();
+        // Home shows only the top three, so look for the new task in Tasks.
+        router.go('/tasks');
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(
+          find.text('Buy ink'),
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
         expect(find.text('Buy ink'), findsOneWidget);
         expect(find.text('Session only'), findsWidgets);
       },
@@ -105,8 +115,7 @@ void main() {
       final (router, _) = await _app(tester);
       router.go('/tasks');
       await tester.pumpAndSettle();
-      expect(find.text('Overdue'), findsWidgets);
-      expect(find.text('In progress'), findsWidgets);
+      expect(find.textContaining('Overdue', findRichText: true), findsWidgets);
 
       await tester.enterText(
         find.widgetWithText(TextField, '').last,
@@ -114,6 +123,11 @@ void main() {
       );
       await tester.testTextInput.receiveAction(TextInputAction.done);
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.text('Water the plants'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Water the plants'), findsOneWidget);
     });
 
@@ -160,13 +174,24 @@ void main() {
       },
     );
 
-    testWidgets('All shows open tasks, a Done fold and a Board layout', (
+    testWidgets('All shows open tasks, a Done group and a Board layout', (
       tester,
     ) async {
       final (router, _) = await _app(tester);
       router.go('/tasks?view=all');
       await tester.pumpAndSettle();
-      expect(find.textContaining('Done ('), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.textContaining('Done', findRichText: true),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.textContaining('Done', findRichText: true), findsWidgets);
+      await tester.fling(
+        find.byType(CustomScrollView),
+        const Offset(0, 3000),
+        3000,
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Board'));
       await tester.pumpAndSettle();
       expect(router.state.uri.queryParameters['mode'], 'board');

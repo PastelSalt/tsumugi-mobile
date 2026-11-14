@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/data/workspace_store.dart';
 import '../../core/theme/tokens.dart';
+import '../../shared/widgets/confirm_discard.dart';
 
 /// New project from a template (website `NewProjectDialog`): pick a starting point, name it, and a
 /// session-only project is created with its phases, one starter milestone and starter tasks.
@@ -67,74 +68,83 @@ class _NewProjectSheetState extends ConsumerState<NewProjectSheet> {
     final templates = ref.watch(templatesProvider);
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(
-        AppTokens.space5,
-        0,
-        AppTokens.space5,
-        AppTokens.space5,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            header: true,
-            child: Text('New project', style: text.titleLarge),
-          ),
-          Text(
-            'Choose a template. It adds a few starter steps you can change or delete.',
-            style: text.bodyMedium?.copyWith(color: t.muted),
-          ),
-          const SizedBox(height: AppTokens.space3),
-          RadioGroup<String>(
-            groupValue: _kind,
-            onChanged: (v) => setState(() => _kind = v ?? _kind),
-            child: Column(
-              children: [
-                for (final tpl in templates)
-                  RadioListTile<String>(
-                    contentPadding: EdgeInsets.zero,
-                    value: tpl.kind,
-                    title: Text(
-                      tpl.label,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+    return PopScope(
+      canPop: _name.text.trim().isEmpty,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final discard = await confirmDiscard(context, 'Discard this project?');
+        if (discard && context.mounted) Navigator.of(context).pop();
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(
+          AppTokens.space5,
+          0,
+          AppTokens.space5,
+          AppTokens.space5,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              child: Text('New project', style: text.titleLarge),
+            ),
+            Text(
+              'Choose a template. It adds a few starter steps you can change or delete.',
+              style: text.bodyMedium?.copyWith(color: t.muted),
+            ),
+            const SizedBox(height: AppTokens.space3),
+            RadioGroup<String>(
+              groupValue: _kind,
+              onChanged: (v) => setState(() => _kind = v ?? _kind),
+              child: Column(
+                children: [
+                  for (final tpl in templates)
+                    RadioListTile<String>(
+                      contentPadding: EdgeInsets.zero,
+                      value: tpl.kind,
+                      title: Text(
+                        tpl.label,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      subtitle: Text(tpl.text),
                     ),
-                    subtitle: Text(tpl.text),
-                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppTokens.space2),
+            TextField(
+              controller: _name,
+              onChanged: (_) => setState(() {}),
+              decoration: const InputDecoration(
+                labelText: 'Project name',
+                hintText: 'Give it a short name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: AppTokens.space2),
+            Text(
+              'Created for this session only. It disappears when you restart the app.',
+              style: TextStyle(color: t.muted, fontSize: AppTokens.textMeta),
+            ),
+            const SizedBox(height: AppTokens.space4),
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: AppTokens.space2,
+              runSpacing: AppTokens.space2,
+              children: [
+                OutlinedButton(
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  child: const Text('Cancel'),
+                ),
+                FilledButton(
+                  onPressed: _create,
+                  child: const Text('Create project'),
+                ),
               ],
             ),
-          ),
-          const SizedBox(height: AppTokens.space2),
-          TextField(
-            controller: _name,
-            decoration: const InputDecoration(
-              labelText: 'Project name',
-              hintText: 'Give it a short name',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: AppTokens.space2),
-          Text(
-            'Created for this session only. It disappears when you restart the app.',
-            style: TextStyle(color: t.muted, fontSize: AppTokens.textMeta),
-          ),
-          const SizedBox(height: AppTokens.space4),
-          Wrap(
-            alignment: WrapAlignment.end,
-            spacing: AppTokens.space2,
-            runSpacing: AppTokens.space2,
-            children: [
-              OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: _create,
-                child: const Text('Create project'),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
