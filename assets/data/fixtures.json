@@ -1,0 +1,1405 @@
+{
+ "workspace": {
+  "id": "ws-me",
+  "type": "individual",
+  "owner": "Demo user"
+ },
+ "projects": [
+  {
+   "id": "project-garden",
+   "name": "Project Garden",
+   "category": "Creative",
+   "kind": "creative",
+   "status": "Active",
+   "tone": "pink",
+   "tags": [
+    "visual novel",
+    "writing"
+   ],
+   "description": "A story-led creative production workspace for a visual novel.",
+   "objective": "Ship a welcoming first chapter that holds together as a story and as a product.",
+   "start": "2026-09-01",
+   "end": "2027-02-28",
+   "updatedAt": "2026-11-12",
+   "lastOpenedAt": "2026-11-12T09:10:00",
+   "phases": [
+    "Concept",
+    "Outline",
+    "Chapter one",
+    "Review",
+    "Release"
+   ],
+   "phaseIndex": 2
+  },
+  {
+   "id": "tsumugi-api",
+   "name": "Tsumugi API",
+   "category": "Software",
+   "kind": "software",
+   "status": "Planning",
+   "tone": "blue",
+   "tags": [
+    "backend",
+    "auth"
+   ],
+   "description": "Service layer for projects, requirements, and traceability.",
+   "objective": "Define a secure, well-specified API that the workspace can rely on.",
+   "start": "2026-10-15",
+   "end": "2027-03-31",
+   "updatedAt": "2026-11-11",
+   "lastOpenedAt": "2026-11-11T16:40:00",
+   "phases": [
+    "Discovery",
+    "Design",
+    "Build",
+    "Test",
+    "Ship"
+   ],
+   "phaseIndex": 1
+  },
+  {
+   "id": "color-and-memory",
+   "name": "Color & Memory",
+   "category": "Research",
+   "kind": "research",
+   "status": "On hold",
+   "tone": "lilac",
+   "tags": [
+    "interviews",
+    "color"
+   ],
+   "description": "A study of how color shapes recalled memories.",
+   "objective": "Collect and analyze interviews to answer one clear research question.",
+   "start": "2026-08-20",
+   "end": "2027-01-15",
+   "updatedAt": "2026-11-05",
+   "lastOpenedAt": "2026-11-03T14:00:00",
+   "phases": [
+    "Question",
+    "Method",
+    "Collection",
+    "Analysis",
+    "Report"
+   ],
+   "phaseIndex": 2
+  },
+  {
+   "id": "atlas-zine",
+   "name": "Atlas Zine",
+   "category": "Creative",
+   "kind": "creative",
+   "status": "Done",
+   "tone": "yellow",
+   "tags": [
+    "print",
+    "zine"
+   ],
+   "description": "A small-run printed zine of map illustrations.",
+   "objective": "Print and distribute a first edition.",
+   "start": "2026-06-01",
+   "end": "2026-09-30",
+   "updatedAt": "2026-10-01",
+   "lastOpenedAt": "2026-10-02T10:00:00",
+   "phases": [
+    "Concept",
+    "Layout",
+    "Proof",
+    "Print",
+    "Distribution"
+   ],
+   "phaseIndex": 4
+  },
+  {
+   "id": "sketchbook-sprint",
+   "name": "Sketchbook Sprint",
+   "category": "Multimedia",
+   "kind": "multimedia",
+   "status": "Planning",
+   "tone": "green",
+   "tags": [
+    "drawing"
+   ],
+   "description": "A rough plan for a month of daily sketches.",
+   "objective": "Decide whether this is worth planning in detail.",
+   "start": "2026-12-01",
+   "end": "2026-12-31",
+   "updatedAt": "2026-11-10",
+   "lastOpenedAt": "2026-11-10T20:00:00",
+   "phases": [
+    "Brief",
+    "Production"
+   ],
+   "phaseIndex": 0
+  },
+  {
+   "id": "field-notes-2025",
+   "name": "Field Notes 2025",
+   "category": "Research",
+   "kind": "research",
+   "status": "Done",
+   "tone": "lilac",
+   "archived": true,
+   "tags": [
+    "archive"
+   ],
+   "description": "Notes from last year’s field work, kept for reference.",
+   "objective": "Preserve the record of the 2025 season.",
+   "start": "2025-03-01",
+   "end": "2025-11-30",
+   "updatedAt": "2026-06-30",
+   "lastOpenedAt": "2026-06-30T09:00:00",
+   "archivedAt": "2026-06-30",
+   "phases": [
+    "Collect",
+    "Review",
+    "Archive"
+   ],
+   "phaseIndex": 2
+  }
+ ],
+ "milestones": [
+  {
+   "id": "m1",
+   "projectId": "project-garden",
+   "title": "Chapter one review",
+   "description": "Review the opening chapter against the style guide.",
+   "start": "2026-10-20",
+   "due": "2026-11-13",
+   "phase": 2,
+   "afterId": null
+  },
+  {
+   "id": "m2",
+   "projectId": "project-garden",
+   "title": "Outline locked",
+   "description": "Freeze the story outline for chapters one to three.",
+   "start": "2026-09-15",
+   "due": "2026-10-15",
+   "phase": 1,
+   "done": true,
+   "afterId": null
+  },
+  {
+   "id": "m3",
+   "projectId": "project-garden",
+   "title": "Character bible",
+   "description": "Finish profiles and reference art for the main cast.",
+   "start": "2026-11-01",
+   "due": "2026-11-10",
+   "phase": 2,
+   "afterId": "m2"
+  },
+  {
+   "id": "m4",
+   "projectId": "project-garden",
+   "title": "Chapter two draft",
+   "description": "First full draft of chapter two.",
+   "start": "2026-11-16",
+   "due": "2026-12-18",
+   "phase": 3,
+   "afterId": "m1"
+  },
+  {
+   "id": "m5",
+   "projectId": "tsumugi-api",
+   "title": "Auth flow map",
+   "description": "Document every sign-in and recovery state.",
+   "start": "2026-11-05",
+   "due": "2026-11-19",
+   "phase": 1,
+   "blocked": true,
+   "afterId": null
+  },
+  {
+   "id": "m6",
+   "projectId": "tsumugi-api",
+   "title": "API schema v1",
+   "description": "First reviewed schema for projects and requirements.",
+   "start": "2026-11-20",
+   "due": "2026-12-15",
+   "phase": 2,
+   "afterId": "m5"
+  },
+  {
+   "id": "m7",
+   "projectId": "color-and-memory",
+   "title": "Interview protocol",
+   "description": "Final protocol and consent process.",
+   "start": "2026-09-20",
+   "due": "2026-10-30",
+   "phase": 1,
+   "done": true,
+   "afterId": null
+  },
+  {
+   "id": "m8",
+   "projectId": "color-and-memory",
+   "title": "Data collection wave 1",
+   "description": "Run the first round of participant sessions.",
+   "start": "2026-11-01",
+   "due": "2026-11-30",
+   "phase": 2,
+   "afterId": "m7"
+  },
+  {
+   "id": "m9",
+   "projectId": "atlas-zine",
+   "title": "Print run",
+   "description": "Send final files to the printer and receive copies.",
+   "start": "2026-08-01",
+   "due": "2026-09-30",
+   "phase": 3,
+   "done": true,
+   "afterId": null
+  }
+ ],
+ "tasks": [
+  {
+   "id": "t1",
+   "projectId": "project-garden",
+   "milestoneId": "m1",
+   "title": "Review opening scene notes",
+   "notes": "Read the chapter one notes and confirm tone before the review.",
+   "status": "Doing",
+   "priority": "high",
+   "due": "2026-11-12",
+   "blocked": false,
+   "subtasks": [
+    {
+     "text": "Read the notes",
+     "done": true
+    },
+    {
+     "text": "Mark tone issues",
+     "done": false
+    }
+   ],
+   "requirementIds": [
+    "REQ-001"
+   ],
+   "fileIds": [
+    "a-notes"
+   ],
+   "changeIds": [
+    "r3"
+   ]
+  },
+  {
+   "id": "t2",
+   "projectId": "project-garden",
+   "milestoneId": "m1",
+   "title": "Reconcile character names",
+   "notes": "Check every name against the character bible.",
+   "status": "To do",
+   "priority": "high",
+   "due": "2026-11-13",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-002"
+   ],
+   "fileIds": [],
+   "changeIds": []
+  },
+  {
+   "id": "t3",
+   "projectId": "project-garden",
+   "milestoneId": "m3",
+   "title": "Write character profiles",
+   "notes": "One page per main character: voice, goals, relationships.",
+   "status": "Doing",
+   "priority": "high",
+   "due": "2026-11-09",
+   "blocked": false,
+   "subtasks": [
+    {
+     "text": "Protagonist",
+     "done": true
+    },
+    {
+     "text": "Rival",
+     "done": true
+    },
+    {
+     "text": "Mentor",
+     "done": false
+    },
+    {
+     "text": "Villain",
+     "done": false
+    }
+   ],
+   "requirementIds": [
+    "REQ-002"
+   ],
+   "fileIds": [],
+   "changeIds": []
+  },
+  {
+   "id": "t4",
+   "projectId": "project-garden",
+   "milestoneId": "m3",
+   "title": "Collect reference art",
+   "notes": "Gather mood references for each character.",
+   "status": "Doing",
+   "priority": "normal",
+   "due": "2026-11-11",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [],
+   "fileIds": [
+    "a-moodboard"
+   ],
+   "changeIds": []
+  },
+  {
+   "id": "t5",
+   "projectId": "project-garden",
+   "milestoneId": "m4",
+   "title": "Outline chapter two beats",
+   "notes": "List the main story beats for chapter two.",
+   "status": "To do",
+   "priority": "normal",
+   "due": null,
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [],
+   "fileIds": [],
+   "changeIds": []
+  },
+  {
+   "id": "t6",
+   "projectId": "project-garden",
+   "milestoneId": "m2",
+   "title": "Lock outline v2",
+   "notes": "Final read-through and sign-off of the outline.",
+   "status": "Done",
+   "priority": "high",
+   "due": "2026-10-15",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-004"
+   ],
+   "fileIds": [
+    "a-style"
+   ],
+   "changeIds": [
+    "r8"
+   ]
+  },
+  {
+   "id": "t14",
+   "projectId": "project-garden",
+   "milestoneId": "m1",
+   "title": "Proof chapter one dialogue",
+   "notes": "Read dialogue aloud and fix awkward lines.",
+   "status": "To do",
+   "priority": "normal",
+   "due": "2026-11-18",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-001"
+   ],
+   "fileIds": [],
+   "changeIds": [
+    "r2"
+   ]
+  },
+  {
+   "id": "t7",
+   "projectId": "tsumugi-api",
+   "milestoneId": "m5",
+   "title": "Map sign-in states",
+   "notes": "Draw every state from first visit to recovery. Waiting on the session decision.",
+   "status": "Doing",
+   "priority": "high",
+   "due": "2026-11-16",
+   "blocked": true,
+   "subtasks": [
+    {
+     "text": "List states",
+     "done": true
+    },
+    {
+     "text": "Draw diagram",
+     "done": false
+    }
+   ],
+   "requirementIds": [
+    "REQ-005"
+   ],
+   "fileIds": [],
+   "changeIds": []
+  },
+  {
+   "id": "t8",
+   "projectId": "tsumugi-api",
+   "milestoneId": "m5",
+   "title": "Choose session strategy",
+   "notes": "Compare cookie and token sessions and write a recommendation.",
+   "status": "To do",
+   "priority": "high",
+   "due": "2026-11-14",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-005"
+   ],
+   "fileIds": [],
+   "changeIds": [
+    "r4"
+   ]
+  },
+  {
+   "id": "t10",
+   "projectId": "tsumugi-api",
+   "milestoneId": "m5",
+   "title": "Write auth threat notes",
+   "notes": "List the main threats and mitigations for sign-in.",
+   "status": "Doing",
+   "priority": "normal",
+   "due": "2026-11-18",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-005"
+   ],
+   "fileIds": [],
+   "changeIds": [
+    "r7"
+   ]
+  },
+  {
+   "id": "t9",
+   "projectId": "tsumugi-api",
+   "milestoneId": "m6",
+   "title": "Draft schema for projects",
+   "notes": "Fields and relationships for the projects collection.",
+   "status": "To do",
+   "priority": "normal",
+   "due": "2026-11-25",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-007"
+   ],
+   "fileIds": [
+    "a-schema"
+   ],
+   "changeIds": []
+  },
+  {
+   "id": "t11",
+   "projectId": "color-and-memory",
+   "milestoneId": "m8",
+   "title": "Schedule participant sessions",
+   "notes": "Book twelve sessions across three weeks.",
+   "status": "Doing",
+   "priority": "normal",
+   "due": "2026-11-20",
+   "blocked": false,
+   "subtasks": [
+    {
+     "text": "Send invitations",
+     "done": true
+    },
+    {
+     "text": "Confirm rooms",
+     "done": false
+    }
+   ],
+   "requirementIds": [
+    "REQ-008"
+   ],
+   "fileIds": [],
+   "changeIds": []
+  },
+  {
+   "id": "t12",
+   "projectId": "color-and-memory",
+   "milestoneId": "m8",
+   "title": "Prepare consent forms",
+   "notes": "Finalize and print consent forms.",
+   "status": "Done",
+   "priority": "normal",
+   "due": "2026-11-05",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-008"
+   ],
+   "fileIds": [
+    "a-survey"
+   ],
+   "changeIds": []
+  },
+  {
+   "id": "t13",
+   "projectId": "color-and-memory",
+   "milestoneId": "m8",
+   "title": "Transcribe first interviews",
+   "notes": "Waiting on a secure storage decision.",
+   "status": "To do",
+   "priority": "normal",
+   "due": "2026-11-22",
+   "blocked": true,
+   "subtasks": [],
+   "requirementIds": [
+    "REQ-009"
+   ],
+   "fileIds": [],
+   "changeIds": [
+    "r5"
+   ]
+  },
+  {
+   "id": "t15",
+   "projectId": "atlas-zine",
+   "milestoneId": "m9",
+   "title": "Archive print files",
+   "notes": "Store final print-ready files.",
+   "status": "Done",
+   "priority": "normal",
+   "due": "2026-10-01",
+   "blocked": false,
+   "subtasks": [],
+   "requirementIds": [],
+   "fileIds": [
+    "a-export"
+   ],
+   "changeIds": []
+  }
+ ],
+ "requirements": [
+  {
+   "id": "REQ-001",
+   "projectId": "project-garden",
+   "title": "Opening scene sets the tone",
+   "type": "Functional",
+   "status": "Open",
+   "verified": false,
+   "milestoneId": "m1",
+   "description": "The first scene must establish mood, setting, and the main character within one page.",
+   "acceptance": [
+    {
+     "text": "Tone matches the style guide",
+     "met": true
+    },
+    {
+     "text": "Scene is under 600 words",
+     "met": false
+    },
+    {
+     "text": "Sign-off recorded",
+     "met": false
+    }
+   ]
+  },
+  {
+   "id": "REQ-002",
+   "projectId": "project-garden",
+   "title": "Characters keep consistent names",
+   "type": "Functional",
+   "status": "Open",
+   "verified": false,
+   "milestoneId": "m3",
+   "description": "Every named character uses the spelling in the character bible.",
+   "acceptance": [
+    {
+     "text": "No spelling conflicts across chapters",
+     "met": false
+    },
+    {
+     "text": "Bible lists every named character",
+     "met": false
+    }
+   ]
+  },
+  {
+   "id": "REQ-003",
+   "projectId": "project-garden",
+   "title": "Script exports to PDF in under 10 seconds",
+   "type": "Non-functional",
+   "status": "Open",
+   "verified": false,
+   "milestoneId": "m4",
+   "description": "Exporting the full script to PDF must feel immediate.",
+   "acceptance": []
+  },
+  {
+   "id": "REQ-004",
+   "projectId": "project-garden",
+   "title": "Style guide approved",
+   "type": "Functional",
+   "status": "Met",
+   "verified": true,
+   "milestoneId": "m2",
+   "description": "The style guide is reviewed and approved.",
+   "acceptance": [
+    {
+     "text": "Reviewed",
+     "met": true
+    },
+    {
+     "text": "Approved",
+     "met": true
+    }
+   ]
+  },
+  {
+   "id": "REQ-005",
+   "projectId": "tsumugi-api",
+   "title": "Users can sign in with email",
+   "type": "Functional",
+   "status": "Open",
+   "verified": false,
+   "milestoneId": "m5",
+   "description": "A returning user can sign in with an email address and password.",
+   "acceptance": [
+    {
+     "text": "All sign-in states are documented",
+     "met": false
+    },
+    {
+     "text": "Session strategy is chosen",
+     "met": false
+    },
+    {
+     "text": "Threats are reviewed",
+     "met": false
+    }
+   ]
+  },
+  {
+   "id": "REQ-006",
+   "projectId": "tsumugi-api",
+   "title": "Auth responses under 300 ms",
+   "type": "Non-functional",
+   "status": "Open",
+   "verified": false,
+   "milestoneId": "m6",
+   "description": "Authentication endpoints respond quickly under normal load.",
+   "acceptance": [
+    {
+     "text": "Measured at the 95th percentile",
+     "met": false
+    }
+   ]
+  },
+  {
+   "id": "REQ-007",
+   "projectId": "tsumugi-api",
+   "title": "Projects store their metadata",
+   "type": "Functional",
+   "status": "Open",
+   "verified": false,
+   "milestoneId": "m6",
+   "description": "Every project record stores its descriptive metadata.",
+   "acceptance": [
+    {
+     "text": "Metadata fields are documented",
+     "met": false
+    }
+   ]
+  },
+  {
+   "id": "REQ-008",
+   "projectId": "color-and-memory",
+   "title": "Consent recorded for each participant",
+   "type": "Functional",
+   "status": "Met",
+   "verified": true,
+   "milestoneId": "m8",
+   "description": "Each participant gives written consent before a session.",
+   "acceptance": [
+    {
+     "text": "Form signed before the session",
+     "met": true
+    },
+    {
+     "text": "Forms stored securely",
+     "met": true
+    }
+   ]
+  },
+  {
+   "id": "REQ-009",
+   "projectId": "color-and-memory",
+   "title": "Transcripts stored securely",
+   "type": "Non-functional",
+   "status": "Open",
+   "verified": false,
+   "milestoneId": "m8",
+   "description": "Interview transcripts are stored with access limited to you.",
+   "acceptance": [
+    {
+     "text": "Storage location approved",
+     "met": false
+    }
+   ]
+  }
+ ],
+ "files": [
+  {
+   "id": "a-notes",
+   "projectId": "project-garden",
+   "name": "opening-scene-notes.md",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 18400,
+   "tags": [
+    "notes",
+    "chapter one"
+   ],
+   "updatedAt": "2026-11-11",
+   "description": "Working notes for the opening scene.",
+   "requirementIds": [],
+   "taskIds": [
+    "t1"
+   ],
+   "milestoneId": null
+  },
+  {
+   "id": "a-cover",
+   "projectId": "project-garden",
+   "name": "cover-art-v2.png",
+   "kind": "image",
+   "ext": "png",
+   "bytes": 2480000,
+   "tags": [
+    "cover",
+    "art"
+   ],
+   "updatedAt": "2026-11-09",
+   "description": "Second pass of the cover illustration.",
+   "requirementIds": [],
+   "taskIds": [],
+   "milestoneId": null
+  },
+  {
+   "id": "a-style",
+   "projectId": "project-garden",
+   "name": "style-guide.pdf",
+   "kind": "document",
+   "ext": "pdf",
+   "bytes": 5300000,
+   "tags": [
+    "style"
+   ],
+   "updatedAt": "2026-10-15",
+   "description": "Approved visual and writing style guide.",
+   "requirementIds": [
+    "REQ-004"
+   ],
+   "taskIds": [
+    "t6"
+   ],
+   "milestoneId": null,
+   "isFinal": true
+  },
+  {
+   "id": "a-moodboard",
+   "projectId": "project-garden",
+   "name": "moodboard.jpg",
+   "kind": "image",
+   "ext": "jpg",
+   "bytes": 3100000,
+   "tags": [
+    "reference"
+   ],
+   "updatedAt": "2026-11-11",
+   "description": "Mood references for the main cast.",
+   "requirementIds": [],
+   "taskIds": [
+    "t4"
+   ],
+   "milestoneId": null
+  },
+  {
+   "id": "a-theme",
+   "projectId": "project-garden",
+   "name": "theme-sketch.wav",
+   "kind": "media",
+   "ext": "wav",
+   "bytes": 8900000,
+   "tags": [
+    "music"
+   ],
+   "updatedAt": "2026-11-02",
+   "description": "Rough sketch of the main theme.",
+   "requirementIds": [],
+   "taskIds": [],
+   "milestoneId": null
+  },
+  {
+   "id": "a-teaser",
+   "projectId": "project-garden",
+   "name": "teaser-cut.mp4",
+   "kind": "media",
+   "ext": "mp4",
+   "bytes": 48000000,
+   "tags": [
+    "teaser"
+   ],
+   "updatedAt": "2026-11-03",
+   "description": "Unreleased teaser cut.",
+   "requirementIds": [],
+   "taskIds": [],
+   "milestoneId": null
+  },
+  {
+   "id": "a-upload",
+   "projectId": "project-garden",
+   "name": "chapter-one-draft.docx",
+   "kind": "document",
+   "ext": "docx",
+   "bytes": 220000,
+   "tags": [
+    "draft"
+   ],
+   "updatedAt": "2026-11-12",
+   "description": "Draft export being added to the library.",
+   "requirementIds": [],
+   "taskIds": [],
+   "milestoneId": null,
+   "progress": 62
+  },
+  {
+   "id": "a-schema",
+   "projectId": "tsumugi-api",
+   "name": "schema-draft.xlsx",
+   "kind": "data",
+   "ext": "xlsx",
+   "bytes": 96000,
+   "tags": [
+    "schema"
+   ],
+   "updatedAt": "2026-11-08",
+   "description": "Spreadsheet sketch of the projects schema.",
+   "requirementIds": [
+    "REQ-007"
+   ],
+   "taskIds": [
+    "t9"
+   ],
+   "milestoneId": null
+  },
+  {
+   "id": "a-repo",
+   "projectId": "tsumugi-api",
+   "name": "tsumugi-api repository",
+   "kind": "link",
+   "ext": "link",
+   "bytes": 0,
+   "tags": [
+    "code"
+   ],
+   "updatedAt": "2026-11-06",
+   "description": "Source repository for the API.",
+   "requirementIds": [],
+   "taskIds": [],
+   "milestoneId": null,
+   "host": "github.com"
+  },
+  {
+   "id": "a-survey",
+   "projectId": "color-and-memory",
+   "name": "survey-responses.csv",
+   "kind": "data",
+   "ext": "csv",
+   "bytes": 410000,
+   "tags": [
+    "survey",
+    "data"
+   ],
+   "updatedAt": "2026-10-20",
+   "description": "Pilot survey responses.",
+   "requirementIds": [],
+   "taskIds": [
+    "t12"
+   ],
+   "milestoneId": null
+  },
+  {
+   "id": "a-export",
+   "projectId": "atlas-zine",
+   "name": "atlas-final.pdf",
+   "kind": "document",
+   "ext": "pdf",
+   "bytes": 12000000,
+   "tags": [
+    "print"
+   ],
+   "updatedAt": "2026-09-29",
+   "description": "Final print-ready export.",
+   "requirementIds": [],
+   "taskIds": [
+    "t15"
+   ],
+   "milestoneId": null,
+   "isFinal": true
+  },
+  {
+   "id": "f-script",
+   "projectId": "project-garden",
+   "name": "Chapter one script",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 9200,
+   "tags": [
+    "script"
+   ],
+   "updatedAt": "2026-11-12",
+   "description": "The chapter one script, in progress.",
+   "requirementIds": [
+    "REQ-001",
+    "REQ-002"
+   ],
+   "taskIds": [],
+   "milestoneId": "m1",
+   "status": "Draft",
+   "version": 1,
+   "body": "# Chapter one script\n\n## Scene one\nThe garden gate is open. Someone has been here before.\n\n## Scene two\nA quiet conversation that sets the tone."
+  },
+  {
+   "id": "d-brief",
+   "projectId": "project-garden",
+   "name": "Opening brief",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 4800,
+   "tags": [
+    "brief"
+   ],
+   "updatedAt": "2026-11-12",
+   "description": "Scope and goals for the opening chapter.",
+   "requirementIds": [
+    "REQ-001"
+   ],
+   "taskIds": [
+    "t1"
+   ],
+   "milestoneId": "m1",
+   "status": "Draft",
+   "version": 4,
+   "body": "# Opening brief\n\n## Overview\nThe opening chapter introduces the world and its main character. It must feel welcoming without explaining everything.\n\n## Goals\n- Establish tone and setting in the first page\n- Introduce the protagonist through action\n- End on a **clear hook** into chapter two\n\n## Scope\nThis brief covers chapter one only. Later chapters get their own briefs.\n\n## Open questions\n1. Should the narrator be named?\n2. How much backstory belongs in the first scene?\n\n> Review date: 13 November."
+  },
+  {
+   "id": "d-style",
+   "projectId": "project-garden",
+   "name": "Style guide",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 3100,
+   "tags": [
+    "style"
+   ],
+   "updatedAt": "2026-10-15",
+   "description": "Voice, visual rules, and naming.",
+   "requirementIds": [
+    "REQ-004"
+   ],
+   "taskIds": [
+    "t6"
+   ],
+   "milestoneId": "m2",
+   "status": "Final",
+   "version": 2,
+   "body": "# Style guide\n\n## Voice\nWarm, concrete, and a little playful. Prefer short sentences.\n\n## Visual rules\n- Solid colors, no gradients\n- One accent color per scene\n- Characters are always outlined\n\n## Naming\nUse the spelling in the character bible. When unsure, decide once and note it here."
+  },
+  {
+   "id": "d-auth",
+   "projectId": "tsumugi-api",
+   "name": "Auth design notes",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 2900,
+   "tags": [
+    "decision"
+   ],
+   "updatedAt": "2026-11-11",
+   "description": "Session strategy decision record.",
+   "requirementIds": [
+    "REQ-005"
+   ],
+   "taskIds": [
+    "t8"
+   ],
+   "milestoneId": "m5",
+   "status": "Draft",
+   "version": 2,
+   "body": "# Auth design notes\n\n## Decision\nUse server-side sessions with secure cookies.\n\n## Why\n- Simple revocation\n- No tokens stored in the browser\n- Works with the planned backend\n\n## Consequences\nThe client must send cookies with every request, and CSRF protection is required.\n\n## Alternatives\n1. Short-lived tokens with refresh\n2. Third-party sign-in only"
+  },
+  {
+   "id": "d-schema",
+   "projectId": "tsumugi-api",
+   "name": "API schema outline",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 1800,
+   "tags": [
+    "spec"
+   ],
+   "updatedAt": "2026-11-08",
+   "description": "Collections and relationships.",
+   "requirementIds": [
+    "REQ-007"
+   ],
+   "taskIds": [
+    "t9"
+   ],
+   "milestoneId": "m6",
+   "status": "Draft",
+   "version": 1,
+   "body": "# API schema outline\n\n## Collections\n- projects\n- milestones\n- tasks\n- requirements\n\n## Relationships\nEvery record stores its project ID. Links between records use IDs, not free text."
+  },
+  {
+   "id": "d-interview",
+   "projectId": "color-and-memory",
+   "name": "Interview protocol",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 2400,
+   "tags": [
+    "research"
+   ],
+   "updatedAt": "2026-10-30",
+   "description": "Protocol and consent process.",
+   "requirementIds": [
+    "REQ-008"
+   ],
+   "taskIds": [
+    "t11"
+   ],
+   "milestoneId": "m7",
+   "status": "Final",
+   "version": 3,
+   "body": "# Interview protocol\n\n## Before the session\n1. Confirm consent\n2. Explain that the session is recorded\n\n## Questions\n- What color do you remember from that day?\n- What did it feel like?\n\n## After the session\nSend the transcript to the participant within a week."
+  },
+  {
+   "id": "d-release",
+   "projectId": "atlas-zine",
+   "name": "Release notes: Atlas Zine 1.0",
+   "kind": "document",
+   "ext": "md",
+   "bytes": 900,
+   "tags": [
+    "release"
+   ],
+   "updatedAt": "2026-10-01",
+   "description": "What shipped in the first edition.",
+   "requirementIds": [],
+   "taskIds": [],
+   "milestoneId": null,
+   "status": "Final",
+   "version": 1,
+   "body": "# Atlas Zine 1.0\n\n## Included\n- 24 pages of map illustrations\n- A short afterword\n\n## Print details\nRisograph, two colors, 150 copies."
+  }
+ ],
+ "changes": [
+  {
+   "id": "r1",
+   "projectId": "project-garden",
+   "at": "2026-11-12T10:42:00",
+   "summary": "Updated scope and goals in the Opening brief",
+   "recordType": "File",
+   "recordId": "d-brief",
+   "reviewed": false,
+   "requirementIds": [
+    "REQ-001"
+   ],
+   "taskIds": [
+    "t1"
+   ],
+   "fromVersion": 3,
+   "toVersion": 4,
+   "diff": [
+    {
+     "mark": "=",
+     "text": "# Opening brief"
+    },
+    {
+     "mark": "=",
+     "text": "## Goals"
+    },
+    {
+     "mark": "-",
+     "text": "- Establish tone in the first scene"
+    },
+    {
+     "mark": "+",
+     "text": "- Establish tone and setting in the first page"
+    },
+    {
+     "mark": "+",
+     "text": "- Introduce the protagonist through action"
+    },
+    {
+     "mark": "=",
+     "text": "- End on a clear hook into chapter two"
+    },
+    {
+     "mark": "=",
+     "text": "## Scope"
+    },
+    {
+     "mark": "-",
+     "text": "This brief covers chapters one and two."
+    },
+    {
+     "mark": "+",
+     "text": "This brief covers chapter one only."
+    }
+   ]
+  },
+  {
+   "id": "r2",
+   "projectId": "project-garden",
+   "at": "2026-11-12T09:15:00",
+   "summary": "Added a dialogue proofing task",
+   "recordType": "Task",
+   "recordId": "t14",
+   "reviewed": false,
+   "requirementIds": [
+    "REQ-001"
+   ],
+   "taskIds": [
+    "t14"
+   ]
+  },
+  {
+   "id": "r3",
+   "projectId": "project-garden",
+   "at": "2026-11-11T16:30:00",
+   "summary": "Replaced the opening scene notes",
+   "recordType": "File",
+   "recordId": "a-notes",
+   "reviewed": true,
+   "requirementIds": [],
+   "taskIds": [
+    "t1"
+   ]
+  },
+  {
+   "id": "r4",
+   "projectId": "tsumugi-api",
+   "at": "2026-11-11T11:05:00",
+   "summary": "Rewrote the session strategy section",
+   "recordType": "File",
+   "recordId": "d-auth",
+   "reviewed": false,
+   "requirementIds": [
+    "REQ-005"
+   ],
+   "taskIds": [
+    "t8"
+   ],
+   "fromVersion": 1,
+   "toVersion": 2,
+   "diff": [
+    {
+     "mark": "=",
+     "text": "# Auth design notes"
+    },
+    {
+     "mark": "=",
+     "text": "## Decision"
+    },
+    {
+     "mark": "-",
+     "text": "Use short-lived tokens stored in the browser."
+    },
+    {
+     "mark": "+",
+     "text": "Use server-side sessions with secure cookies."
+    },
+    {
+     "mark": "=",
+     "text": "## Why"
+    },
+    {
+     "mark": "+",
+     "text": "- Simple revocation"
+    },
+    {
+     "mark": "+",
+     "text": "- No tokens stored in the browser"
+    }
+   ]
+  },
+  {
+   "id": "r5",
+   "projectId": "color-and-memory",
+   "at": "2026-11-10T14:20:00",
+   "summary": "Marked transcript storage as not yet verified",
+   "recordType": "Requirement",
+   "recordId": "REQ-009",
+   "reviewed": false,
+   "requirementIds": [
+    "REQ-009"
+   ],
+   "taskIds": [
+    "t13"
+   ]
+  },
+  {
+   "id": "r6",
+   "projectId": "project-garden",
+   "at": "2026-11-09T09:00:00",
+   "summary": "Uploaded cover art v2",
+   "recordType": "File",
+   "recordId": "a-cover",
+   "reviewed": true,
+   "requirementIds": [],
+   "taskIds": []
+  },
+  {
+   "id": "r7",
+   "projectId": "tsumugi-api",
+   "at": "2026-11-06T17:45:00",
+   "summary": "Added a threat model outline",
+   "recordType": "File",
+   "recordId": "d-auth",
+   "reviewed": true,
+   "requirementIds": [
+    "REQ-005"
+   ],
+   "taskIds": [
+    "t10"
+   ],
+   "fromVersion": 0,
+   "toVersion": 1,
+   "diff": [
+    {
+     "mark": "+",
+     "text": "# Auth design notes"
+    },
+    {
+     "mark": "+",
+     "text": "## Threats"
+    },
+    {
+     "mark": "+",
+     "text": "- Credential stuffing"
+    },
+    {
+     "mark": "+",
+     "text": "- Session theft"
+    }
+   ]
+  },
+  {
+   "id": "r8",
+   "projectId": "project-garden",
+   "at": "2026-10-28T10:10:00",
+   "summary": "Marked the outline as locked",
+   "recordType": "Milestone",
+   "recordId": "m2",
+   "reviewed": true,
+   "requirementIds": [
+    "REQ-004"
+   ],
+   "taskIds": [
+    "t6"
+   ]
+  },
+  {
+   "id": "r9",
+   "projectId": "color-and-memory",
+   "at": "2026-10-20T13:00:00",
+   "summary": "Updated the survey export",
+   "recordType": "File",
+   "recordId": "a-survey",
+   "reviewed": false,
+   "requirementIds": [],
+   "taskIds": []
+  }
+ ],
+ "templates": [
+  {
+   "kind": "software",
+   "label": "Software",
+   "category": "Software",
+   "text": "Requirements to a release you can trace.",
+   "phases": [
+    "Discovery",
+    "Design",
+    "Build",
+    "Test",
+    "Ship"
+   ],
+   "milestone": "First release",
+   "tasks": [
+    "Write the first requirement",
+    "Sketch the main screen"
+   ]
+  },
+  {
+   "kind": "creative",
+   "label": "Creative",
+   "category": "Creative",
+   "text": "From concept to a finished piece.",
+   "phases": [
+    "Concept",
+    "Outline",
+    "Draft",
+    "Review",
+    "Release"
+   ],
+   "milestone": "Outline locked",
+   "tasks": [
+    "Write the one-page brief",
+    "Collect references"
+   ]
+  },
+  {
+   "kind": "research",
+   "label": "Research",
+   "category": "Research",
+   "text": "Questions, method, findings.",
+   "phases": [
+    "Question",
+    "Method",
+    "Collection",
+    "Analysis",
+    "Report"
+   ],
+   "milestone": "Protocol ready",
+   "tasks": [
+    "Write the research question",
+    "List sources"
+   ]
+  },
+  {
+   "kind": "multimedia",
+   "label": "Multimedia",
+   "category": "Multimedia",
+   "text": "Assets, edits, and a final master.",
+   "phases": [
+    "Brief",
+    "Production",
+    "Edit",
+    "Review",
+    "Master"
+   ],
+   "milestone": "First cut",
+   "tasks": [
+    "Write the brief",
+    "Gather assets"
+   ]
+  },
+  {
+   "kind": "blank",
+   "label": "Blank",
+   "category": "Other",
+   "text": "Start empty and add what you need.",
+   "phases": [
+    "Plan"
+   ],
+   "milestone": null,
+   "tasks": []
+  }
+ ]
+}

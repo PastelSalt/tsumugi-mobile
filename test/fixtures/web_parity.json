@@ -1,0 +1,552 @@
+{
+ "counts": {
+  "projects": 6,
+  "milestones": 9,
+  "tasks": 15,
+  "requirements": 9,
+  "files": 18,
+  "changes": 9
+ },
+ "figures": {
+  "dueToday": 1,
+  "overdue": 2,
+  "doing": 6
+ },
+ "todayList": {
+  "overdue": [
+   "t3",
+   "t4"
+  ],
+  "today": [
+   "t1"
+  ],
+  "doing": [
+   "t7",
+   "t10",
+   "t11"
+  ],
+  "doneToday": []
+ },
+ "todayListGarden": {
+  "overdue": [
+   "t3",
+   "t4"
+  ],
+  "today": [
+   "t1"
+  ],
+  "doing": [],
+  "doneToday": []
+ },
+ "upNext7": [
+  "task:t2",
+  "milestone:m1",
+  "task:t8",
+  "task:t7",
+  "task:t14",
+  "task:t10",
+  "milestone:m5"
+ ],
+ "upNext30": [
+  "task:t2",
+  "milestone:m1",
+  "task:t8",
+  "task:t7",
+  "task:t14",
+  "task:t10",
+  "milestone:m5",
+  "task:t11",
+  "task:t13",
+  "task:t9",
+  "milestone:m8"
+ ],
+ "recentProjects": [
+  "project-garden",
+  "tsumugi-api",
+  "sketchbook-sprint",
+  "color-and-memory"
+ ],
+ "recents": [
+  "Change:r1",
+  "Change:r2",
+  "Project:project-garden",
+  "File:a-upload",
+  "File:f-script",
+  "File:d-brief"
+ ],
+ "activeProjects": [
+  "project-garden",
+  "tsumugi-api",
+  "color-and-memory",
+  "atlas-zine",
+  "sketchbook-sprint"
+ ],
+ "projectProgress": {
+  "project-garden": {
+   "done": 1,
+   "total": 7,
+   "pct": 14
+  },
+  "tsumugi-api": {
+   "done": 0,
+   "total": 4,
+   "pct": 0
+  },
+  "color-and-memory": {
+   "done": 1,
+   "total": 3,
+   "pct": 33
+  },
+  "atlas-zine": {
+   "done": 1,
+   "total": 1,
+   "pct": 100
+  },
+  "sketchbook-sprint": {
+   "done": 0,
+   "total": 0,
+   "pct": null
+  },
+  "field-notes-2025": {
+   "done": 0,
+   "total": 0,
+   "pct": null
+  }
+ },
+ "projectHealth": {
+  "project-garden": "At risk",
+  "tsumugi-api": "On track",
+  "color-and-memory": "On track",
+  "atlas-zine": "On track",
+  "sketchbook-sprint": "On track",
+  "field-notes-2025": "On track"
+ },
+ "projectCounts": {
+  "project-garden": {
+   "tasks": 7,
+   "milestones": 4,
+   "requirements": 4,
+   "files": 10,
+   "changes": 5
+  },
+  "tsumugi-api": {
+   "tasks": 4,
+   "milestones": 2,
+   "requirements": 3,
+   "files": 4,
+   "changes": 2
+  },
+  "color-and-memory": {
+   "tasks": 3,
+   "milestones": 2,
+   "requirements": 2,
+   "files": 2,
+   "changes": 2
+  },
+  "atlas-zine": {
+   "tasks": 1,
+   "milestones": 1,
+   "requirements": 0,
+   "files": 2,
+   "changes": 0
+  },
+  "sketchbook-sprint": {
+   "tasks": 0,
+   "milestones": 0,
+   "requirements": 0,
+   "files": 0,
+   "changes": 0
+  },
+  "field-notes-2025": {
+   "tasks": 0,
+   "milestones": 0,
+   "requirements": 0,
+   "files": 0,
+   "changes": 0
+  }
+ },
+ "nextMilestone": {
+  "project-garden": "m3",
+  "tsumugi-api": "m5",
+  "color-and-memory": "m8",
+  "atlas-zine": null,
+  "sketchbook-sprint": null,
+  "field-notes-2025": null
+ },
+ "milestoneState": {
+  "m1": "Doing",
+  "m2": "Done",
+  "m3": "Overdue",
+  "m4": "Upcoming",
+  "m5": "Doing",
+  "m6": "Upcoming",
+  "m7": "Done",
+  "m8": "Doing",
+  "m9": "Done"
+ },
+ "milestoneProgress": {
+  "m1": {
+   "done": 0,
+   "total": 3
+  },
+  "m2": {
+   "done": 1,
+   "total": 1
+  },
+  "m3": {
+   "done": 0,
+   "total": 2
+  },
+  "m4": {
+   "done": 0,
+   "total": 1
+  },
+  "m5": {
+   "done": 0,
+   "total": 3
+  },
+  "m6": {
+   "done": 0,
+   "total": 1
+  },
+  "m7": {
+   "done": 0,
+   "total": 0
+  },
+  "m8": {
+   "done": 1,
+   "total": 3
+  },
+  "m9": {
+   "done": 1,
+   "total": 1
+  }
+ },
+ "coverageAll": {
+  "total": 9,
+  "complete": 2,
+  "withGaps": 7
+ },
+ "coverageByProject": {
+  "project-garden": {
+   "total": 4,
+   "complete": 1,
+   "withGaps": 3
+  },
+  "tsumugi-api": {
+   "total": 3,
+   "complete": 0,
+   "withGaps": 3
+  },
+  "color-and-memory": {
+   "total": 2,
+   "complete": 1,
+   "withGaps": 1
+  },
+  "atlas-zine": {
+   "total": 0,
+   "complete": 0,
+   "withGaps": 0
+  },
+  "sketchbook-sprint": {
+   "total": 0,
+   "complete": 0,
+   "withGaps": 0
+  },
+  "field-notes-2025": {
+   "total": 0,
+   "complete": 0,
+   "withGaps": 0
+  }
+ },
+ "requirementGaps": {
+  "REQ-001": {
+   "gaps": {
+    "task": false,
+    "file": true
+   },
+   "tasks": [
+    "t1",
+    "t14"
+   ],
+   "files": [
+    "f-script",
+    "d-brief"
+   ],
+   "changes": [
+    "r1",
+    "r2"
+   ],
+   "milestone": "m1"
+  },
+  "REQ-002": {
+   "gaps": {
+    "task": false,
+    "file": true
+   },
+   "tasks": [
+    "t2",
+    "t3"
+   ],
+   "files": [
+    "f-script"
+   ],
+   "changes": [],
+   "milestone": "m3"
+  },
+  "REQ-003": {
+   "gaps": {
+    "task": true,
+    "file": true
+   },
+   "tasks": [],
+   "files": [],
+   "changes": [],
+   "milestone": "m4"
+  },
+  "REQ-004": {
+   "gaps": {
+    "task": false,
+    "file": false
+   },
+   "tasks": [
+    "t6"
+   ],
+   "files": [
+    "a-style",
+    "d-style"
+   ],
+   "changes": [
+    "r8"
+   ],
+   "milestone": "m2"
+  },
+  "REQ-005": {
+   "gaps": {
+    "task": false,
+    "file": true
+   },
+   "tasks": [
+    "t7",
+    "t8",
+    "t10"
+   ],
+   "files": [
+    "d-auth"
+   ],
+   "changes": [
+    "r4",
+    "r7"
+   ],
+   "milestone": "m5"
+  },
+  "REQ-006": {
+   "gaps": {
+    "task": true,
+    "file": true
+   },
+   "tasks": [],
+   "files": [],
+   "changes": [],
+   "milestone": "m6"
+  },
+  "REQ-007": {
+   "gaps": {
+    "task": false,
+    "file": true
+   },
+   "tasks": [
+    "t9"
+   ],
+   "files": [
+    "a-schema",
+    "d-schema"
+   ],
+   "changes": [],
+   "milestone": "m6"
+  },
+  "REQ-008": {
+   "gaps": {
+    "task": false,
+    "file": false
+   },
+   "tasks": [
+    "t11",
+    "t12"
+   ],
+   "files": [
+    "d-interview"
+   ],
+   "changes": [],
+   "milestone": "m8"
+  },
+  "REQ-009": {
+   "gaps": {
+    "task": false,
+    "file": true
+   },
+   "tasks": [
+    "t13"
+   ],
+   "files": [],
+   "changes": [
+    "r5"
+   ],
+   "milestone": "m8"
+  }
+ },
+ "criteria": {
+  "REQ-001": {
+   "met": 1,
+   "total": 3
+  },
+  "REQ-002": {
+   "met": 0,
+   "total": 2
+  },
+  "REQ-003": {
+   "met": 0,
+   "total": 0
+  },
+  "REQ-004": {
+   "met": 2,
+   "total": 2
+  },
+  "REQ-005": {
+   "met": 0,
+   "total": 3
+  },
+  "REQ-006": {
+   "met": 0,
+   "total": 1
+  },
+  "REQ-007": {
+   "met": 0,
+   "total": 1
+  },
+  "REQ-008": {
+   "met": 2,
+   "total": 2
+  },
+  "REQ-009": {
+   "met": 0,
+   "total": 1
+  }
+ },
+ "overdue": [
+  "Task:t3",
+  "Task:t4",
+  "Milestone:m3"
+ ],
+ "isFinalFile": {
+  "a-notes": false,
+  "a-cover": false,
+  "a-style": true,
+  "a-moodboard": false,
+  "a-theme": false,
+  "a-teaser": false,
+  "a-upload": false,
+  "a-schema": false,
+  "a-repo": false,
+  "a-survey": false,
+  "a-export": true,
+  "f-script": false,
+  "d-brief": false,
+  "d-style": true,
+  "d-auth": false,
+  "d-schema": false,
+  "d-interview": true,
+  "d-release": true
+ },
+ "recordHref": {
+  "project": "/projects/project-garden",
+  "task": "/tasks?select=t1",
+  "docFile": "/library?doc=d-brief",
+  "plainFile": "/library?select=a-cover",
+  "requirement": "/projects/project-garden?view=specs&select=REQ-001",
+  "milestone": "/projects/project-garden?view=work&select=m1",
+  "change": "/projects/project-garden?view=history&select=r1"
+ },
+ "parse": [
+  {
+   "text": "Proof chapter one #garden tomorrow !",
+   "fallback": "project-garden",
+   "result": {
+    "title": "Proof chapter one",
+    "priority": "high",
+    "due": "2026-11-13",
+    "projectId": "project-garden"
+   }
+  },
+  {
+   "text": "Write notes today",
+   "fallback": "project-garden",
+   "result": {
+    "title": "Write notes",
+    "priority": "normal",
+    "due": "2026-11-12",
+    "projectId": "project-garden"
+   }
+  },
+  {
+   "text": "Call mentor fri",
+   "fallback": "project-garden",
+   "result": {
+    "title": "Call mentor",
+    "priority": "normal",
+    "due": "2026-11-13",
+    "projectId": "project-garden"
+   }
+  },
+  {
+   "text": "Plan thu !high",
+   "fallback": "project-garden",
+   "result": {
+    "title": "Plan",
+    "priority": "high",
+    "due": "2026-11-19",
+    "projectId": "project-garden"
+   }
+  },
+  {
+   "text": "Review wed #api",
+   "fallback": "project-garden",
+   "result": {
+    "title": "Review",
+    "priority": "normal",
+    "due": "2026-11-18",
+    "projectId": "tsumugi-api"
+   }
+  },
+  {
+   "text": "Just a title",
+   "fallback": "project-garden",
+   "result": {
+    "title": "Just a title",
+    "priority": "normal",
+    "due": null,
+    "projectId": "project-garden"
+   }
+  },
+  {
+   "text": "Draft intro #zzz mon",
+   "fallback": "project-garden",
+   "result": {
+    "title": "Draft intro #zzz",
+    "priority": "normal",
+    "due": "2026-11-16",
+    "projectId": "project-garden"
+   }
+  },
+  {
+   "text": "  spaced   out   text  ",
+   "fallback": "project-garden",
+   "result": {
+    "title": "spaced out text",
+    "priority": "normal",
+    "due": null,
+    "projectId": "project-garden"
+   }
+  }
+ ]
+}

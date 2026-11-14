@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="124" height="124" viewBox="0 0 124 124" role="img" aria-label="Tsumugi">
+  <!-- Reference copy of the website brand mark (client/src/styles/base.css .brand__mark):
+       pink #C73579 badge, corner radii 50% 50% 50% 8px (scaled), rotated -8deg, white Fredoka 700 "ts".
+       The app draws the mark with the BrandMark widget so it always uses the bundled font. -->
+  <g transform="rotate(-8 62 62)">
+    <path fill="#C73579" d="M62 8a54 54 0 0 1 54 54 54 54 0 0 1-54 54H40a32 32 0 0 1-32-32V62A54 54 0 0 1 62 8z"/>
+    <text x="62" y="76" text-anchor="middle" fill="#FFFFFF" font-family="Fredoka, sans-serif" font-weight="700" font-size="46" letter-spacing="-3.7">ts</text>
+  </g>
+</svg>
