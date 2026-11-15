@@ -207,6 +207,8 @@ Status is the developer's reading of the build (phone and tests), **not user evi
 - **Account:** the title appeared twice and a notice came before the settings; now Appearance and Preferences come first (the things people change), Profile after, with the "edits last until you close the app" note inside it.
 - **Cost:** the grid layout is no longer the default; the project filter and the long description are no longer on the card. If sessions show people miss them, bring them back one at a time.
 
+**Consistency fix (2026-11-15, owner feedback):** Tasks drew its own collapsing title bar and hid the logo, while Home, Projects and Library show the logo bar. All four main tabs now share the same top bar (logo, search, account) and Tasks puts its title below it like the others. The cost is that Tasks no longer collapses its title into the bar; the view tabs stay pinned. The project page keeps its own bar on purpose: it is a detail page with a back button. A test checks the logo bar on all four tabs.
+
 **Test:** one test checks that the headline is clearly larger than a section label and that the removed repeats stay removed. **Untested with people:** add to session task 2 ("Find what you should do first today") a question after it: "Where did your eye go first?" and compare Home with and without the headline if time allows. Risk: the headline may be read as an alert; watch for that.
 
 ## 6. Content and microcopy plan

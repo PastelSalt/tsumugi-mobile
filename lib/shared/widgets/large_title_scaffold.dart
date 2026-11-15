@@ -24,6 +24,7 @@ class LargeTitleScaffold extends StatefulWidget {
     this.onRefresh,
     this.restorationId,
     this.expandedHeight = 120,
+    this.embedded = false,
   });
 
   final String title;
@@ -37,6 +38,11 @@ class LargeTitleScaffold extends StatefulWidget {
   final Future<void> Function()? onRefresh;
   final String? restorationId;
   final double expandedHeight;
+
+  /// Draw no bar of its own: the screen sits under the shared app bar (the logo bar of the tab
+  /// shell), like Home, Projects and Library, and the title is a heading at the top of the content.
+  /// Keeps pinned tabs, pull to refresh and scroll restoration.
+  final bool embedded;
 
   @override
   State<LargeTitleScaffold> createState() => _LargeTitleScaffoldState();
@@ -83,34 +89,53 @@ class _LargeTitleScaffoldState extends State<LargeTitleScaffold>
       controller: _controller,
       physics: const AlwaysScrollableScrollPhysics(),
       slivers: [
-        SliverAppBar(
-          pinned: true,
-          expandedHeight: widget.expandedHeight,
-          backgroundColor: t.background,
-          surfaceTintColor: Colors.transparent,
-          scrolledUnderElevation: 0,
-          foregroundColor: t.onSurface,
-          titleSpacing: AppTokens.pageGutter,
-          leading: widget.leading,
-          automaticallyImplyLeading: false,
-          actions: [...widget.actions, const SizedBox(width: 4)],
-          // The title is drawn once and scaled: 1.6x (32 sp) when expanded, 20 sp when collapsed.
-          flexibleSpace: FlexibleSpaceBar(
-            expandedTitleScale: 1.6,
-            titlePadding: const EdgeInsetsDirectional.only(
-              start: AppTokens.pageGutter,
-              bottom: 14,
+        if (widget.embedded)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppTokens.pageGutter,
+                AppTokens.space4,
+                AppTokens.pageGutter,
+                AppTokens.space3,
+              ),
+              child: Semantics(
+                header: true,
+                child: Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+              ),
             ),
-            title: Semantics(
-              header: true,
-              child: Text(
-                widget.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+          )
+        else
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: widget.expandedHeight,
+            backgroundColor: t.background,
+            surfaceTintColor: Colors.transparent,
+            scrolledUnderElevation: 0,
+            foregroundColor: t.onSurface,
+            titleSpacing: AppTokens.pageGutter,
+            leading: widget.leading,
+            automaticallyImplyLeading: false,
+            actions: [...widget.actions, const SizedBox(width: 4)],
+            // The title is drawn once and scaled: 1.6x (32 sp) when expanded, 20 sp when collapsed.
+            flexibleSpace: FlexibleSpaceBar(
+              expandedTitleScale: 1.6,
+              titlePadding: const EdgeInsetsDirectional.only(
+                start: AppTokens.pageGutter,
+                bottom: 14,
+              ),
+              title: Semantics(
+                header: true,
+                child: Text(
+                  widget.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
           ),
-        ),
         if (widget.pinnedHeader != null)
           SliverPersistentHeader(
             pinned: true,

@@ -41,14 +41,23 @@ double _contrast(Color a, Color b) {
 void main() {
   group('Large-title scaffold on Tasks', () {
     testWidgets(
-      'shows the screen title instead of the logo, and Home keeps the logo',
+      'every main tab shows the same logo bar, and Tasks adds its title below it',
       (tester) async {
         final router = await _app(tester);
-        expect(find.text('Tasks'), findsWidgets);
-        expect(find.text('tsumugi'), findsNothing);
-        router.go('/home');
+        for (final route in ['/tasks', '/home', '/projects', '/library']) {
+          router.go(route);
+          await tester.pumpAndSettle();
+          expect(find.text('tsumugi'), findsOneWidget, reason: route);
+          expect(
+            find.byTooltip('Search or jump to'),
+            findsOneWidget,
+            reason: route,
+          );
+          expect(find.byTooltip('Account menu'), findsOneWidget, reason: route);
+        }
+        router.go('/tasks');
         await tester.pumpAndSettle();
-        expect(find.text('tsumugi'), findsOneWidget);
+        expect(find.text('Tasks'), findsWidgets);
       },
     );
 

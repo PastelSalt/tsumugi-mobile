@@ -30,7 +30,7 @@ const _destinations = [
 
 /// Tab indexes whose screen draws its own collapsing app bar (LargeTitleScaffold). Grows as more
 /// screens adopt the scaffold (docs/PLAN-MOBILE-UI.md, M4 and M6). 2 = Tasks.
-const _ownBar = {2};
+const _ownBar = <int>{};
 
 /// The project page (Projects tab, one project open) draws its own collapsing bar.
 bool _projectPage(BuildContext context, int index) =>

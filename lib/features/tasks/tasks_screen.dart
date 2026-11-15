@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../app/query_params.dart';
-import '../../app/shell/shell_actions.dart';
 import '../../app/sheet_selection.dart';
 import '../../core/data/format.dart';
 import '../../core/data/models.dart';
@@ -132,8 +131,8 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
 
     return LargeTitleScaffold(
       title: 'Tasks',
+      embedded: true,
       restorationId: 'tasks-scroll',
-      actions: shellActions(context),
       onRefresh: () async {
         // Demo: the sample data is local, so there is nothing to fetch. A short pause keeps the
         // gesture feeling like a refresh.

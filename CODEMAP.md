@@ -45,7 +45,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `lib/core/feedback/app_feedback.dart` | `Haptic`, `AppFeedback`, `SystemFeedback`, `hapticsEnabledProvider`, `feedbackProvider` |
 | `lib/shared/widgets/records.dart` | `RowCard`, `MilestoneGroup`, `RequirementRow`, `FileThumb`, `FileTile`, `FileRow`, `ChangeEntry`, `RelationChip`, `LensBlock` |
 | `lib/shared/widgets/record_sheets.dart` | `openRecord`, `recordPanel` (the panel for a record, used by sheets and the dock), `showRecordSheet`, `showDetailSheet` (draggable sheet), `DetailPanel` and the Task / Milestone / Requirement / File / Change panels |
-| `lib/shared/widgets/large_title_scaffold.dart` | `LargeTitleScaffold`: collapsing large title (32 to 20 sp), pinned header, pull-to-refresh, scroll restoration; used by Tasks |
+| `lib/shared/widgets/large_title_scaffold.dart` | `LargeTitleScaffold`: collapsing large title (32 to 20 sp), pinned header, pull-to-refresh, scroll restoration; the project page uses the collapsing bar, Tasks uses `embedded` mode under the shared logo bar |
 | `lib/shared/widgets/confirm_discard.dart` | "Discard this draft?" dialog used with `PopScope` |
 | `lib/shared/widgets/timeline.dart` | `TimelineList`: milestones with a span bar and a Today marker (the website's narrow-screen timeline) |
 | `lib/shared/widgets/phase_stepper.dart` | `PhaseStepper`: done, current and next project phases |
