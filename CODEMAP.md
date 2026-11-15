@@ -4,6 +4,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 
 | Path | Responsibility |
 | --- | --- |
+| `docs/REFERENCE-WEB-ALIGNMENT.md`, `docs/reference/` | Reference for aligning the website: colour and type tokens with paste-ready CSS, component specs, hierarchy rules, motion table, screen wireframes, alignment checklist, 18 clean screenshots |
 | `docs/PLAN-UX.md` | UX plan: goals, assumptions register, standards research with sources, check against standards, journeys, heuristic review, test scripts, backlog, decisions |
 | `docs/PLAN-FLUTTER-MOBILE.md` | Analysis of the website demo, decisions, screen specs and phased plan |
 | `lib/main.dart` | Entry point: loads the fixtures, then runs `TsumugiApp` in a `ProviderScope` that overrides `fixturesProvider` |

@@ -144,3 +144,5 @@ Chronological record of actions in this repository.
   - On the A05s: tab switches median 11.1 ms, p95 22.3 ms, 6 of 123 intervals over 25 ms. Not seen by eye (screenshots too slow); needs a screen recording.
   - Not built: row-to-sheet shared element, swipe cue, skeleton shimmer (would stop screens settling in tests), press scale, Tasks and Library entrances, sliding tab underline.
   - Tests: 242 pass (19 new); goldens regenerated; analyzer clean.
+
+- **Web alignment reference written (2026-11-15):** `docs/REFERENCE-WEB-ALIGNMENT.md` with 18 screenshots in `docs/reference/` (renders from the golden tests, no personal screens). Compared the mobile tokens with the website's `base.css`, `workspace.css`, `motion.css`: the base palette is identical; mobile adds a 3:1 control border, a dark palette, tone and role variables, a type scale and motion tokens. Gives degrees of alignment (A to F), paste-ready CSS, component specs, ten hierarchy rules, a motion table, wireframes and a 20-item ordered checklist. Nothing in the website was changed.
