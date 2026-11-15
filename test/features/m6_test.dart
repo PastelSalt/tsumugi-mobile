@@ -35,7 +35,7 @@ void main() {
       // The phase stepper opens the Overview body; it must start above 40% of 640 dp.
       final y = tester.getTopLeft(find.text('Overview').first).dy;
       expect(y, lessThan(640 * 0.4), reason: 'tabs are within the top 40%');
-      final bodyTop = tester.getTopLeft(find.text('Tasks done')).dy;
+      final bodyTop = tester.getTopLeft(find.textContaining('tasks done')).dy;
       expect(
         bodyTop,
         lessThan(640),

@@ -189,10 +189,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text('Insights').last);
         await tester.pumpAndSettle();
-        expect(
-          find.text('Three numbers that tell you where things stand.'),
-          findsOneWidget,
-        );
+        expect(find.text('Progress'), findsWidgets);
         await tester.pageBack();
         await tester.pumpAndSettle();
         expect(find.text('Up now'), findsOneWidget);

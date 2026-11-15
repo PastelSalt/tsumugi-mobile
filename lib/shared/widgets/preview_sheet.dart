@@ -102,6 +102,7 @@ class PreviewAction extends StatelessWidget {
     this.primary = false,
     this.icon,
     this.body,
+    this.quiet = false,
   });
 
   final String label;
@@ -110,6 +111,9 @@ class PreviewAction extends StatelessWidget {
 
   /// Overrides the message for [label].
   final String? body;
+
+  /// A text button instead of an outlined one, for actions that should not compete with content.
+  final bool quiet;
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +126,7 @@ class PreviewAction extends StatelessWidget {
         Flexible(child: Text(label, textAlign: TextAlign.center)),
       ],
     );
+    if (quiet) return TextButton(onPressed: onTap, child: child);
     return primary
         ? FilledButton(onPressed: onTap, child: child)
         : OutlinedButton(onPressed: onTap, child: child);

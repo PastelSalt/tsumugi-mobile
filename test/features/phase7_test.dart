@@ -118,10 +118,7 @@ void main() {
       expect(find.text('Upcoming'), findsOneWidget);
       await tester.tap(find.text('Insights').first);
       await tester.pumpAndSettle();
-      expect(
-        find.text('Three numbers that tell you where things stand.'),
-        findsOneWidget,
-      );
+      expect(find.text('Progress'), findsWidgets);
       expect(router.canPop(), isTrue);
     });
 

@@ -86,7 +86,7 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.text('New project').first);
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Research'));
+        await tester.tap(find.text('Research').last);
         await tester.enterText(
           find.widgetWithText(TextField, 'Project name'),
           'Moss study',
@@ -121,9 +121,9 @@ void main() {
         router.go('/projects/project-garden');
         await tester.pumpAndSettle();
         expect(find.text('Chapter one'), findsOneWidget); // current phase
-        expect(find.text('Tasks done'), findsOneWidget);
+        expect(find.textContaining('tasks done'), findsOneWidget);
         expect(
-          find.text('1/7'),
+          find.text('1 of 7 tasks done'),
           findsOneWidget,
         ); // project-garden: 1 of 7 tasks done
         expect(find.text('Next milestone'), findsOneWidget);

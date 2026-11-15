@@ -18,11 +18,6 @@ import '../../shared/widgets/states.dart';
 import '../../shared/widgets/timeline.dart';
 import 'new_project_sheet.dart';
 
-const _views = [
-  TabItem('list', 'Projects', icon: LucideIcons.layoutGrid),
-  TabItem('timeline', 'Timeline', icon: LucideIcons.chartGantt),
-];
-
 const _categories = ['Software', 'Creative', 'Research', 'Multimedia', 'Other'];
 
 /// Pastel tint for a project card (`tone` in the sample data).
@@ -104,24 +99,41 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
     return ListView(
       padding: const EdgeInsets.all(AppTokens.pageGutter),
       children: [
-        PageHeader(
-          title: 'Projects',
-          description: 'Everything you are working on, with its next step.',
-          actions: [
-            FilledButton(
+        // Title and a small action on one line; the big call-to-action button is gone so the first
+        // project is what the eye finds (docs/PLAN-UX.md, 5.5).
+        // Wraps onto two lines at very large text instead of overflowing.
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                'Projects',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            TextButton.icon(
               onPressed: () => showNewProjectSheet(context),
-              child: const Text('New project'),
+              icon: const Icon(LucideIcons.plus, size: 16),
+              label: const Text('New project'),
             ),
           ],
         ),
-        ViewTabs(
-          tabs: _views,
-          value: view,
-          onChanged: (v) => context.setQueryParams({
-            'view': v == 'list' ? null : v,
-            'select': null,
-          }),
+        const SizedBox(height: AppTokens.space3),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: SegmentedToggle(
+            label: 'View',
+            value: view,
+            onChanged: (v) => context.setQueryParams({
+              'view': v == 'list' ? null : v,
+              'select': null,
+            }),
+            options: const [('list', 'Projects'), ('timeline', 'Timeline')],
+          ),
         ),
+        const SizedBox(height: AppTokens.space4),
         StateGate(
           empty: EmptyState(
             title: 'No projects yet',
@@ -229,7 +241,7 @@ class ProjectCard extends StatelessWidget {
       button: true,
       label: project.name,
       child: Material(
-        color: projectTint(context, project.tone),
+        color: t.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTokens.radiusLg),
           side: BorderSide(color: t.line),
@@ -246,26 +258,21 @@ class ProjectCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        project.category.toUpperCase(),
-                        style: TextStyle(
-                          fontSize: AppTokens.textMeta,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.w700,
-                          color: t.muted,
-                        ),
+                        project.name,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
                     if (project.session) const SessionTag(),
                   ],
                 ),
-                const SizedBox(height: 4),
                 Text(
-                  project.name,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  project.category,
+                  style: TextStyle(
+                    fontSize: AppTokens.textMeta,
+                    color: t.muted,
+                  ),
                 ),
-                const SizedBox(height: 2),
-                Text(project.description, style: TextStyle(color: t.muted)),
-                const SizedBox(height: AppTokens.space3),
+                const SizedBox(height: AppTokens.space2),
                 Wrap(
                   spacing: AppTokens.space2,
                   runSpacing: 4,

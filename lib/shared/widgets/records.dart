@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/data/format.dart';
-import '../../core/data/kinds.dart';
 import '../../core/data/models.dart';
 import '../../core/data/selectors.dart';
 import '../../core/data/status.dart';
@@ -427,14 +426,12 @@ class FileRow extends ConsumerWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     if (project != null) _meta(context, project.name),
-                    _meta(context, kindLabel(file.kind)),
                     _meta(
                       context,
                       file.bytes > 0
                           ? formatBytes(file.bytes)
                           : (file.host ?? ''),
                     ),
-                    _meta(context, 'Updated ${formatDate(file.updatedAt)}'),
                     if (file.body != null && file.status != null)
                       StatusBadge(StatusDomain.document, file.status!),
                     if (file.body == null && isFinalFile(file))

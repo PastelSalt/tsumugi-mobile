@@ -182,7 +182,10 @@ void main() {
       router.go('/projects/atlas-zine');
       await tester.pumpAndSettle();
       expect(find.text('Done'), findsWidgets);
-      expect(find.text('1/1'), findsOneWidget); // its one task is done
+      expect(
+        find.text('1 of 1 tasks done'),
+        findsOneWidget,
+      ); // its one task is done
       expect(find.text('Edit project'), findsOneWidget);
     },
   );

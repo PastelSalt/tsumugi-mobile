@@ -128,59 +128,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     return ListView(
       padding: const EdgeInsets.all(AppTokens.pageGutter),
       children: [
-        const PageHeader(
-          title: 'Account',
-          description: 'Profile and preferences for your individual workspace.',
-        ),
         StateGate(
           empty: const EmptyState(title: 'Nothing to show'),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(AppTokens.space3),
-                margin: const EdgeInsets.only(bottom: AppTokens.space3),
-                decoration: BoxDecoration(
-                  color: t.blueSoft,
-                  borderRadius: BorderRadius.circular(AppTokens.radiusSm),
-                ),
-                child: Wrap(
-                  spacing: AppTokens.space2,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    const Text(
-                      'Profile edits last until you close the app. Nothing is saved.',
-                    ),
-                    if (edited) ...[
-                      const TonePill(label: 'Edited', tone: StatusTone.info),
-                      TextButton(onPressed: _reset, child: const Text('Reset')),
-                    ],
-                  ],
-                ),
-              ),
-              _card('Profile', [
-                TextField(
-                  controller: _name,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (v) =>
-                      setState(() => _form = _form.copyWith(name: v)),
-                ),
-                const SizedBox(height: AppTokens.space3),
-                TextField(
-                  controller: _email,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (v) =>
-                      setState(() => _form = _form.copyWith(email: v)),
-                ),
-              ]),
               _card('Appearance', [
                 Semantics(
                   header: true,
@@ -267,6 +219,51 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   ),
                   value: ref.watch(hapticsEnabledProvider),
                   onChanged: ref.read(hapticsEnabledProvider.notifier).set,
+                ),
+              ]),
+              _card('Profile', [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppTokens.space3),
+                  child: Wrap(
+                    spacing: AppTokens.space2,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        'Edits last until you close the app.',
+                        style: TextStyle(
+                          fontSize: AppTokens.textMeta,
+                          color: t.onSurfaceMuted,
+                        ),
+                      ),
+                      if (edited) ...[
+                        const TonePill(label: 'Edited', tone: StatusTone.info),
+                        TextButton(
+                          onPressed: _reset,
+                          child: const Text('Reset'),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                TextField(
+                  controller: _name,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (v) =>
+                      setState(() => _form = _form.copyWith(name: v)),
+                ),
+                const SizedBox(height: AppTokens.space3),
+                TextField(
+                  controller: _email,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (v) =>
+                      setState(() => _form = _form.copyWith(email: v)),
                 ),
               ]),
               _card('Privacy', [

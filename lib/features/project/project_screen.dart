@@ -154,7 +154,11 @@ class _ProjectScreenState extends ConsumerState<ProjectScreen>
                         StatusDomain.health,
                         data.projectHealth(project.id),
                       ),
-                    const PreviewAction(label: 'Edit project'),
+                    const PreviewAction(
+                      label: 'Edit project',
+                      quiet: true,
+                      icon: LucideIcons.pencil,
+                    ),
                   ],
                 ),
                 if (project.description.isNotEmpty) ...[
@@ -234,18 +238,28 @@ class _Overview extends StatelessWidget {
       data.changesIn(project.id),
       (a, b) => b.at.compareTo(a.at),
     ).take(3).toList();
+    final text = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        PhaseStepper(phases: project.phases, currentIndex: project.phaseIndex),
-        const SizedBox(height: AppTokens.space4),
-        StatStrip(
-          stats: [
-            Stat('Tasks done', '${progress.done}/${progress.total}'),
-            Stat('Requirements complete', '${cov.complete}/${cov.total}'),
-            Stat('Files', '${counts.files}'),
-          ],
+        // One progress statement first; the numbers that used to be three boxes are one quiet line.
+        Text(
+          '${progress.done} of ${progress.total} tasks done',
+          style: text.headlineSmall,
         ),
+        const SizedBox(height: AppTokens.space2),
+        TsProgressBar(
+          value: progress.done,
+          max: progress.total,
+          label: 'Tasks done',
+          showCount: false,
+        ),
+        const SizedBox(height: AppTokens.space2),
+        Text(
+          'Requirements ${cov.complete}/${cov.total} · ${counts.files} files',
+          style: text.bodyMedium?.copyWith(color: t.onSurfaceMuted),
+        ),
+        const SizedBox(height: AppTokens.space5),
         Section(
           title: 'Next milestone',
           child: next == null
@@ -258,12 +272,7 @@ class _Overview extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              next.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
+                            Text(next.title, style: text.titleSmall),
                             Text(
                               next.description,
                               style: TextStyle(
@@ -280,28 +289,10 @@ class _Overview extends StatelessWidget {
                 ),
         ),
         Section(
-          title: 'About',
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(project.objective),
-              const SizedBox(height: AppTokens.space2),
-              Fields(
-                items: [
-                  (
-                    'Dates',
-                    Text(
-                      '${formatDate(project.start)} – ${formatDate(project.end)}',
-                    ),
-                  ),
-                  ('Category', Text(project.category)),
-                  (
-                    'Tags',
-                    project.tags.isEmpty ? null : Text(project.tags.join(', ')),
-                  ),
-                ],
-              ),
-            ],
+          title: 'Phase',
+          child: PhaseStepper(
+            phases: project.phases,
+            currentIndex: project.phaseIndex,
           ),
         ),
         Section(
@@ -328,6 +319,35 @@ class _Overview extends StatelessWidget {
                       ),
                   ],
                 ),
+        ),
+        // Reference details last and quiet.
+        Section(
+          title: 'About',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                project.objective,
+                style: text.bodyMedium?.copyWith(color: t.onSurfaceMuted),
+              ),
+              const SizedBox(height: AppTokens.space2),
+              Fields(
+                items: [
+                  (
+                    'Dates',
+                    Text(
+                      '${formatDate(project.start)} – ${formatDate(project.end)}',
+                    ),
+                  ),
+                  ('Category', Text(project.category)),
+                  (
+                    'Tags',
+                    project.tags.isEmpty ? null : Text(project.tags.join(', ')),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ],
     );

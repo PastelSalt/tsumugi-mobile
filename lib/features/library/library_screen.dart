@@ -73,7 +73,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
     final kind = widget.params['kind'] ?? 'all';
     final project = widget.params['project'] ?? 'all';
     final onlyFinal = widget.params['final'] == '1';
-    final mode = widget.params['mode'] ?? 'grid';
+    final mode = widget.params['mode'] ?? 'list';
 
     final list = [
       for (final f in data.files)
@@ -98,18 +98,25 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
     return ListView(
       padding: const EdgeInsets.all(AppTokens.pageGutter),
       children: [
-        const PageHeader(
-          title: 'Library',
-          description:
-              'Notes, documents, and files from every project in one place.',
-          actions: [
-            PreviewAction(
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(
+                'Library',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            const PreviewAction(
               label: 'Add file',
-              primary: true,
+              quiet: true,
               icon: LucideIcons.plus,
             ),
           ],
         ),
+        const SizedBox(height: AppTokens.space3),
         StateGate(
           empty: const EmptyState(
             title: 'Your library is empty',
@@ -172,8 +179,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen>
                   label: 'Layout',
                   value: mode,
                   onChanged: (v) =>
-                      context.setQueryParams({'mode': v == 'grid' ? null : v}),
-                  options: const [('grid', 'Grid'), ('list', 'List')],
+                      context.setQueryParams({'mode': v == 'list' ? null : v}),
+                  options: const [('list', 'List'), ('grid', 'Grid')],
                 ),
               ),
               if (list.isEmpty)

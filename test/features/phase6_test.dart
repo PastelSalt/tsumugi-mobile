@@ -87,12 +87,7 @@ void main() {
       final (router, _) = await _app(tester);
       router.go('/library');
       await tester.pumpAndSettle();
-      expect(
-        find.text(
-          'Notes, documents, and files from every project in one place.',
-        ),
-        findsOneWidget,
-      );
+      expect(find.text('Add file'), findsOneWidget);
       expect(find.text('opening-scene-notes.md'), findsOneWidget);
 
       router.go('/library?kind=link');

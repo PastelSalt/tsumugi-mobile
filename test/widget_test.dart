@@ -39,9 +39,6 @@ void main() {
 
     await tester.tap(find.text('Library').last);
     await tester.pumpAndSettle();
-    expect(
-      find.text('Notes, documents, and files from every project in one place.'),
-      findsOneWidget,
-    );
+    expect(find.text('Add file'), findsOneWidget);
   });
 }

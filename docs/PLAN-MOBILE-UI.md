@@ -211,7 +211,7 @@ Action: bundle Fredoka 500 and 600 (same OFL source as today, converted with `to
 
 ### 6.1 Home: "What do I do now?"
 
-> **Superseded in part (2026-11-15, [PLAN-UX.md](PLAN-UX.md) section 5.5):** Home now leads with one headline and figures line instead of stat chips, has no carousel and no Recent list, and tiles are two lines. The list below is the original M4 design.
+> **Superseded in part (2026-11-15, [PLAN-UX.md](PLAN-UX.md) section 5.5; the same pass also simplified Projects, the project page, Library, Insights and Account):** Home now leads with one headline and figures line instead of stat chips, has no carousel and no Recent list, and tiles are two lines. The list below is the original M4 design.
 
 - Collapsing title "Today" with the date underneath (a person-relevant title instead of "Home").
 - **First block: Up now.** The top three tasks (overdue first, then due today, then in progress) as large tappable tiles with a one-tap complete control. A "See all N" link when more.

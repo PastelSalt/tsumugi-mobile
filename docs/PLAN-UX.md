@@ -199,6 +199,14 @@ Status is the developer's reading of the build (phone and tests), **not user evi
 - **Tasks:** the inline "Add a task" box is the only box on Today (search and filters stay on Upcoming, Calendar and All; the app bar Search finds tasks anywhere); the helper line under it was removed (the tip explains it once).
 - **Section labels** are one quiet style, with spacing between groups larger than spacing inside them.
 
+**Second pass, other screens (U18b, done 2026-11-15):** the same rules applied to the rest.
+- **Projects:** no subtitle and no big "New project" button (a small text action beside the title); the Projects/Timeline tabs became a small switch; cards are neutral (no loud pink and blue fills), without the description, with the name first, the category under it, then status, progress and next milestone.
+- **Project page:** the three number boxes became one statement ("1 of 7 tasks done") with its bar and one line of figures; order is now progress, next milestone, phase, recent changes, and **About last and quiet**; the big "Edit project" button became a small text action.
+- **Library:** opens as a list (compact rows: file, project, size) instead of two giant tinted tiles per row; no subtitle; "Add file" is a small action; Grid is one tap away.
+- **Insights:** the title was shown twice and six full-width buttons came before any number; now the title appears once and the projects are a row of chips you scroll sideways.
+- **Account:** the title appeared twice and a notice came before the settings; now Appearance and Preferences come first (the things people change), Profile after, with the "edits last until you close the app" note inside it.
+- **Cost:** the grid layout is no longer the default; the project filter and the long description are no longer on the card. If sessions show people miss them, bring them back one at a time.
+
 **Test:** one test checks that the headline is clearly larger than a section label and that the removed repeats stay removed. **Untested with people:** add to session task 2 ("Find what you should do first today") a question after it: "Where did your eye go first?" and compare Home with and without the headline if time allows. Risk: the headline may be read as an alert; watch for that.
 
 ## 6. Content and microcopy plan
@@ -294,7 +302,7 @@ Effort: S under a day, M a few days, L a week or more. **Do not start M or L ite
 | U9 | Welcome as a three-step onboarding with Skip, shown once per session | First-run clarity | M | After round 1 |
 | U10 | Swipeable tab views for Tasks and project tabs | Native feel | M | After round 1 |
 | U11 | A "recent changes" list (the undo history made visible) | Control and trust | M | After round 1 |
-| U18 | **First-impression hierarchy and density on Home and Tasks (section 5.5)** | Owner feedback: too much at once, nothing guides the eye | M | Owner request | **Done 2026-11-15.** Headline-led Home, two-line tiles, one box on Today; 1 new test, 9 updated |
+| U18 | **First-impression hierarchy and density on Home, Tasks, Projects, project page, Library, Insights and Account (section 5.5)** | Owner feedback: too much at once, nothing guides the eye | M | Owner request | **Done 2026-11-15.** Headline-led Home, two-line tiles, one box on Today; 1 new test, 9 updated |
 | U12 | Empty and error illustrations | Delight, clarity | M | Low priority |
 
 ## 10. Measures and how often

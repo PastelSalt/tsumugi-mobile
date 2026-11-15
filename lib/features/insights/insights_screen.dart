@@ -9,7 +9,6 @@ import '../../core/data/status.dart';
 import '../../core/data/workspace_store.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/badges.dart';
-import '../../shared/widgets/filters.dart';
 import '../../shared/widgets/layout.dart';
 import '../../shared/widgets/record_sheets.dart';
 import '../../shared/widgets/records.dart';
@@ -47,10 +46,6 @@ class InsightsScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(AppTokens.pageGutter),
       children: [
-        const PageHeader(
-          title: 'Insights',
-          description: 'Three numbers that tell you where things stand.',
-        ),
         StateGate(
           empty: const EmptyState(
             title: 'No data yet',
@@ -59,15 +54,30 @@ class InsightsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FilterField(
+              // A row of chips you can scroll sideways, instead of one full-width button per project.
+              Semantics(
                 label: 'Project',
-                value: project,
-                options: [
-                  ('all', 'All projects'),
-                  for (final p in data.activeProjects) (p.id, p.name),
-                ],
-                onChanged: (v) =>
-                    context.setQueryParams({'project': v == 'all' ? null : v}),
+                container: true,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(bottom: AppTokens.space4),
+                  child: Row(
+                    spacing: AppTokens.space2,
+                    children: [
+                      for (final (id, name) in [
+                        ('all', 'All projects'),
+                        for (final p in data.activeProjects) (p.id, p.name),
+                      ])
+                        ChoiceChip(
+                          label: Text(name),
+                          selected: project == id,
+                          onSelected: (_) => context.setQueryParams({
+                            'project': id == 'all' ? null : id,
+                          }),
+                        ),
+                    ],
+                  ),
+                ),
               ),
               _InsightCard(
                 title: 'Progress',
