@@ -52,16 +52,40 @@ class TaskTile extends ConsumerWidget {
     final t = context.tokens;
     final actions = TaskActions(context, ref);
     final done = task.status == 'Done';
-    final milestone = task.milestoneId == null
-        ? null
-        : data.milestoneById(task.milestoneId!);
     final project = showProject ? data.projectById(task.projectId) : null;
     final open = onTap ?? () => openTaskDetails(context, task);
     final subDone = task.subtasks.where((s) => s.done).length;
 
+    // Two lines per tile (docs/PLAN-UX.md, hierarchy): the title, then one quiet line. Colour is kept
+    // for the things that need attention: overdue and blocked.
     final secondary = <Widget>[
       if (project != null) _Meta(project.name),
-      if (milestone != null) _Meta(milestone.title),
+      if (task.priority == 'high')
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(LucideIcons.arrowUp, size: 13, color: t.onSurfaceMuted),
+            const SizedBox(width: 2),
+            Flexible(
+              child: Text(
+                'High',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: AppTokens.textMeta,
+                  color: t.onSurfaceMuted,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      if (task.subtasks.isNotEmpty)
+        Semantics(
+          label: '$subDone of ${task.subtasks.length} subtasks done',
+          child: ExcludeSemantics(
+            child: _Meta('$subDone/${task.subtasks.length}'),
+          ),
+        ),
       if (task.blocked)
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -139,47 +163,7 @@ class TaskTile extends ConsumerWidget {
                     const SizedBox(width: AppTokens.space3),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 124),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          DueText(due: task.due, done: done),
-                          if (task.priority == 'high' ||
-                              task.subtasks.isNotEmpty) ...[
-                            const SizedBox(height: 4),
-                            Wrap(
-                              alignment: WrapAlignment.end,
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              spacing: AppTokens.space2,
-                              children: [
-                                if (task.priority == 'high')
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        LucideIcons.arrowUp,
-                                        size: 13,
-                                        color: t.warning,
-                                      ),
-                                      Text(
-                                        'High',
-                                        style: TextStyle(
-                                          fontSize: AppTokens.textMeta,
-                                          color: t.warning,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                if (task.subtasks.isNotEmpty)
-                                  SubtaskRing(
-                                    done: subDone,
-                                    total: task.subtasks.length,
-                                  ),
-                              ],
-                            ),
-                          ],
-                        ],
-                      ),
+                      child: DueText(due: task.due, done: done),
                     ),
                   ],
                 ),
@@ -472,10 +456,10 @@ class DueText extends StatelessWidget {
     final t = context.tokens;
     final info = dueInfo(due, done: done);
     if (info.tone == DueTone.none) return const SizedBox.shrink();
+    // Only overdue is coloured; today is stronger text; everything else is quiet.
     final (color, weight) = switch (info.tone) {
       DueTone.overdue => (t.danger, FontWeight.w600),
-      DueTone.today => (t.warning, FontWeight.w600),
-      DueTone.soon => (t.info, FontWeight.w500),
+      DueTone.today => (t.onSurface, FontWeight.w600),
       _ => (t.onSurfaceMuted, FontWeight.w400),
     };
     // One text run with the icon inline, so the icon stays next to the words when they wrap.

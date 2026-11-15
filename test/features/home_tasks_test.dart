@@ -32,12 +32,12 @@ void main() {
       'shows the three figures and the today list from the sample data',
       (tester) async {
         await _app(tester);
-        expect(find.text('Due today'), findsOneWidget);
+        // One headline says how things stand, one line gives the figures.
+        expect(find.text('2 tasks need you'), findsOneWidget);
         expect(
-          find.textContaining('Overdue', findRichText: true),
-          findsWidgets,
+          find.text('2 overdue · 1 due today · 6 in progress'),
+          findsOneWidget,
         );
-        expect(find.text('Needs a look'), findsOneWidget);
         // "Up now" shows the top three: overdue t3 and t4, then today's t1.
         for (final title in [
           'Write character profiles',
@@ -46,7 +46,7 @@ void main() {
         ]) {
           expect(find.text(title), findsWidgets, reason: title);
         }
-        expect(find.text('Your projects'), findsOneWidget);
+        expect(find.text('Continue'), findsOneWidget);
       },
     );
 

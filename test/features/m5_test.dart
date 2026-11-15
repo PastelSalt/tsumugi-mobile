@@ -122,7 +122,7 @@ void main() {
       tester,
     ) async {
       final (_, c) = await _app(tester);
-      double size() => tester.getSize(find.text('Due today')).height;
+      double size() => tester.getSize(find.text('Up now')).height;
       final before = size();
       c.read(preferencesProvider.notifier).setTextScale(1.3);
       await tester.pumpAndSettle();

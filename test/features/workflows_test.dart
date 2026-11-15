@@ -112,7 +112,7 @@ void main() {
     '13.3 Clear what is overdue: Home, open the task, check Insights',
     (tester) async {
       final router = await _app(tester);
-      expect(find.text('Needs a look'), findsOneWidget);
+      expect(find.text('2 tasks need you'), findsOneWidget);
       await _tap(tester, find.text('Write character profiles').first);
       expect(find.text('Change status'), findsOneWidget);
       expect(find.text('3 days overdue'), findsWidgets);

@@ -6,7 +6,7 @@ This is a **frontend-only demo**, a mobile port of the website demo in `../CTINA
 
 ## Status
 
-**The original eight phases and the mobile-native UI plan (M1 to M8) are done. It has been run on a real phone (Galaxy A05s, Android 15); what remains is listed in `CONTEXT.md`.** Every screen exists with a phone layout, a tablet layout, a light and a dark theme, and reduced-motion support, and runs on the sample data: Welcome and demo sign-in, Home, Tasks, Quick add, Projects and project pages, Library with the document reader, Insights, Account (settings), Help, Search and the draft legal pages. Many actions are real inside the session (complete, reschedule, edit, delete with Undo) and reset on restart. 222 automated tests pass, including accessibility guidelines in both themes, 20 golden screenshots, a layout sweep of every screen and a 500-task list test. Long-press the launcher icon for Add task, Today and Search.
+**The original eight phases and the mobile-native UI plan (M1 to M8) are done. It has been run on a real phone (Galaxy A05s, Android 15); what remains is listed in `CONTEXT.md`.** Every screen exists with a phone layout, a tablet layout, a light and a dark theme, and reduced-motion support, and runs on the sample data: Welcome and demo sign-in, Home, Tasks, Quick add, Projects and project pages, Library with the document reader, Insights, Account (settings), Help, Search and the draft legal pages. Many actions are real inside the session (complete, reschedule, edit, delete with Undo) and reset on restart. 223 automated tests pass, including accessibility guidelines in both themes, 20 golden screenshots, a layout sweep of every screen and a 500-task list test. Long-press the launcher icon for Add task, Today and Search.
 
 ## Requirements
 
@@ -33,7 +33,7 @@ dart run flutter_launcher_icons
 
 ```bash
 flutter analyze
-flutter test                         # 222 tests
+flutter test                         # 223 tests
 flutter test --update-goldens test/goldens   # only after an intentional visual change
 flutter build apk --release          # 55.9 MB (three ABIs); no INTERNET permission
 flutter run -d <device-id> --release # on a phone; adb is in the Android SDK platform-tools

@@ -89,6 +89,8 @@ void main() {
           scrollable: find.byType(Scrollable).first,
         );
         expect(find.text(_t1), findsOneWidget);
+        await tester.ensureVisible(_circle('t1'));
+        await tester.pumpAndSettle();
 
         await tester.tap(_circle('t1'));
         await tester.pumpAndSettle();

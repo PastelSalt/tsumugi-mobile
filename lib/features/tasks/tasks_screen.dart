@@ -92,26 +92,29 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchFilterBar(
-            hint: 'Search tasks',
-            onSearch: (v) => setState(() => _search = v),
-            filterCount: filterCount,
-            onFilter: () => showFilterSheet(
-              context,
-              onReset: () =>
-                  context.setQueryParams({'project': null, 'status': null}),
-              builder: (context, refresh) => _Filters(
-                view: view,
-                project: project,
-                status: status,
-                projects: data.activeProjects,
-                onChanged: (changes) {
-                  context.setQueryParams(changes);
-                  refresh();
-                },
+          // Today is for doing, not searching: the one box on screen is "Add a task". Search and
+          // filters live on the other views (and the app bar's Search finds tasks anywhere).
+          if (view != 'today')
+            SearchFilterBar(
+              hint: 'Search tasks',
+              onSearch: (v) => setState(() => _search = v),
+              filterCount: filterCount,
+              onFilter: () => showFilterSheet(
+                context,
+                onReset: () =>
+                    context.setQueryParams({'project': null, 'status': null}),
+                builder: (context, refresh) => _Filters(
+                  view: view,
+                  project: project,
+                  status: status,
+                  projects: data.activeProjects,
+                  onChanged: (changes) {
+                    context.setQueryParams(changes);
+                    refresh();
+                  },
+                ),
               ),
             ),
-          ),
           if (view == 'all')
             Padding(
               padding: const EdgeInsets.only(bottom: AppTokens.space4),
@@ -679,8 +682,6 @@ class _InlineAddState extends ConsumerState<_InlineAdd> {
       decoration: InputDecoration(
         hintText: 'Add a task for today',
         hintMaxLines: 2,
-        helperText: 'Press the keyboard\x27s done key to add. Session only.',
-        helperMaxLines: 2,
         prefixIcon: const Icon(LucideIcons.plus, size: 18),
         filled: true,
         fillColor: t.paper,

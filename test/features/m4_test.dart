@@ -44,7 +44,7 @@ void main() {
       // The first task tile is on screen (within 640 dp) without scrolling.
       final y = tester.getTopLeft(find.text('Write character profiles')).dy;
       expect(y, lessThan(640));
-      expect(find.text('Due today').hitTestable(), findsOneWidget);
+      expect(find.text('2 tasks need you').hitTestable(), findsOneWidget);
     });
 
     testWidgets('Up now shows three tiles and a count on the link', (
@@ -55,19 +55,38 @@ void main() {
       expect(find.byType(TaskTile), findsNWidgets(3));
     });
 
-    testWidgets('glance chips open Tasks and Insights', (tester) async {
+    testWidgets('the headline opens Tasks and "See insights" opens Insights', (
+      tester,
+    ) async {
       final (router, _) = await _app(tester);
-      await tester.tap(find.text('Due today'));
+      await tester.tap(find.text('2 tasks need you'));
       await tester.pumpAndSettle();
       expect(router.state.uri.path, '/tasks');
 
       router.go('/home');
       await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Insights').first);
+      await tester.ensureVisible(find.text('See insights'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Insights').first);
+      await tester.tap(find.text('See insights'));
       await tester.pumpAndSettle();
       expect(find.byType(InsightsScreen), findsOneWidget);
+    });
+
+    testWidgets('one headline leads; the sections under it stay quiet', (
+      tester,
+    ) async {
+      await _app(tester, logical: const Size(360, 1400));
+      final headline = tester.getSize(find.text('2 tasks need you')).height;
+      final section = tester.getSize(find.text('Up now')).height;
+      expect(
+        headline,
+        greaterThan(section * 1.4),
+        reason: 'size sets the order',
+      );
+      // Home no longer repeats the same figures in four boxes, a carousel and a recent list.
+      expect(find.text('Recent'), findsNothing);
+      expect(find.text('Your projects'), findsNothing);
+      expect(find.text('Needs a look'), findsNothing);
     });
 
     testWidgets('Continue shows the latest project with its next milestone', (

@@ -195,10 +195,7 @@ void main() {
         );
         await tester.pageBack();
         await tester.pumpAndSettle();
-        expect(
-          find.text('What needs you today, and what is coming next.'),
-          findsOneWidget,
-        );
+        expect(find.text('Up now'), findsOneWidget);
       },
     );
 

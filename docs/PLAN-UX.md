@@ -158,7 +158,7 @@ Status is the developer's reading of the build (phone and tests), **not user evi
 | # | Journey | Steps today | Status | Known weakness / risk |
 |---|---|---|---|---|
 | J1 | First launch: understand the product, get in | Welcome → "Continue as demo user" → Home | ~ | Welcome is a long marketing page; the six-card carousel is dense (A4) |
-| J2 | See what is due | Home: glance chips, "Up now", "All tasks (N)" | P | Logo bar and "Home" title above the content; "Up next" rows cramped at 360 dp |
+| J2 | See what is due | Home: one headline ("2 tasks need you"), "Up now", Continue, Up next | P | Redesigned after first-impression feedback (see 5.5); untested with people |
 | J3 | Complete a task | Tap the circle, or swipe right, or long-press → Mark done; Undo toast | ~ | One-time hint now explains swipe and press-and-hold (U3), untested with people (A7); toast timing fixed (S8); tile moves group with no animation |
 | J4 | Reschedule | Swipe left (tomorrow), or long-press → Pick a date | ~ | Swipe left means "tomorrow" only; no cue |
 | J5 | Capture a task | + → type → Add; chips; long-press +; launcher shortcut | P | Carried-over project may surprise; tip appears once |
@@ -184,6 +184,22 @@ Status is the developer's reading of the build (phone and tests), **not user evi
 | Aesthetic and minimalist design | Lighter tiles; Home still has seven sections | M | Test whether "Up next" and "Recent" both earn their place |
 | Help users recover from errors | Designed error states; real errors cannot occur (no network) | L | Keep for the future |
 | Help and documentation | Guide bundled in Help; predates swipe, undo, settings | M | Update the guide |
+
+### 5.5 First-impression feedback: too much at once, no visual hierarchy (2026-11-15)
+
+**Source:** the owner, looking at the app on the phone: "the amount of info on the screen at once and no visual hierarchy, nothing guides where to look". One person's reaction, but it is the first impression, so it was acted on at once. It matches the heuristic "aesthetic and minimalist design" (section 5.4) and the earlier note that Home had seven sections.
+
+**What was wrong (read from the screenshots):** Home showed about 30 separate pieces in the first screen: the logo bar, a "Home" title and subtitle, four boxes of figures, three tiles each carrying project, milestone, due pill, priority, a progress ring and sometimes "Blocked", a card, a carousel, a list and a recent list. Every piece had a similar size, weight and colour (pink, yellow, blue, red all in use), so nothing led. Tasks had three bordered boxes (search, filter, add) plus a tip before the first task.
+
+**Principles applied:** one focal point per screen; size and weight carry the order (headline, then section labels, then content, then meta); colour is for exceptions (overdue is the only coloured due date; blocked is the only other alert); fewer, more important things above the fold; everything else quiet or moved.
+
+**Changes (U18, done 2026-11-15):**
+- **Home:** the "Home" title, subtitle and four figure boxes became one date line, one headline sentence ("2 tasks need you", red when anything is overdue) and one line of figures; the headline opens Tasks. Below it: Up now (three tiles), Continue (one project), Up next (three quiet rows) and a "See insights" link. Removed: the project carousel and the Recent list (Projects and Search cover them).
+- **Task tile:** from four lines and a right-hand stack to two lines: the title and when it is due, then one quiet line (project, High, subtask count, Blocked). Milestone and the progress ring moved to the detail sheet. Today is bold, "in 4 days" is muted, only overdue is coloured.
+- **Tasks:** the inline "Add a task" box is the only box on Today (search and filters stay on Upcoming, Calendar and All; the app bar Search finds tasks anywhere); the helper line under it was removed (the tip explains it once).
+- **Section labels** are one quiet style, with spacing between groups larger than spacing inside them.
+
+**Test:** one test checks that the headline is clearly larger than a section label and that the removed repeats stay removed. **Untested with people:** add to session task 2 ("Find what you should do first today") a question after it: "Where did your eye go first?" and compare Home with and without the headline if time allows. Risk: the headline may be read as an alert; watch for that.
 
 ## 6. Content and microcopy plan
 
@@ -278,6 +294,7 @@ Effort: S under a day, M a few days, L a week or more. **Do not start M or L ite
 | U9 | Welcome as a three-step onboarding with Skip, shown once per session | First-run clarity | M | After round 1 |
 | U10 | Swipeable tab views for Tasks and project tabs | Native feel | M | After round 1 |
 | U11 | A "recent changes" list (the undo history made visible) | Control and trust | M | After round 1 |
+| U18 | **First-impression hierarchy and density on Home and Tasks (section 5.5)** | Owner feedback: too much at once, nothing guides the eye | M | Owner request | **Done 2026-11-15.** Headline-led Home, two-line tiles, one box on Today; 1 new test, 9 updated |
 | U12 | Empty and error illustrations | Delight, clarity | M | Low priority |
 
 ## 10. Measures and how often

@@ -342,10 +342,7 @@ void main() {
       );
       await tester.tap(find.text('Continue as demo user'));
       await tester.pumpAndSettle();
-      expect(
-        find.text('What needs you today, and what is coming next.'),
-        findsOneWidget,
-      );
+      expect(find.text('Up now'), findsOneWidget);
     });
 
     testWidgets('login preview states show their banners and field errors', (
@@ -363,10 +360,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Log in'));
       await tester.pumpAndSettle();
-      expect(
-        find.text('What needs you today, and what is coming next.'),
-        findsOneWidget,
-      );
+      expect(find.text('Up now'), findsOneWidget);
     });
 
     testWidgets(
