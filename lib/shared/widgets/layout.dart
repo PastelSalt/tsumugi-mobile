@@ -175,7 +175,7 @@ class TabItem {
 }
 
 /// Scrollable view tabs (website `ViewTabs`): selected tab has an ink underline and bold text.
-class ViewTabs extends StatelessWidget {
+class ViewTabs extends StatefulWidget {
   const ViewTabs({
     super.key,
     required this.tabs,
@@ -192,79 +192,140 @@ class ViewTabs extends StatelessWidget {
   final EdgeInsetsGeometry margin;
 
   @override
+  State<ViewTabs> createState() => _ViewTabsState();
+}
+
+class _ViewTabsState extends State<ViewTabs> {
+  final _controller = ScrollController();
+  bool _fadeStart = false;
+  bool _fadeEnd = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_update);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _update());
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Fades the edge that has more tabs behind it, so a cut-off tab reads as "scroll for more"
+  /// (docs/PLAN-UX.md, U2).
+  void _update() {
+    if (!mounted || !_controller.hasClients) return;
+    final p = _controller.position;
+    final start = p.pixels > 2;
+    final end = p.maxScrollExtent - p.pixels > 2;
+    if (start != _fadeStart || end != _fadeEnd) {
+      setState(() {
+        _fadeStart = start;
+        _fadeEnd = end;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final t = context.tokens;
+    final tabs = widget.tabs;
+    final value = widget.value;
+    final onChanged = widget.onChanged;
     return Container(
-      margin: margin,
+      margin: widget.margin,
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: t.line)),
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            for (final tab in tabs)
-              Semantics(
-                button: true,
-                selected: tab.id == value,
-                label: tab.count == null
-                    ? tab.label
-                    : '${tab.label}, ${tab.count}',
-                child: InkWell(
-                  onTap: () => onChanged(tab.id),
-                  child: Container(
-                    constraints: const BoxConstraints(
-                      minHeight: AppTokens.minTarget,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppTokens.space3,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: tab.id == value ? t.ink : Colors.transparent,
-                          width: 3,
+      child: ShaderMask(
+        blendMode: BlendMode.dstIn,
+        shaderCallback: (rect) => LinearGradient(
+          colors: [
+            _fadeStart ? t.ink.withValues(alpha: 0) : t.ink,
+            t.ink,
+            t.ink,
+            _fadeEnd ? t.ink.withValues(alpha: 0) : t.ink,
+          ],
+          stops: const [0, 0.08, 0.92, 1],
+        ).createShader(rect),
+        child: NotificationListener<ScrollMetricsNotification>(
+          onNotification: (_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => _update());
+            return false;
+          },
+          child: SingleChildScrollView(
+            controller: _controller,
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (final tab in tabs)
+                  Semantics(
+                    button: true,
+                    selected: tab.id == value,
+                    label: tab.count == null
+                        ? tab.label
+                        : '${tab.label}, ${tab.count}',
+                    child: InkWell(
+                      onTap: () => onChanged(tab.id),
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          minHeight: AppTokens.minTarget,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppTokens.space3,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: tab.id == value
+                                  ? t.ink
+                                  : Colors.transparent,
+                              width: 3,
+                            ),
+                          ),
+                        ),
+                        child: ExcludeSemantics(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (tab.icon != null) ...[
+                                Icon(
+                                  tab.icon,
+                                  size: 16,
+                                  color: tab.id == value ? t.ink : t.muted,
+                                ),
+                                const SizedBox(width: 6),
+                              ],
+                              Text(
+                                tab.label,
+                                style: TextStyle(
+                                  fontWeight: tab.id == value
+                                      ? FontWeight.w700
+                                      : FontWeight.w400,
+                                  color: tab.id == value ? t.ink : t.muted,
+                                ),
+                              ),
+                              if (tab.count != null) ...[
+                                const SizedBox(width: 6),
+                                Text(
+                                  '${tab.count}',
+                                  style: TextStyle(
+                                    fontSize: AppTokens.textMeta,
+                                    color: t.muted,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    child: ExcludeSemantics(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (tab.icon != null) ...[
-                            Icon(
-                              tab.icon,
-                              size: 16,
-                              color: tab.id == value ? t.ink : t.muted,
-                            ),
-                            const SizedBox(width: 6),
-                          ],
-                          Text(
-                            tab.label,
-                            style: TextStyle(
-                              fontWeight: tab.id == value
-                                  ? FontWeight.w700
-                                  : FontWeight.w400,
-                              color: tab.id == value ? t.ink : t.muted,
-                            ),
-                          ),
-                          if (tab.count != null) ...[
-                            const SizedBox(width: 6),
-                            Text(
-                              '${tab.count}',
-                              style: TextStyle(
-                                fontSize: AppTokens.textMeta,
-                                color: t.muted,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
                   ),
-                ),
-              ),
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -427,8 +488,8 @@ class SearchFilterBar extends StatelessWidget {
                 filled: true,
                 fillColor: t.paper,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                border: border(t.lineStrong),
-                enabledBorder: border(t.lineStrong),
+                border: border(t.controlBorder),
+                enabledBorder: border(t.controlBorder),
                 focusedBorder: border(t.ink, 2),
               ),
             ),

@@ -26,6 +26,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
     this.butterSoft = const Color(0xFFFFF2CF),
     this.line = const Color(0xFFE9E3ED),
     this.lineStrong = const Color(0xFFD8D0E0),
+    this.controlBorder = const Color(0xFF857D90),
     this.onAccent = const Color(0xFFFFFFFF),
     this.neutralSoft = const Color(0xFFF1EEF5),
     this.neutralText = const Color(0xFF4A4455),
@@ -55,6 +56,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
     butterSoft: Color(0xFF3A3320),
     line: Color(0xFF332D3C),
     lineStrong: Color(0xFF453E50),
+    controlBorder: Color(0xFF827A92),
     onAccent: Color(0xFF17141C),
     neutralSoft: Color(0xFF2C2733),
     neutralText: Color(0xFFD9D2E3),
@@ -83,6 +85,11 @@ class AppTokens extends ThemeExtension<AppTokens> {
   final Color line;
   final Color lineStrong;
 
+  /// Border of an interactive control (text field, outlined button, unselected chip, empty status
+  /// circle). At least 3:1 against cards and the page in both themes (WCAG 1.4.11). Dividers and
+  /// card edges keep the quieter [line] and [lineStrong].
+  final Color controlBorder;
+
   /// Text or icon colour on top of [pink] (and on solid [green]).
   final Color onAccent;
   final Color neutralSoft;
@@ -106,6 +113,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
   Color get accentContainer => pinkSoft;
   Color get outline => line;
   Color get outlineStrong => lineStrong;
+  Color get outlineControl => controlBorder;
   Color get danger => dangerText;
   Color get dangerContainer => pinkSoft;
   Color get warning => warningText;

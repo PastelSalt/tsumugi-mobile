@@ -264,6 +264,13 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
           child: _InlineAdd(projectId: project == 'all' ? null : project),
         ),
       ),
+      if (groups.isNotEmpty && !ref.watch(gestureHintDismissedProvider))
+        _box(
+          _GestureHint(
+            onDismiss: () =>
+                ref.read(gestureHintDismissedProvider.notifier).dismiss(),
+          ),
+        ),
       if (groups.isEmpty)
         _box(
           const EmptyState(
@@ -579,6 +586,52 @@ class _BoardColumn extends StatelessWidget {
   }
 }
 
+/// One-time hint for the gestures on a task tile. Shown once, dismissible, and Account can show it
+/// again. It is a hint, not a tour (docs/PLAN-UX.md, 3.6).
+class _GestureHint extends StatelessWidget {
+  const _GestureHint({required this.onDismiss});
+
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppTokens.space3),
+      padding: const EdgeInsets.fromLTRB(
+        AppTokens.space3,
+        AppTokens.space2,
+        AppTokens.space1,
+        AppTokens.space2,
+      ),
+      decoration: BoxDecoration(
+        color: t.blueSoft,
+        borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+      ),
+      child: Row(
+        children: [
+          Icon(LucideIcons.hand, size: 18, color: t.info),
+          const SizedBox(width: AppTokens.space2),
+          Expanded(
+            child: Text(
+              'Tip: swipe a task right to complete it and left to move it to tomorrow. Press and hold for more.',
+              style: TextStyle(
+                fontSize: AppTokens.textMeta,
+                color: t.onSurface,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: onDismiss,
+            style: TextButton.styleFrom(foregroundColor: t.onSurface),
+            child: const Text('Got it'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// "Add a task for today" field at the top of Today. Session-only.
 class _InlineAdd extends ConsumerStatefulWidget {
   const _InlineAdd({this.projectId});
@@ -633,11 +686,11 @@ class _InlineAddState extends ConsumerState<_InlineAdd> {
         fillColor: t.paper,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-          borderSide: BorderSide(color: t.lineStrong),
+          borderSide: BorderSide(color: t.controlBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-          borderSide: BorderSide(color: t.lineStrong),
+          borderSide: BorderSide(color: t.controlBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTokens.radiusMd),

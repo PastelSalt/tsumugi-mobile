@@ -8,7 +8,10 @@ import '../../core/theme/tokens.dart';
 
 /// A floating message with an **Undo** action, drawn in the app's root overlay so it appears above
 /// bottom sheets and dialogs as well as pages (a `SnackBar` hides behind a sheet). One toast at a
-/// time: a new one replaces the previous. It disappears after [duration] or when Undo is tapped.
+/// time: a new one replaces the previous. It disappears after [duration] (10 s) or when Undo is
+/// tapped. When a screen reader or other accessibility navigation is on it **stays until the person
+/// acts or dismisses it**, so Undo can always be reached (WCAG 2.2.1; Flutter's own SnackBar with an
+/// action does not auto-dismiss either; docs/PLAN-UX.md section 3.5).
 class UndoToast {
   UndoToast._();
 
@@ -19,7 +22,7 @@ class UndoToast {
     BuildContext context, {
     required String message,
     required VoidCallback onUndo,
-    Duration duration = const Duration(seconds: 5),
+    Duration duration = const Duration(seconds: 10),
   }) {
     final overlay = Overlay.maybeOf(context, rootOverlay: true);
     if (overlay == null) return;
@@ -31,14 +34,17 @@ class UndoToast {
     OverlayState overlay, {
     required String message,
     required VoidCallback onUndo,
-    Duration duration = const Duration(seconds: 5),
+    Duration duration = const Duration(seconds: 10),
   }) {
     if (!overlay.mounted) return;
     hide();
+    final persistent =
+        MediaQuery.maybeAccessibleNavigationOf(overlay.context) ?? false;
     late final OverlayEntry entry;
     entry = OverlayEntry(
       builder: (context) => _ToastView(
         message: message,
+        persistent: persistent,
         onUndo: () {
           hide();
           onUndo();
@@ -47,7 +53,7 @@ class UndoToast {
     );
     _entry = entry;
     overlay.insert(entry);
-    _timer = Timer(duration, hide);
+    if (!persistent) _timer = Timer(duration, hide);
   }
 
   static void hide() {
@@ -59,9 +65,16 @@ class UndoToast {
 }
 
 class _ToastView extends StatefulWidget {
-  const _ToastView({required this.message, required this.onUndo});
+  const _ToastView({
+    required this.message,
+    required this.onUndo,
+    required this.persistent,
+  });
 
   final String message;
+
+  /// Stays until acted on, so it also offers a Dismiss button.
+  final bool persistent;
   final VoidCallback onUndo;
 
   @override
@@ -127,6 +140,13 @@ class _ToastViewState extends State<_ToastView>
                   style: TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
+              if (widget.persistent)
+                IconButton(
+                  tooltip: 'Dismiss',
+                  onPressed: UndoToast.hide,
+                  color: t.surface,
+                  icon: const Icon(LucideIcons.x, size: 18),
+                ),
             ],
           ),
         ),

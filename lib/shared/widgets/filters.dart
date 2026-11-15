@@ -57,7 +57,7 @@ class FilterField extends StatelessWidget {
                         color: id == value ? t.pinkSoft : t.paper,
                         borderRadius: BorderRadius.circular(999),
                         border: Border.all(
-                          color: id == value ? t.ink : t.lineStrong,
+                          color: id == value ? t.ink : t.controlBorder,
                           width: id == value ? 2 : 1,
                         ),
                       ),

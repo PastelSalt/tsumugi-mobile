@@ -21,7 +21,7 @@ ThemeData buildTheme({
         surface: t.paper,
         onSurface: t.ink,
         onSurfaceVariant: t.muted,
-        outline: t.lineStrong,
+        outline: t.controlBorder,
         outlineVariant: t.line,
         surfaceTint: Colors.transparent,
       );

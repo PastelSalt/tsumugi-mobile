@@ -98,8 +98,8 @@ void main() {
         expect(c.read(preferencesProvider).textScale, 1.15);
 
         await tester.ensureVisible(find.text('Weeks start on Sunday'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Weeks start on Sunday'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Weeks start on Sunday'));
         await tester.pumpAndSettle();
         expect(c.read(preferencesProvider).weekStartsSunday, isTrue);
 
@@ -109,8 +109,8 @@ void main() {
           scrollable: find.byType(Scrollable).first,
         );
         await tester.drag(find.byType(Scrollable).first, const Offset(0, -150));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Reset preferences'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Reset preferences'));
         await tester.pumpAndSettle();
         expect(c.read(preferencesProvider).isDefault, isTrue);
       },

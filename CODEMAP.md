@@ -4,6 +4,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 
 | Path | Responsibility |
 | --- | --- |
+| `docs/PLAN-UX.md` | UX plan: goals, assumptions register, standards research with sources, check against standards, journeys, heuristic review, test scripts, backlog, decisions |
 | `docs/PLAN-FLUTTER-MOBILE.md` | Analysis of the website demo, decisions, screen specs and phased plan |
 | `lib/main.dart` | Entry point: loads the fixtures, then runs `TsumugiApp` in a `ProviderScope` that overrides `fixturesProvider` |
 | `lib/app/app.dart` | `MaterialApp.router` with the Tsumugi theme; owns the `GoRouter` |
@@ -37,7 +38,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `lib/shared/widgets/badges.dart` | `TonePill`, `StatusBadge`, `Flag`, `DueLabel`, `SessionTag`, `TsProgressBar` |
 | `lib/shared/widgets/states.dart` | `EmptyState`, `NoResults`, `ErrorState`, `LoadingState`, `StateGate` |
 | `lib/shared/widgets/layout.dart` | `PageHeader`, `Section`, `StatStrip`, `ViewTabs`, `SegmentedToggle`, `Fields`, `SearchFilterBar` |
-| `lib/core/settings/preferences.dart` | `Preferences` (theme mode, text size, reduce motion, week start) and `preferencesProvider`; applied in `lib/app/app.dart` |
+| `lib/core/settings/preferences.dart` | `Preferences` (theme mode, text size, reduce motion, week start), `preferencesProvider`, `gestureHintDismissedProvider`; applied in `lib/app/app.dart` |
 | `lib/shared/widgets/task_tile.dart` | `TaskTile` (status circle, swipe, long press, custom accessibility actions), `StatusCircle`, `SubtaskRing`, `DueText` |
 | `lib/shared/widgets/task_actions.dart` | `TaskActions` (real in-session actions with haptics and Undo; captures its dependencies up front), the long-press action sheet, the task editor, `showUndoSnackBar` |
 | `lib/shared/widgets/undo_toast.dart` | `UndoToast`: root-overlay message with an Undo button, drawn above sheets |
@@ -87,6 +88,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `test/privacy_test.dart`, `test/design_rules_test.dart` | No network or storage code, no manifest permissions, no text under 12 sp, no team wording |
 | `test/support/fonts.dart` | Loads Fredoka and the Lucide font for golden tests |
 | `test/features/m1_test.dart` | M1: collapsing title, pinned tabs, pull to refresh, scroll restoration, tokens and type scale, no literal colours, edge-to-edge, predictive back flag, draft protection |
+| `test/features/ux_test.dart` | UX plan items: Undo timing and screen-reader persistence, 3:1 control borders, 320 dp and 200% dark sweeps, gesture hint, preview messages, guide text, tab fade |
 | `test/features/m7_test.dart` | M7: shortcut and splash files, `/add`, `/tasks`, `/search` routes, Undo contrast in both themes, 500-task lazy list, dark with large text |
 | `test/features/m6_test.dart` | M6: project page (first 40%, collapse, pinned tabs, back), reader (progress, outline sheet, text size, line numbers) |
 | `test/features/m5_test.dart` | M5: theme preference, text size, reduce motion, week start, dark sweep of 25 routes at 100% and 160% text |

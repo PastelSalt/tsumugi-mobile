@@ -345,7 +345,7 @@ class StatusCircle extends StatelessWidget {
                 border: Border.all(
                   color: done
                       ? t.green
-                      : (doing ? t.onSurface : t.outlineStrong),
+                      : (doing ? t.onSurface : t.controlBorder),
                   width: 2,
                 ),
               ),

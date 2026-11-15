@@ -31,6 +31,8 @@ class QuickAddTipNotifier extends Notifier<bool> {
   bool build() => false;
 
   void dismiss() => state = true;
+
+  void show() => state = false;
 }
 
 final quickAddTipDismissedProvider =
@@ -60,7 +62,7 @@ Future<void> showCreateMenu(BuildContext context) {
               'New note',
               () => showPreviewSheet(
                 context,
-                body: 'Notes are not part of this demo. Nothing is saved or sent anywhere.',
+                body: 'In the full product you would write a quick note here. Notes are not part of the demo, so nothing was added.',
               ),
             ),
           ])
@@ -291,11 +293,11 @@ class _QuickAddSheetState extends ConsumerState<QuickAddSheet> {
                 fillColor: t.paper,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-                  borderSide: BorderSide(color: t.lineStrong),
+                  borderSide: BorderSide(color: t.controlBorder),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-                  borderSide: BorderSide(color: t.lineStrong),
+                  borderSide: BorderSide(color: t.controlBorder),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppTokens.radiusMd),
@@ -431,7 +433,7 @@ class _Chip extends StatelessWidget {
       child: Material(
         color: selected ? t.accentContainer : t.paper,
         shape: StadiumBorder(
-          side: BorderSide(color: selected ? t.ink : t.lineStrong),
+          side: BorderSide(color: selected ? t.ink : t.controlBorder),
         ),
         child: InkWell(
           customBorder: const StadiumBorder(),

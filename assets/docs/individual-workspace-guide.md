@@ -126,12 +126,17 @@ When the workspace is empty, Home shows a short checklist of three optional step
 
 Quick add creates a task in one line.
 
-1. Tap the round **+** button in the middle of the bottom bar.
-2. Type the task. Details are picked up as you type and shown as chips under the field.
-3. Tap **Add task**, or press the keyboard’s done key. A confirmation line appears and the field clears.
-4. Tap **Close** to finish.
+1. Tap the round **+** button in the middle of the bottom bar. Press and hold it to choose **New task**, **New project**, or **New note** (notes are a preview).
+2. Type the task.
+3. Check the chips under the field: **project**, **due date**, and **priority**. Tap a chip to change it. A chip you tap wins over what you typed.
+4. Tap **Add task**, or press the keyboard’s done key. A confirmation line appears and the field clears. The project stays selected for the next task.
+5. Tap **Close** to finish. If you typed something, you are asked before it is thrown away.
+
+On Android you can also press and hold the app icon and choose **Add task**, **Today**, or **Search**.
 
 ### 5.1 Quick add shortcuts
+
+You do not have to type these, because the chips do the same job. They are faster once you know them.
 
 - **#project:** puts the task in a project. Type part of its name, for example `#garden`.
 - **Day words:** `today`, `tomorrow`, or a weekday such as `fri` set the due date. A weekday means the next one.
@@ -139,7 +144,7 @@ Quick add creates a task in one line.
 
 Example: `Proof chapter one #garden fri !` creates "Proof chapter one" in Project Garden, due on the next Friday, as high priority.
 
-If you do not name a project, the task goes to your first active project. Tasks added this way are marked **Session only**.
+If you do not name a project, the task goes to the project you used last, or to your first active project. Tasks added this way are marked **Session only**.
 
 ## 6. Tasks
 
@@ -147,7 +152,7 @@ Tasks is the one place to see all your work. It has four views, chosen from the 
 
 ### 6.1 Today
 
-- Groups: **Overdue**, **Today**, and **In progress**.
+- Groups: **Overdue**, **Today**, and **In progress**, each with a count. Tasks you finish during this session move to **Done this session**, so you can reopen them. The group names stay at the top of the screen while you scroll.
 - An **inline add** field at the top adds a task due today. Type and press the keyboard’s done key.
 
 ### 6.2 Upcoming
@@ -160,7 +165,7 @@ A month grid of your tasks and milestones. See section 7.
 
 ### 6.4 All
 
-Every task in one list, with open tasks first and overdue tasks on top. Finished tasks are folded into a **Done** section you can expand.
+Every task in one list, with open tasks first and overdue tasks on top. Finished tasks are in a **Done** group below.
 
 Use the **List / Board** switch to change layout. Board shows three columns: To do, Doing, and Done.
 
@@ -172,7 +177,17 @@ Use the **List / Board** switch to change layout. Board shows three columns: To 
 
 ### 6.6 The task panel
 
-Tap a task to open its details. They slide up from the bottom and can be pulled up to fill the screen. The panel shows the status, flags, notes, due date, milestone, subtasks, and the **Why it exists / What it becomes** block. Its buttons (Edit task, Change status, Mark blocked) are preview only in this demo. Swipe the sheet down, or use the back button, to dismiss it.
+Tap a task to open its details. They slide up from the bottom and can be pulled up to fill the screen. The panel shows the status, flags, notes, due date, milestone, subtasks, and the **Why it exists / What it becomes** block. Its buttons work for this session: **Mark done** (or **Reopen**), **Edit task** (title and notes), **Change status**, and **Mark blocked**. Tap a subtask to tick it. Swipe the sheet down, or use the back button, to dismiss it.
+
+### 6.7 Swipe, press and hold, and Undo
+
+Every task row has the same quick actions:
+
+- **Tap the circle** on the left to complete the task. Tap it again to reopen it.
+- **Swipe right** to complete (or reopen). **Swipe left** to move it to tomorrow.
+- **Press and hold** for the full menu: status, move to tomorrow, pick a date, remove the date, high priority, mark blocked, edit title and notes, open details, and delete.
+
+After each change a message appears at the bottom with **Undo**. It stays about ten seconds, or until you act on it or dismiss it if you use a screen reader. Undo goes back one change at a time, up to twenty. Changes last only until you close the app.
 
 ## 7. Calendar
 
@@ -283,7 +298,12 @@ Under the cards, **By project** compares status, health, and progress. **How the
 
 ### 12.1 Account
 
-Open the account menu, then **Account and preferences**. You can edit your name and email, the first day of the week, density, reminders, and motion. This page is a preview: edits show an **Edited** chip and a **Reset** link, but nothing is saved.
+Open the account menu, then **Account and preferences**.
+
+- **Appearance:** choose **System**, **Light**, or **Dark** theme; set the text size (Small to Largest); and turn on **Reduce motion**. These apply at once.
+- **Preferences:** **Weeks start on Sunday** changes the Calendar. **Show tips again** brings back the hints about swiping and typing. **Vibration feedback** turns the small taps on or off.
+- **Profile:** you can edit your name and email. Edits show an **Edited** chip and a **Reset** link, and last only until you close the app.
+- **Reset preferences** returns the settings above to their defaults.
 
 ### 12.2 Developer tools
 
@@ -291,7 +311,7 @@ Developer tools are for reviewing the designed screens. Most people never need t
 
 - Turn them on from the account menu or from Account.
 - **Preview state:** Normal, Loading, Empty / first run, or Error. This shows how any page looks in each state.
-- **Reset session data:** removes the tasks and projects you added this session (in Account, under Developer).
+- **Reset session data:** removes the tasks and projects you added this session and undoes your changes to the sample tasks (in Account, under Developer).
 
 ## 13. Everyday workflows
 
@@ -342,6 +362,8 @@ Developer tools are for reviewing the designed screens. Most people never need t
 - The bottom bar has Home, Projects, Tasks, and Library, with a round **+** in the middle for Quick add.
 - The account button is at the top right. It includes Insights, Help, and the legal links.
 - Detail panels slide up from the bottom. Filters open as a bottom sheet.
+- The Tasks tab shows a badge with the number of overdue tasks.
+- The app follows your phone’s light or dark setting, and your phone’s text size. You can change both in Account.
 - The calendar shows a count per day. Select a day to read its agenda.
 - Everything works with touch, and with a screen reader or keyboard if you use one.
 
@@ -352,6 +374,9 @@ Developer tools are for reviewing the designed screens. Most people never need t
 - Text is never smaller than 12 pixels, and controls are at least 48 pixels square.
 - Motion is gentle. If your device is set to reduce motion, animations are turned off.
 - Screen readers get labels for icon-only buttons, a live message when Quick add succeeds, and headings that follow the page structure.
+- Everything you can do by swiping a task is also in the task’s actions menu for screen readers, and in the press-and-hold menu for everyone.
+- With a screen reader on, the Undo message stays until you use it or dismiss it.
+- Both light and dark themes keep text at a readable contrast, and controls have outlines you can see.
 
 ## 16. Frequently asked questions
 

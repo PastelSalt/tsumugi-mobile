@@ -306,6 +306,9 @@ class _DayCell extends StatelessWidget {
                   fit: BoxFit.scaleDown,
                   child: Text(
                     '${int.parse(date.substring(8))}',
+                    // The cell has a fixed height; the agenda below carries the detail at any size.
+                    textScaler: MediaQuery.textScalerOf(context)
+                        .clamp(maxScaleFactor: 1.3),
                     style: TextStyle(
                       fontWeight: isToday ? FontWeight.w700 : FontWeight.w400,
                       color: inMonth ? t.ink : t.muted.withValues(alpha: 0.6),

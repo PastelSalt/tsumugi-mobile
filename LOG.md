@@ -114,3 +114,13 @@ Chronological record of actions in this repository.
   - Defects found on the device and fixed: the Undo button was yellow on a light toast in dark mode (now dark text); the overdue warning icon drifted away from its text when the text wrapped (now inline).
   - Tests: 208 pass (13 new in `m7_test.dart`); goldens regenerated; analyzer clean. Release APK 55.9 MB, no `INTERNET` permission.
   - Not done: usability sessions, TalkBack, long-pressing the launcher icon, lazy Projects and Library, animated tile insert and remove, monochrome icon. The USB connection dropped several times; see `CONTEXT.md` for the workaround.
+
+- **UX plan items done (2026-11-15), from `docs/PLAN-UX.md` v3:**
+  - **U14 Undo toast:** 10 s instead of 5; with TalkBack or other accessibility navigation it stays until Undo or a new Dismiss button (Flutter's own SnackBar with an action no longer auto-dismisses either).
+  - **U13 control borders:** new `controlBorder` token (3.9:1 light, 4.1:1 dark on cards) for fields, outlined buttons, unselected chips, glance chips and the empty status circle; `ColorScheme.outline` now uses it. Dividers keep the quiet line colours.
+  - **U15 sweeps:** 320 dp light and dark at 130% text, and 200% dark. Found and fixed: Calendar day numbers overflowed at 200% (text now capped at 130% inside the fixed-height cell) and the `PreviewAction` button overflowed (label now flexible). Documented exception: seven Calendar columns are 45.7 dp wide at 320 dp.
+  - **U2 tabs:** the tab row fades at the edge that has more tabs.
+  - **U3 hint:** one dismissible tip on Today about swipe and press-and-hold; Account has Show tips again (also restores the Quick add tip).
+  - **U4 copy:** each Preview-only action says what the full product would do and what works in the demo; the sheet scrolls; the bundled guide now covers swipe, Undo, Quick add chips, shortcuts and the real settings.
+  - Tests: 222 pass (14 new in `ux_test.dart`); goldens regenerated (borders and the tip changed them); analyzer clean.
+  - **Not done, needs people:** U1 usability sessions and U16 TalkBack walkthrough; the items gated on round 1 (U5 to U12).

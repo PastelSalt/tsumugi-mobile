@@ -246,7 +246,7 @@ class _GlanceChip extends StatelessWidget {
         color: warn ? t.dangerContainer : t.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-          side: BorderSide(color: warn ? t.danger : t.line),
+          side: BorderSide(color: warn ? t.danger : t.controlBorder),
         ),
         child: InkWell(
           customBorder: RoundedRectangleBorder(

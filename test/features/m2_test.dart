@@ -11,6 +11,7 @@ import 'package:tsumugi_mobile/core/data/format.dart';
 import 'package:tsumugi_mobile/core/data/models.dart';
 import 'package:tsumugi_mobile/core/data/selectors.dart';
 import 'package:tsumugi_mobile/core/data/workspace_store.dart';
+import 'package:tsumugi_mobile/core/settings/preferences.dart';
 import 'package:tsumugi_mobile/shared/widgets/task_tile.dart';
 import 'package:tsumugi_mobile/shared/widgets/undo_toast.dart';
 
@@ -33,7 +34,11 @@ Future<(GoRouter, ProviderContainer)> _app(
   );
   await tester.pumpAndSettle();
   final element = tester.element(find.byType(Scaffold).first);
-  return (GoRouter.of(element), ProviderScope.containerOf(element));
+  final container = ProviderScope.containerOf(element);
+  // The one-time gesture hint would push the tiles down; these tests are about the tiles.
+  container.read(gestureHintDismissedProvider.notifier).dismiss();
+  await tester.pumpAndSettle();
+  return (GoRouter.of(element), container);
 }
 
 Task _task(ProviderContainer c, String id) =>

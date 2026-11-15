@@ -49,7 +49,10 @@ void main() {
     expect(find.text('Tsumugi API'), findsOneWidget);
     expect(find.text('Blocked'), findsOneWidget);
     expect(find.text('High'), findsWidgets);
-    expect(find.textContaining('3 days overdue', findRichText: true), findsOneWidget);
+    expect(
+      find.textContaining('3 days overdue', findRichText: true),
+      findsOneWidget,
+    );
   });
 
   testWidgets(

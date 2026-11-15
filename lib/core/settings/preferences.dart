@@ -69,3 +69,17 @@ class PreferencesNotifier extends Notifier<Preferences> {
 final preferencesProvider = NotifierProvider<PreferencesNotifier, Preferences>(
   PreferencesNotifier.new,
 );
+
+/// Whether the one-time hint about swiping and pressing and holding a task was dismissed this
+/// session. Account can bring it back (docs/PLAN-UX.md, U3).
+class GestureHintNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void dismiss() => state = true;
+
+  void show() => state = false;
+}
+
+final gestureHintDismissedProvider =
+    NotifierProvider<GestureHintNotifier, bool>(GestureHintNotifier.new);

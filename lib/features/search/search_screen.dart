@@ -245,11 +245,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 fillColor: t.paper,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(999),
-                  borderSide: BorderSide(color: t.lineStrong),
+                  borderSide: BorderSide(color: t.controlBorder),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(999),
-                  borderSide: BorderSide(color: t.lineStrong),
+                  borderSide: BorderSide(color: t.controlBorder),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(999),

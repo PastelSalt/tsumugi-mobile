@@ -3,11 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/data/workspace_store.dart';
+
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
 import '../../core/feedback/app_feedback.dart';
 import '../../core/settings/preferences.dart';
 import '../../core/state/dev_tools.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/badges.dart';
+import '../quickadd/quick_add_sheet.dart';
 import '../../shared/widgets/layout.dart';
 import '../../shared/widgets/states.dart';
 
@@ -241,6 +245,19 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   subtitle: const Text('Changes the Calendar grid.'),
                   value: prefs.weekStartsSunday,
                   onChanged: notifier.setWeekStartsSunday,
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  minTileHeight: AppTokens.minTarget,
+                  title: const Text('Show tips again'),
+                  subtitle: const Text(
+                    'Brings back the hints about swiping tasks and typing in Quick add.',
+                  ),
+                  trailing: const Icon(LucideIcons.lightbulb, size: 18),
+                  onTap: () {
+                    ref.read(gestureHintDismissedProvider.notifier).show();
+                    ref.read(quickAddTipDismissedProvider.notifier).show();
+                  },
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
