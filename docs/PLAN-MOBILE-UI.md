@@ -336,6 +336,8 @@ Light tick on selection, medium on completing a task, success pattern when the d
 
 All motion is skipped when system animations are disabled (the infrastructure already exists in `motion.dart`); the Account "Reduce motion" switch becomes real.
 
+> **Status check (2026-11-15):** most of this table was **not built**. Only the status-circle check, the bottom-bar pill, the Undo message and a small page fade exist. Tab switches, list insert and remove, shared element, numbers and first-open entrance are all instant. The full, current spec (14 moments, reduced-motion behaviour, implementation approach, tests and backlog U19 to U30) is in [PLAN-UX.md](PLAN-UX.md) section 9.1, and it replaces this table. Reduce motion should swap movement for a short fade rather than remove feedback.
+
 ### 7.5 Keyboard and forms
 
 `textInputAction` chains, `autofillHints`, `FocusTraversalGroup`, scroll the focused field above the keyboard, sticky submit above the keyboard, `TextInputType` per field, no auto-capitalisation for emails.
@@ -462,6 +464,12 @@ Each phase leaves the app shippable, tests green, goldens updated for both theme
 - App shortcuts, optional share, restoration across process death, synthetic-data benchmark, profile and fix jank, tablet three-pane at 1200 dp.
 - **Done when:** the benchmark meets the budgets in section 12; release APK and manifest re-checked.
 - **Status: done on 2026-11-15, partly.** Delivered: launcher shortcuts Add task, Today and Search (static `shortcuts.xml` plus `tsumugi://` links, no package and no permission; `/add` opens Home with Quick add); Android 12+ system splash in light and dark; a larger launcher icon (badge 650 of 1024 px with larger "ts" letters); the Undo message stays readable in dark mode; a 500-task test shows the Tasks list builds under 40 rows and scrolls without errors; the overdue icon stays beside its text when the text wraps. **Measured on a Galaxy A05s (Android 15, release build):** cold start 517 to 677 ms (budget 700); scrolling Tasks median 11 ms per frame on a 90 Hz screen, 95th percentile 22 ms, no frame over 25 ms; memory about 115 MB PSS. **Not done:** lazy Projects and Library lists (the sample lists have about 20 rows, so there is nothing to gain; Tasks is the list that can grow), animated tile insert and remove, themed (monochrome) icon, restoration of the selected tab, the three-pane layout at 1200 dp, share (excluded by decision D4).
+
+### M9: Motion pass (L)
+
+- Implement the motion spec in [PLAN-UX.md](PLAN-UX.md) section 9.1 (tokens, tab fade-through, page shared-axis, task complete and list changes, animated numbers, first-open entrance, toast and tip, swipe settle, skeletons, calendar). Prototype the lazy-list tile exit first and measure on the A05s.
+- **Done when:** each moment in 9.1 exists, meets the frame budgets on the A05s, has a timing test and a reduced-motion test, and Reduce motion swaps movement for a short fade.
+- **Status: not started.**
 
 ### M8: Validation and docs (M)
 

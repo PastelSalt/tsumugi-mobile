@@ -1,6 +1,6 @@
 # Tsumugi Mobile: UX Plan
 
-> **Status:** draft v3, 2026-11-15: the "may do now" items (U2, U3, U4, U13, U14, U15, U17) are **done** and tested; the items that need real people (U1, U16, and everything gated on round 1) are **not done**. Section 4 and 9 show the new status. v2 added an assumptions register (section 2), a standards and research review with sources (section 3) and a check of the build against those standards (section 4).
+> **Status:** draft v4, 2026-11-15 (v4 adds the motion plan: sections 5.6 and 9.1, assumptions A20 to A23, backlog U19 to U30). Draft v3: the "may do now" items (U2, U3, U4, U13, U14, U15, U17) are **done** and tested; the items that need real people (U1, U16, and everything gated on round 1) are **not done**. Section 4 and 9 show the new status. v2 added an assumptions register (section 2), a standards and research review with sources (section 3) and a check of the build against those standards (section 4).
 > **Scope:** the experience side of the app: who it is for, what they do, how well the current build supports it, how we will find out, and what to change next. The visual system, components and engineering phases are in [PLAN-MOBILE-UI.md](PLAN-MOBILE-UI.md); data, routes and website parity are in [PLAN-FLUTTER-MOBILE.md](PLAN-FLUTTER-MOBILE.md).
 > **Boundary (unchanged):** a play-demo. No backend, no online services, nothing saved on the device, no permissions. Everything a person does lives in memory and resets on restart. UX work must not add accounts, sync, analytics, notifications or sharing.
 
@@ -63,6 +63,10 @@ Everything the plan depends on that has **not** been verified. Each has a risk i
 | A16 | Automated accessibility checks plus a TalkBack pass are enough to find the serious access problems | Real assistive-technology users hit blockers | Include at least one real screen-reader or large-text user in round 1 | P (automation only) |
 | A17 | Five users find most problems | Several distinct groups need more people | Follow the group rule in section 3.4: 3 to 4 per distinct group, several rounds | P |
 | A18 | The performance targets (cold start under 700 ms, no frame over 25 ms) are what people feel | Smooth numbers but slow-feeling flows | Ask about speed in sessions; the platform's own "excessive" threshold is 5 s cold start | P |
+| A20 | Motion makes the app easier to understand (it shows where things went) and more pleasant, as long as it is short | Time spent on motion adds nothing, or slows people down | Session task 3 adds "where did the task go?"; compare with and without the tile-exit motion if time allows | U |
+| A21 | The default experience (system animations on, Reduce motion off in the app) should contain visible motion; "no animation" should only happen when someone asks for it | People think the app is broken or cheap | Owner feedback on 2026-11-15 supports this (5.6); ask in sessions | P (one person) |
+| A22 | A low-end phone (the A05s) can run the planned motion at full frame rate | Motion causes dropped frames and feels worse than none | Measure frame times during each animation on the A05s (section 9.1) | U |
+| A23 | Replacing movement with short fades under Reduce motion is acceptable to people who need less motion | Some still find fades uncomfortable | Offer a second level ("No animation") if sessions show it; WCAG only requires that non-essential motion can be turned off | P (practitioner consensus) |
 | A19 | The standards in section 3 are the right bar for a student/portfolio demo | Over- or under-investing in compliance | Owner decision X6 | U |
 
 ## 3. Research: standards and basics
@@ -115,6 +119,13 @@ What was read, what it says, and what it means for this app. Sources are officia
 ### 3.8 Heuristics
 
 Nielsen's ten usability heuristics remain the review frame in section 5. They are experts' rules of thumb, not tested standards.
+
+### 3.9 Motion
+
+- **Response time:** Nielsen's three limits: about **0.1 s** feels instantaneous (the person caused it), **1 s** keeps their train of thought, **10 s** is the limit of attention; for waits, show an animation or progress ([NN/g video on the 3 limits](https://www.nngroup.com/videos/3-response-time-limits-interaction-design/); the full article was read only through summaries). **For us:** feedback to a tap must start within 100 ms; transitions should finish well under 400 ms; anything longer than 1 s needs a progress indication.
+- **Reduced motion, WCAG 2.3.3 Animation from Interactions (AAA):** motion triggered by interaction should be possible to turn off unless essential; the sanctioned technique is honouring the platform's reduce-motion preference ([W3C Understanding 2.3.3](https://w3c.github.io/wcag/understanding/animation-from-interactions.html)). Practitioners add "reduce, not remove": replace large movement with small non-vestibular changes such as a short fade, and keep state changes visible ([Val Head's slides](https://noti.st/valhead/xICaMq/present), [EZUD article](https://www.ezud.com/animation-motion-accessibility-reduced-motion)). This is good practice, not wording from WCAG. **For us:** the Reduce motion switch and the system setting should swap movement for a short fade; they should not make state changes invisible.
+- **Material 3 motion:** M3 names a small set of easing curves and duration tokens (50 ms to 1000 ms); **emphasized** for things moving within the screen and **emphasized decelerate** for things entering ([secondary summary](https://pub.dev/documentation/flutter_ui_kit_theme/0.1.16/tokens_app_motion/AppMotion-class.html)). The exact millisecond table was **not found at the source**; the official page is m3.material.io "Applying easing and duration" and must be checked before copying values. Our own durations in 9.1 are working values, not Material's.
+- **Flutter:** animations are implicit (widgets that animate when a property changes) or explicit (an `AnimationController`); list items entering or leaving use `AnimatedList` ([Flutter: introduction to animations](https://docs.flutter.dev/ui/animations.md), [choosing an animation widget](https://flutter.dev/blog/how-to-choose-which-flutter-animation-widget-is-right-for-you)). Third-party claims that implicit animations are cheaper are unverified. Nothing authoritative was found on `SliverAnimatedList` or list-animation performance; prototype and measure on the A05s.
 
 ## 4. The current build checked against these standards
 
@@ -210,6 +221,27 @@ Status is the developer's reading of the build (phone and tests), **not user evi
 **Consistency fix (2026-11-15, owner feedback):** Tasks drew its own collapsing title bar and hid the logo, while Home, Projects and Library show the logo bar. All four main tabs now share the same top bar (logo, search, account) and Tasks puts its title below it like the others. The cost is that Tasks no longer collapses its title into the bar; the view tabs stay pinned. The project page keeps its own bar on purpose: it is a detail page with a back button. A test checks the logo bar on all four tabs.
 
 **Test:** one test checks that the headline is clearly larger than a section label and that the removed repeats stay removed. **Untested with people:** add to session task 2 ("Find what you should do first today") a question after it: "Where did your eye go first?" and compare Home with and without the headline if time allows. Risk: the headline may be read as an alert; watch for that.
+
+### 5.6 Feedback: there is almost no motion (owner, 2026-11-15)
+
+**Source:** the owner on the phone: even with Reduce motion off, "in theory it should have animations and yet there seems to be none".
+
+**Checked, not assumed:** the phone's own animation scales are all 1.0 and battery saver is off (read with `adb`), so the system is not turning animations off. The app really has very little. Counted in the code: **six** animated things in total: the Undo message sliding in, the status circle's check, the bottom bar's selected pill (150 ms colour change), the tablet rail's selected state, the reader's outline scroll, and a small fade-and-slide (3% movement) on pushed pages. Not animated at all:
+
+| Moment | What happens now | What a person sees |
+|---|---|---|
+| Switching bottom tabs | Content swaps instantly (an indexed stack) | A hard cut |
+| Switching Today / Upcoming / Calendar / All | Content swaps; the tab underline jumps | A hard cut |
+| Completing a task | The circle fills; the tile then vanishes from its group and reappears in "Done this session" | The task disappears; no sense of where it went |
+| Undo, add, delete, reschedule | List changes instantly | Things pop in and out |
+| Numbers and bars (the headline count, progress bars, badges) | Change value instantly | No sense of change |
+| First opening a screen | Everything is there at once | No order for the eye |
+| Dismissing the tip, the Undo message leaving | Disappear instantly | Abrupt |
+| Opening a record from a list | Default sheet slide only | No link between row and sheet |
+
+**Why this matters:** the plan promised more. [PLAN-MOBILE-UI.md](PLAN-MOBILE-UI.md) section 7.4 listed row-complete motion, list insert and remove, a shared-element transition and swipeable tabs; M2 and M5 recorded those as "not done" and they were never picked up. That is a gap in delivery, not a decision. It also hurts the principle "visibility of system status" (5.4): without motion the person cannot see what an action did.
+
+**Honest cause of the tab switches:** the bottom bar switches branches of a `StatefulShellRoute`, which builds an indexed stack with no transition unless one is added on purpose.
 
 ## 6. Content and microcopy plan
 
@@ -307,6 +339,52 @@ Effort: S under a day, M a few days, L a week or more. **Do not start M or L ite
 | U18 | **First-impression hierarchy and density on Home, Tasks, Projects, project page, Library, Insights and Account (section 5.5)** | Owner feedback: too much at once, nothing guides the eye | M | Owner request | **Done 2026-11-15.** Headline-led Home, two-line tiles, one box on Today; 1 new test, 9 updated |
 | U12 | Empty and error illustrations | Delight, clarity | M | Low priority |
 
+### 9.1 Motion plan
+
+**Principles.** Motion explains change (where did it go), confirms an action (starts within 100 ms), and guides the eye (what to look at first). It is short (most 150 to 300 ms, never over 400 ms except for page-level travel), runs once, and never loops for decoration. Nothing moves that the person did not cause, except a single entrance when a screen first opens.
+
+**Reduce motion (system setting or the Account switch).** Movement, scaling and size changes become a short fade (about 100 ms) or an instant change; nothing loops; progress still updates. The current `motionDuration` returns zero, which removes all feedback; the plan changes it to "swap, do not remove" (A23). A second level ("No animation") is only added if sessions ask for it.
+
+**Working spec** (our values; to be checked against the Material 3 tables before adopting any names):
+
+| # | Moment | Motion | Duration / curve | Reduced |
+|---|---|---|---|---|
+| M-1 | Complete a task | Circle fills, title strikes through, tile fades and collapses (size to zero), then the same task fades in at the top of "Done this session"; group counts change with a small roll | 120 + 200 ms, ease-out | Fade only |
+| M-2 | Reopen, reschedule, delete, add | The same exit and entrance (a tile slides down 8 dp while fading in; a deleted one collapses) | 200 ms | Fade only |
+| M-3 | Bottom tab switch | Fade-through: old content fades out 90 ms, new fades in 150 ms with a 6 dp rise | 240 ms total | Instant |
+| M-4 | Today / Upcoming / Calendar / All | Underline slides to the new tab; content cross-fades | 200 ms | Underline jumps, content instant |
+| M-5 | Push and pop a page (Insights, Account, Help, reader) | Shared-axis horizontal: the new page enters 30 dp from the right while fading; back reverses; predictive back on Android 14+ stays | 300 ms, emphasized | Fade 100 ms |
+| M-6 | Open a record sheet from a row | The row's title animates into the sheet title where feasible, otherwise a fade-scale of the sheet | 300 ms | Plain sheet |
+| M-7 | Numbers and bars | The Home headline count and progress bars animate from the old value; project progress ring fills | 400 ms ease-out | Instant |
+| M-8 | First open of a screen (once per launch) | Sections fade and rise 12 dp in order, 40 ms apart, over at most 400 ms in total | 250 ms each | None |
+| M-9 | Toast and tip | Undo message fades out as well as in; the tip collapses with a size animation | 180 ms | Instant |
+| M-10 | Swipe on a tile | Action icon scales in as the swipe passes the threshold; the tile settles back with a spring; the result runs M-1 or M-2 | follows the finger, 200 ms settle | Settle instant |
+| M-11 | Chips, switches, selected states | Colour and border change | 120 ms | Instant |
+| M-12 | Loading state (a preview state today) | Skeleton rows with a slow shimmer | 1.2 s loop | Static skeleton |
+| M-13 | Calendar | Month change slides in the direction of travel; the selected day scales 0.9 to 1 | 250 ms | Fade |
+| M-14 | Press feedback on tiles and cards | Ripple (exists) plus a 2% scale-down while held | 80 ms | Ripple only |
+
+**Implementation approach.** One file of motion tokens (durations, curves, a `reduced` fallback), used everywhere instead of literals. Use implicit animations (`AnimatedContainer`, `AnimatedSwitcher`, `TweenAnimationBuilder`, `AnimatedSize`) where a value changes; use explicit controllers only for choreographed sequences (M-1, M-8). For lists: M-1 and M-2 are the hard part because the Tasks list is lazy slivers with pinned group headers (a plain `AnimatedList` does not fit grouped slivers); the plan is for a tile that is about to leave to play its own exit (collapse) before the data change is committed, and for entering tiles to animate themselves on first build, with a short-lived "leaving" set held in the session state. Prototype this first and measure on the A05s before building the rest. Tab fade-through (M-3) needs a custom container for the shell's branches (`navigatorContainerBuilder`).
+
+**Performance rules.** Wrap animated regions in `RepaintBoundary`; animate opacity and transforms, not layout, wherever possible; never animate more than one list at a time; keep each animation inside the frame budgets already measured (median 11 ms, no frame over 25 ms on the A05s). Check each one with the SurfaceFlinger latency method in `CONTEXT.md`.
+
+**Tests.** (a) Token test: every duration is at or under 400 ms except page travel and the loading loop. (b) Reduced-motion test per moment: with the setting on, the movement widgets are absent and the end state is reached within 120 ms. (c) Timing test per moment: at half of the duration the intermediate state is visible (a leaving tile is still on screen at 100 ms and gone at 300 ms). (d) Existing sweeps and accessibility checks stay green. (e) On the phone: record the screen (`adb shell screenrecord`) for each moment and read frame by frame.
+
+| # | Item | Effort | Gate | Status |
+|---|---|---|---|---|
+| U19 | Motion tokens file; `motionDuration` becomes "swap, do not remove"; Account Reduce motion and system setting both use it | S | None | Not started |
+| U20 | M-3 tab fade-through and M-4 tab underline slide with content cross-fade | M | None | Not started |
+| U21 | M-5 shared-axis page transition (and keep predictive back) | S | None | Not started |
+| U22 | M-1, M-2 task complete, reopen, add, delete exit and entrance (prototype and measure first) | L | None | Not started |
+| U23 | M-7 animated numbers and progress bars | S | None | Not started |
+| U24 | M-8 first-open staggered entrance on Home, Tasks, Projects | S | None | Not started |
+| U25 | M-9 toast exit and tip collapse; M-11 chip and switch transitions; M-14 press scale | S | None | Not started |
+| U26 | M-10 swipe affordance and settle | M | After U22 | Not started |
+| U27 | M-6 row-to-sheet shared element | M | After U21 | Not started |
+| U28 | M-12 skeleton shimmer for the Loading state | S | None | Not started |
+| U29 | M-13 Calendar month slide and day scale | S | None | Not started |
+| U30 | Motion checks in sessions: ask "where did the task go?" in task 3; compare Reduce motion on and off with one person who asked for it | S | With U1 | Not started |
+
 ## 10. Measures and how often
 
 These are indicators for decisions, not statistics (small samples).
@@ -319,6 +397,7 @@ These are indicators for decisions, not statistics (small samples).
 | Wrong beliefs about saving | Task 9 | Aim for none |
 | Accessibility guidelines | Automated suite | Stay green in both themes at 100%, 160%, 200% and at 320 dp |
 | TalkBack walkthrough | Manual | All steps pass |
+| Motion | Device screen recording and frame times | Each moment in 9.1 meets the frame budgets; Reduce motion reaches the end state within 120 ms |
 | Cold start and scroll smoothness | Device | Stay under our budgets (700 ms, no frame over 25 ms); the platform's own cold-start limit is 5 s |
 
 Record each round in `LOG.md`: date, version, who (groups only, no names), what was found, top three problems, what changed.
@@ -346,6 +425,8 @@ Record each round in `LOG.md`: date, version, who (groups only, no names), what 
 | Claiming compliance that was not audited | Say "checked against" and list gaps (section 4); never "conformant" |
 | Test phone differs from participants' phones | Use theirs when possible; one small, one large |
 | Over-explaining clutters a calm UI | One hint, once; measure whether people need it |
+| Too much motion feels slow or busy, or drops frames on a low-end phone | 400 ms ceiling; one list animation at a time; measure on the A05s; ask in sessions (A20, A22) |
+| Motion work on a lazy, grouped list is harder than it looks | Prototype M-1 first (U22) and decide before building the rest |
 | Secondary sources misquote standards | Section 3 marks what was read at the source and what was not; verify against W3C and developer.android.com before quoting |
 
 ## 13. Next steps
@@ -354,12 +435,15 @@ Record each round in `LOG.md`: date, version, who (groups only, no names), what 
 2. ~~Do the "may do now" items~~ **done 2026-11-15** (U14, U2, U13, U15, U3, U4, U17).
 3. Run the TalkBack walkthrough yourself first (U16) to remove obvious blockers; print the script in 7.2. This and the sessions are the parts an assistant cannot do: they need a person with the phone.
 4. Run round 1; write the findings table; fix H and cheap M; run round 2.
-5. Update this file with real personas, tested assumptions (move A-numbers from U to V or disproved), findings, and the new status of each journey in 5.3.
+5. Motion: start with U19, U21, U23 and the U22 prototype (9.1); none of them wait for the sessions.
+6. Update this file with real personas, tested assumptions (move A-numbers from U to V or disproved), findings, and the new status of each journey in 5.3.
 
 ## 14. Sources
 
 Read at the source: [W3C Understanding 2.5.8](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html); [NN/g: Why you only need to test with 5 users](https://www.nngroup.com/articles/why-you-only-need-to-test-with-5-users/); [Flutter: SnackBar with action behaviour change](https://docs.flutter.dev/release/breaking-changes/snackbar-with-action-behavior-update).
 
 From search summaries (verify before quoting): [W3C Understanding 2.5.1](https://www.w3.org/WAI/WCAG22/Understanding/pointer-gestures) and [2.5.7](https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements); [Google Accessibility Help: touch target size](https://support.google.com/accessibility/android/answer/7101858); [Android: test your app's accessibility](https://developer.android.com/training/accessibility/testing.html); [Android: app startup time](https://developer.android.com/topic/performance/launch-time); [Android 16 behaviour changes](https://developer.android.com/about/versions/16/behavior-changes-16); [Predictive back](https://developer.android.com/guide/navigation/predictive-back-gesture); [Material dark theme (M2)](https://m2.material.io/design/color/dark-theme); [NN/g app tutorials](https://www.nngroup.com/articles/onboarding-tutorials/); [Hoober 2013, UXmatters](https://www.uxmatters.com/mt/archives/2013/02/how-do-users-really-hold-mobile-devices.php?); [MeasuringU: SEQ and SUS](https://measuringu.com/?p=170); [TetraLogical: what's new in WCAG 2.2](https://tetralogical.com/blog/2023/10/05/whats-new-wcag-2.2); [Yatil: Resize Text and Reflow](https://www.yatil.net/blog/resize-text-reflow); [WCAG 4.1.3 overview](https://wcag.dock.codes/documentation/wcag413); [W3C WAI list on toasts and 2.2.1](https://lists.w3.org/Archives/Public/w3c-wai-ig/2025AprJun/0085.html); [Scott O'Hara: a toast to a11y toasts](https://scottohara.me/blog/2019/07/08/a-toast-to-a11y-toasts.html); [LogRocket: UX error prevention](https://blog.logrocket.com/ux-design/ux-error-prevention-examples/); [Ignore the Code: Nielsen and Norman on gestures](https://ignorethecode.net/blog/2010/05/30/nielsen_and_norman_on_gestures/); [UX Collective: discoverability](https://uxdesign.cc/discoverability-in-the-age-of-touchscreens-125fcb392e08); [Shopify: mobile onboarding](https://www.shopify.com/partners/blog/mobile-app-onboarding); [Livefront: coach marks](https://medium.com/livefront/put-me-in-coach-marks-8146c61ca875); [Flutter semantic roles](https://docs.flutter.dev/accessibility-and-localization/semantic-roles); [Android codelab: testing accessibility](https://developer.android.com/codelabs/basic-android-kotlin-compose-test-accessibility).
+
+Added in v4 (motion): [NN/g: the 3 response-time limits](https://www.nngroup.com/videos/3-response-time-limits-interaction-design/); [W3C Understanding 2.3.3](https://w3c.github.io/wcag/understanding/animation-from-interactions.html); [Val Head: making motion inclusive](https://noti.st/valhead/xICaMq/present); [EZUD: reduced motion](https://www.ezud.com/animation-motion-accessibility-reduced-motion); [Flutter: introduction to animations](https://docs.flutter.dev/ui/animations.md); [Flutter: choosing an animation widget](https://flutter.dev/blog/how-to-choose-which-flutter-animation-widget-is-right-for-you); a secondary summary of Material 3 motion tokens ([pub.dev](https://pub.dev/documentation/flutter_ui_kit_theme/0.1.16/tokens_app_motion/AppMotion-class.html)).
 
 Not used: a blog claim of "30 to 50%" first-time gesture discovery (no source). Not found: an official Material 3 page with snackbar durations and spacing between targets; check m3.material.io directly.

@@ -51,6 +51,8 @@ Done and automated: `flutter analyze` clean; **223 tests** pass (parity with the
 
 ## What is left (after M8)
 
+- **Motion (owner feedback, 2026-11-15):** the app has almost no animation (six small ones; tab switches, list changes, numbers and entrances are instant), although the plan promised more. The phone's own animation settings are normal, so this is the app. The plan is `docs/PLAN-UX.md` section 5.6 (what is missing) and 9.1 (14 moments, reduced-motion rules, approach, tests, backlog U19 to U30), and `docs/PLAN-MOBILE-UI.md` M9. Nothing is built yet. Start with U19, U21, U23 and a prototype of the task-complete exit (U22).
+
 - **UX plan:** [`docs/PLAN-UX.md`](docs/PLAN-UX.md) (draft v3, 2026-11-15, plus U18 visual hierarchy on all main screens; the "may do now" items U2, U3, U4, U13, U14, U15, U17 are done) has an assumptions register (A1 to A19, none verified), a standards and research review with sources, a check of the build against those standards (the three failures found, Undo toast timing, border contrast and 320 dp reflow, were fixed; what remains needs people: sessions and a TalkBack walkthrough), the revised test plan (3 to 4 people per group, two rounds, TalkBack walkthrough), a backlog (U1 to U17; U14, U2, U13, U15, U3, U4, U17 can be done before any sessions) and decisions X1 to X7. Nothing in it has been run with real people yet.
 
 - **Needs a person:** a TalkBack walkthrough; usability sessions with other people (plan section 15); long-pressing the launcher icon to see the three shortcuts (files and links are tested, the long-press was not); a side-by-side look at the website.
