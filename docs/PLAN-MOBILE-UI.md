@@ -1,6 +1,6 @@
 # Tsumugi Mobile: Mobile-Native UI Plan
 
-> **Status:** **M1 to M6 done (2026-11-14, with the gaps listed under each phase); M7 and M8 not started** (hand-off brief in `CONTEXT.md`, "Next steps"). Decision D1 was settled on 2026-11-14: **real in-session actions are allowed; the app stays a play-demo with no backend and no online services** (see section 1a).
+> **Status:** **M1 to M8 done (2026-11-14 and 2026-11-15, with the gaps listed under each phase).** M8's usability script with other people was not run; the device checks below were done by the developer on one phone. Decision D1 was settled on 2026-11-14: **real in-session actions are allowed; the app stays a play-demo with no backend and no online services** (see section 1a).
 > **Follows:** [`PLAN-FLUTTER-MOBILE.md`](PLAN-FLUTTER-MOBILE.md), the faithful port of the website demo (all phases done on 2026-11-14).
 > **Purpose:** take the app from "the website, rebuilt in Flutter" to "an app that feels made for a phone".
 > **Last updated:** 2026-11-14
@@ -459,10 +459,12 @@ Each phase leaves the app shippable, tests green, goldens updated for both theme
 
 - App shortcuts, optional share, restoration across process death, synthetic-data benchmark, profile and fix jank, tablet three-pane at 1200 dp.
 - **Done when:** the benchmark meets the budgets in section 12; release APK and manifest re-checked.
+- **Status: done on 2026-11-15, partly.** Delivered: launcher shortcuts Add task, Today and Search (static `shortcuts.xml` plus `tsumugi://` links, no package and no permission; `/add` opens Home with Quick add); Android 12+ system splash in light and dark; a larger launcher icon (badge 650 of 1024 px with larger "ts" letters); the Undo message stays readable in dark mode; a 500-task test shows the Tasks list builds under 40 rows and scrolls without errors; the overdue icon stays beside its text when the text wraps. **Measured on a Galaxy A05s (Android 15, release build):** cold start 517 to 677 ms (budget 700); scrolling Tasks median 11 ms per frame on a 90 Hz screen, 95th percentile 22 ms, no frame over 25 ms; memory about 115 MB PSS. **Not done:** lazy Projects and Library lists (the sample lists have about 20 rows, so there is nothing to gain; Tasks is the list that can grow), animated tile insert and remove, themed (monochrome) icon, restoration of the selected tab, the three-pane layout at 1200 dp, share (excluded by decision D4).
 
 ### M8: Validation and docs (M)
 
 - Run the usability script (below) with real people on a real device; fix the top findings; update `CONTEXT.md`, `CODEMAP.md`, `LOG.md`, Help guide and the first plan's status; record before/after metrics.
+- **Status: done on 2026-11-15, partly.** Run on a real phone (Samsung Galaxy A05s, Android 15) in dark, light and 1.5x system font: Welcome to Home, complete a task with Undo, Quick add opened through the Add task link, back button closing the sheet, Tasks scroll and cold start measured (see M7). One real defect found and fixed on the device: the Undo button's yellow text was hard to read on the toast's light background in dark mode. Release APK rebuilt: 55.9 MB (three ABIs); the only permission is the app's own AndroidX receiver permission, no `INTERNET`. **Not done:** usability sessions with real people, a TalkBack walkthrough, checking the launcher shortcuts by long-pressing the icon (the files and links are tested, the long-press itself was not), Help guide wording review, side-by-side comparison with the website.
 
 Suggested order if time is short: M1, M2, M3 give the biggest felt improvement (the app becomes usable for real tasks); M5 (dark mode) next; M4, M6, M7 after.
 

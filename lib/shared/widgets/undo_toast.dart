@@ -114,7 +114,8 @@ class _ToastViewState extends State<_ToastView>
               TextButton.icon(
                 onPressed: widget.onUndo,
                 style: TextButton.styleFrom(
-                  foregroundColor: t.butter,
+                  // The toast is light on a dark theme and dark on a light one, so Undo takes the opposite tone.
+                  foregroundColor: t.isDark ? t.surface : t.butter,
                   minimumSize: const Size(
                     AppTokens.minTarget,
                     AppTokens.minTarget,

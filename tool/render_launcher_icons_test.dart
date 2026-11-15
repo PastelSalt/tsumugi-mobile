@@ -16,6 +16,7 @@ Future<void> _render(
   required Color? background,
   required double mark,
   double side = 1024,
+  double textScale = 1,
 }) async {
   final key = GlobalKey();
   tester.view.physicalSize = Size(side, side);
@@ -31,7 +32,11 @@ Future<void> _render(
           height: side,
           color: background ?? Colors.transparent,
           alignment: Alignment.center,
-          child: BrandMark(size: mark, color: const Color(0xFFC73579)),
+          child: BrandMark(
+            size: mark,
+            color: const Color(0xFFC73579),
+            textScale: textScale,
+          ),
         ),
       ),
     ),
@@ -64,13 +69,15 @@ void main() {
       tester,
       'assets/brand/launcher_icon.png',
       background: const Color(0xFFFFE8F5),
-      mark: 600,
+      mark: 860,
+      textScale: 1.9,
     );
     await _render(
       tester,
       'assets/brand/launcher_foreground.png',
       background: null,
-      mark: 440,
+      mark: 650,
+      textScale: 1.9,
     );
     // Android launch screen mark (shown on the canvas colour while the app starts).
     await _render(

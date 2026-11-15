@@ -2,11 +2,11 @@
 
 Flutter mobile app for **Tsumugi** ("Weaving ideas into finished work"), a creative and technical production-management platform by Moeko Works.
 
-This is a **frontend-only demo**, a mobile port of the website demo in `../CTINASSL_Activity/client`. Nothing is saved or sent anywhere and there is no backend. Actions work inside the session and reset on restart; the few that cannot (for example editing a project) open a "Preview only" sheet. The full plan, scope and phases are in [docs/PLAN-FLUTTER-MOBILE.md](docs/PLAN-FLUTTER-MOBILE.md). The follow-up plan for a more mobile-native UI (collapsing bars, gestures, real in-session actions, dark mode) is [docs/PLAN-MOBILE-UI.md](docs/PLAN-MOBILE-UI.md); M1 to M6 are done (foundations, task tile and undo, Quick add pickers, Home and Search, dark mode and settings, project page and reader); M7 and M8 are not started. Each phase's gaps are listed in the plan.
+This is a **frontend-only demo**, a mobile port of the website demo in `../CTINASSL_Activity/client`. Nothing is saved or sent anywhere and there is no backend. Actions work inside the session and reset on restart; the few that cannot (for example editing a project) open a "Preview only" sheet. The full plan, scope and phases are in [docs/PLAN-FLUTTER-MOBILE.md](docs/PLAN-FLUTTER-MOBILE.md). The follow-up plan for a more mobile-native UI (collapsing bars, gestures, real in-session actions, dark mode) is [docs/PLAN-MOBILE-UI.md](docs/PLAN-MOBILE-UI.md); M1 to M8 are done (foundations, task tile and undo, Quick add pickers, Home and Search, dark mode and settings, project page and reader, launcher shortcuts and splash, device validation). Each phase's gaps are listed in the plan.
 
 ## Status
 
-**The original eight phases are done, and the mobile-native UI plan is done through M6 (M7 and M8 remain; hand-off notes are in `CONTEXT.md`).** Every screen exists with a phone layout, a tablet layout, a light and a dark theme, and reduced-motion support, and runs on the sample data: Welcome and demo sign-in, Home, Tasks, Quick add, Projects and project pages, Library with the document reader, Insights, Account (settings), Help, Search and the draft legal pages. Many actions are real inside the session (complete, reschedule, edit, delete with Undo) and reset on restart. 195 automated tests pass, including accessibility guidelines in both themes, 20 golden screenshots and a layout sweep of every screen. Not yet run on a real device.
+**The original eight phases and the mobile-native UI plan (M1 to M8) are done. It has been run on a real phone (Galaxy A05s, Android 15); what remains is listed in `CONTEXT.md`.** Every screen exists with a phone layout, a tablet layout, a light and a dark theme, and reduced-motion support, and runs on the sample data: Welcome and demo sign-in, Home, Tasks, Quick add, Projects and project pages, Library with the document reader, Insights, Account (settings), Help, Search and the draft legal pages. Many actions are real inside the session (complete, reschedule, edit, delete with Undo) and reset on restart. 208 automated tests pass, including accessibility guidelines in both themes, 20 golden screenshots, a layout sweep of every screen and a 500-task list test. Long-press the launcher icon for Add task, Today and Search.
 
 ## Requirements
 
@@ -33,12 +33,13 @@ dart run flutter_launcher_icons
 
 ```bash
 flutter analyze
-flutter test                         # 195 tests
+flutter test                         # 208 tests
 flutter test --update-goldens test/goldens   # only after an intentional visual change
-flutter build apk --release          # about 54 MB (measured before M1; rebuild in M8); no INTERNET permission
+flutter build apk --release          # 55.9 MB (three ABIs); no INTERNET permission
+flutter run -d <device-id> --release # on a phone; adb is in the Android SDK platform-tools
 ```
 
-Not yet done: a run on a real device, a TalkBack pass and a side-by-side check against the live website. The checklist is in the plan, section 10.
+Not yet done: a TalkBack pass, usability sessions with other people and a side-by-side check against the live website. The checklist is in the plan, section 10.
 
 ## Brand and design
 

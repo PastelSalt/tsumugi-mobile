@@ -8,11 +8,21 @@ import '../../core/theme/tokens.dart';
 /// pink badge, corner radii 50% 50% 50% 8px, rotated -8 degrees, white Fredoka 700 "ts".
 /// All measurements scale from the website's 31 px badge.
 class BrandMark extends StatelessWidget {
-  const BrandMark({super.key, this.size = 31, this.color, this.rotate = true});
+  const BrandMark({
+    super.key,
+    this.size = 31,
+    this.color,
+    this.rotate = true,
+    this.textScale = 1,
+  });
 
   final double size;
   final Color? color;
   final bool rotate;
+
+  /// Enlarges the "ts" inside the badge (1 = the website's proportion). The launcher icon uses a
+  /// larger value so the letters read at small sizes.
+  final double textScale;
 
   static const double _webSize = 31;
 
@@ -38,8 +48,8 @@ class BrandMark extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'Fredoka',
           fontWeight: FontWeight.w700,
-          fontSize: 12 * scale,
-          letterSpacing: -0.08 * 12 * scale,
+          fontSize: 12 * scale * textScale,
+          letterSpacing: -0.08 * 12 * scale * textScale,
           height: 1,
           color: Colors.white,
         ),

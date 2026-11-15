@@ -6,7 +6,7 @@
 
 ## How to resume
 
-The app is a complete frontend-only Flutter port of the website demo in `../CTINASSL_Activity/client` (the Tsumugi "individual workspace"). Read this file, then [`CODEMAP.md`](CODEMAP.md) for the file index and the newest entries of [`LOG.md`](LOG.md) for what changed last. The plan, decisions and the website analysis are in [`docs/PLAN-FLUTTER-MOBILE.md`](docs/PLAN-FLUTTER-MOBILE.md). A second plan, [`docs/PLAN-MOBILE-UI.md`](docs/PLAN-MOBILE-UI.md), proposes moving the UI away from web-style layout toward mobile-native patterns; M1 to M6 are done (see the status line under each phase for what was left out); M7 and M8 are not started. Nothing is committed or pushed unless the owner asks.
+The app is a complete frontend-only Flutter port of the website demo in `../CTINASSL_Activity/client` (the Tsumugi "individual workspace"). Read this file, then [`CODEMAP.md`](CODEMAP.md) for the file index and the newest entries of [`LOG.md`](LOG.md) for what changed last. The plan, decisions and the website analysis are in [`docs/PLAN-FLUTTER-MOBILE.md`](docs/PLAN-FLUTTER-MOBILE.md). A second plan, [`docs/PLAN-MOBILE-UI.md`](docs/PLAN-MOBILE-UI.md), proposes moving the UI away from web-style layout toward mobile-native patterns; M1 to M8 are done (see the status line under each phase for what was left out). Nothing is committed or pushed unless the owner asks.
 
 Rules that apply to all work (carried over from the website):
 
@@ -45,18 +45,16 @@ Rules that apply to all work (carried over from the website):
 
 ## Verification status (2026-11-14)
 
-Done and automated: `flutter analyze` clean; **195 tests** pass (parity with the website's own results, store, every screen's behaviour, the guide's everyday workflows, layout sweep at 360 x 640 dp at 1x and 1.5x text, tablet portrait and landscape, accessibility guidelines on 24 routes in light and 25 routes in dark at 100% and 160% text, preview states, 20 golden screenshots including 4 dark and 3 at 200% text, privacy and design-rule checks, and the new `m1` to `m6` test files). The Phase 8 release APK (54.4 MB, three ABIs, no `INTERNET` permission) was built **before** the M-plan work; rebuild it in M8 to confirm.
+Done and automated: `flutter analyze` clean; **208 tests** pass (parity with the website's own results, store, every screen's behaviour, the guide's everyday workflows, layout sweep at 360 x 640 dp at 1x and 1.5x text, tablet portrait and landscape, accessibility guidelines on 24 routes in light and 25 routes in dark at 100% and 160% text, preview states, 20 golden screenshots including 4 dark and 3 at 200% text, privacy and design-rule checks, and the new `m1` to `m6` test files). The release APK (55.9 MB, three ABIs) was rebuilt after M7 and installed on a real phone; its manifest has no `INTERNET` permission.
 
-**Not done (needs a person with a device):** running on a real phone or emulator, a TalkBack walkthrough, checking Android back behaviour, reduced motion on a device, and a side-by-side visual check against the live website (project card tints for yellow and green are my reading of the palette). See the checklist in the plan, section 10.
+**Not done (needs a person):** a TalkBack walkthrough, usability sessions, reduced motion on the device, and a side-by-side visual check against the live website (project card tints for yellow and green are my reading of the palette). See the checklist in the plan, section 10.
 
-## Next steps: M7 and M8 (to continue in another conversation)
+## What is left (after M8)
 
-Read `docs/PLAN-MOBILE-UI.md` sections 9 to 12, 14 (M7, M8) and 15. Short brief:
-
-- **M7: platform extras and performance (plan section 9, 12).** Android 12+ splash, adaptive and themed launcher icon, per-screen restoration of the selected tab, `ListView`/sliver lazy lists for Projects and Library (still boxed), animated insert and remove of task tiles, optional Material You "device colours" switch (off by default), keyboard-safe forms, large-screen two-column Home. Keep: no permissions, no network, nothing stored on the device. Measure with profile mode if a device is available.
-- **M8: validation and docs (plan section 15).** Run the whole app on a real device or emulator (none was connected so far), TalkBack walkthrough, back-gesture behaviour, reduced motion, dark mode by eye, rebuild the release APK and check the manifest, regenerate goldens, update the definition-of-done checklist and docs.
-- **Left over from M4 to M6** (see the status line under each phase in the plan): swipeable tab views, hide-on-scroll bottom bar, tab re-tap scroll-to-top, search match highlighting, tonal surfaces, three empty/error illustrations, shared-element row-to-sheet transition, requirement coverage rings, traceability timeline, week-strip calendar, tinted project header, optional Milestone chip in Quick add, long-press create menu on the tablet rail. Pick these up inside M7 or as a short M6b.
-- Workflow reminders: update `LOG.md`, `CODEMAP.md`, `README.md` and this file after each phase; run `flutter analyze` and `flutter test`; regenerate goldens only for intentional visual changes.
+- **Needs a person:** a TalkBack walkthrough; usability sessions with other people (plan section 15); long-pressing the launcher icon to see the three shortcuts (files and links are tested, the long-press was not); a side-by-side look at the website.
+- **Left out on purpose or not yet built** (status lines in `docs/PLAN-MOBILE-UI.md`): swipeable tab views, hide-on-scroll bottom bar, tab re-tap scroll-to-top, search match highlighting, tonal surfaces, empty and error illustrations, shared-element row-to-sheet transition, requirement coverage rings, traceability timeline, week-strip calendar, tinted project header, animated tile insert and remove, lazy Projects and Library lists (the lists are about 20 rows), themed monochrome icon, restoration of the selected tab, three-pane layout at 1200 dp, Milestone chip in Quick add, long-press create menu on the tablet rail.
+- **Device notes:** tested on a Samsung Galaxy A05s (Android 15, serial seen as `R7AWA09VDPP`). `adb` is not on the PATH; it is at `%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe`. The USB link dropped several times during installs; `adb kill-server` then `adb start-server`, or replugging, brings it back, and `adb install -r -t build/app/outputs/flutter-apk/app-release.apk` works when `flutter run` fails. Flutter draws on a SurfaceView, so `dumpsys gfxinfo` shows 0 frames; measure with `dumpsys SurfaceFlinger --latency "<SurfaceView layer name>"` instead.
+- Workflow reminders: update `LOG.md`, `CODEMAP.md`, `README.md` and this file after each phase; run `flutter analyze` and `flutter test`; regenerate goldens only for intentional visual changes; regenerate the launcher icons with `flutter test tool/render_launcher_icons_test.dart` then `dart run flutter_launcher_icons`.
 
 ## Known gaps
 

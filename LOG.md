@@ -106,3 +106,11 @@ Chronological record of actions in this repository.
   - Tests: 195 pass (11 new in `m4_test.dart`, 8 in `m5_test.dart`, 8 in `m6_test.dart`); goldens regenerated and four dark goldens added; `flutter analyze` clean. Nothing run on a device.
 
 - **Repository and docs housekeeping (2026-11-14):** the work was committed as `05da883` and published to a new private GitHub repo, `PastelSalt/tsumugi-mobile` (app at the root, branch `main`, made with `git subtree split`). A first push to a `MoekoWorks` repo was a mistake and that repo was deleted. `CONTEXT.md` now records the git layout, what is real versus preview, the pitfalls found in M2 to M6, and a hand-off brief for M7 and M8; README, CODEMAP and the test count (195) were brought up to date.
+
+- **M7 and M8 (platform extras, performance, device validation), 2026-11-15:**
+  - Launcher icon: the badge now fills about 65% of the adaptive icon canvas (was 43%) and `BrandMark` has a `textScale` so the "ts" letters are larger in the icon (1.9x); the legacy icon fills 84%.
+  - Launcher shortcuts Add task, Today and Search (`xml/shortcuts.xml`, `tsumugi://` intent filter, `/add` route that opens Home with Quick add). No package and no permission. Android 12+ splash in light and dark (`values-v31`, `values-night-v31`).
+  - Run on a real phone (Galaxy A05s, Android 15), release build: cold start 517 to 677 ms; Tasks scroll median 11 ms per frame (90 Hz), p95 22 ms, no frame over 25 ms; about 115 MB PSS; no Flutter errors in the log. Checked dark, light and 1.5x system font, back button closing a sheet, and the Add task link.
+  - Defects found on the device and fixed: the Undo button was yellow on a light toast in dark mode (now dark text); the overdue warning icon drifted away from its text when the text wrapped (now inline).
+  - Tests: 208 pass (13 new in `m7_test.dart`); goldens regenerated; analyzer clean. Release APK 55.9 MB, no `INTERNET` permission.
+  - Not done: usability sessions, TalkBack, long-pressing the launcher icon, lazy Projects and Library, animated tile insert and remove, monochrome icon. The USB connection dropped several times; see `CONTEXT.md` for the workaround.

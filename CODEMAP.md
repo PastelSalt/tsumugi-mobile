@@ -87,6 +87,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `test/privacy_test.dart`, `test/design_rules_test.dart` | No network or storage code, no manifest permissions, no text under 12 sp, no team wording |
 | `test/support/fonts.dart` | Loads Fredoka and the Lucide font for golden tests |
 | `test/features/m1_test.dart` | M1: collapsing title, pinned tabs, pull to refresh, scroll restoration, tokens and type scale, no literal colours, edge-to-edge, predictive back flag, draft protection |
+| `test/features/m7_test.dart` | M7: shortcut and splash files, `/add`, `/tasks`, `/search` routes, Undo contrast in both themes, 500-task lazy list, dark with large text |
 | `test/features/m6_test.dart` | M6: project page (first 40%, collapse, pinned tabs, back), reader (progress, outline sheet, text size, line numbers) |
 | `test/features/m5_test.dart` | M5: theme preference, text size, reduce motion, week start, dark sweep of 25 routes at 100% and 160% text |
 | `test/features/m4_test.dart` | M4: Home sections, glance chips, overdue badge, Search types, counts and recent searches |
@@ -95,6 +96,7 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `test/features/phase7_test.dart` | Wide layout (rail, docked panel, portrait and landscape), reduced motion, dark theme scaffold (superseded by m5_test), preview states on every list screen |
 | `test/features/workflows_test.dart` | The guide's everyday workflows (13.1 to 13.6) driven through the UI |
 | `test/` | Boot and tab tests, format tests, WCAG contrast test, shared widget and record widget tests, route tests, `parity_test.dart` (Dart results vs the website's), `store_test.dart` (session additions) |
+| `android/app/src/main/res/xml/shortcuts.xml`, `values-v31/`, `values-night-v31/` | Launcher shortcuts (Add task, Today, Search via `tsumugi://` links), Android 12+ splash in light and dark |
 | `android/` | Android runner; launcher label "Tsumugi"; launch screen = website canvas colour with the "ts" mark (`drawable/launch_background.xml`, `splash_mark.png`); no `INTERNET` permission in the main manifest |
 
 ## Runtime flow

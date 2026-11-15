@@ -15,6 +15,7 @@ import '../features/projects/projects_screen.dart';
 import '../features/search/search_screen.dart';
 import '../features/tasks/tasks_screen.dart';
 import '../features/welcome/welcome_screen.dart';
+import '../features/quickadd/quick_add_sheet.dart';
 import 'placeholder_screen.dart';
 import 'shell/app_shell.dart';
 
@@ -49,6 +50,8 @@ GoRouter buildRouter({String initialLocation = '/'}) {
         builder: (context, state) =>
             ResetPasswordScreen(preview: state.uri.queryParameters['preview']),
       ),
+      // Launcher shortcut "Add task" (tsumugi:///add): open Home with Quick add on top.
+      GoRoute(path: '/add', builder: (context, state) => const _OpenQuickAdd()),
       GoRoute(
         path: '/gallery',
         builder: (context, state) => const GalleryScreen(),
@@ -143,4 +146,30 @@ GoRouter buildRouter({String initialLocation = '/'}) {
       ),
     ),
   );
+}
+
+/// Goes to Home and opens Quick add on top of it, then is gone.
+class _OpenQuickAdd extends StatefulWidget {
+  const _OpenQuickAdd();
+
+  @override
+  State<_OpenQuickAdd> createState() => _OpenQuickAddState();
+}
+
+class _OpenQuickAddState extends State<_OpenQuickAdd> {
+  @override
+  void initState() {
+    super.initState();
+    final router = GoRouter.of(context);
+    final overlayContext = Navigator.of(context, rootNavigator: true).context;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      router.go('/home');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (overlayContext.mounted) showQuickAddSheet(overlayContext);
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }

@@ -478,25 +478,27 @@ class DueText extends StatelessWidget {
       DueTone.soon => (t.info, FontWeight.w500),
       _ => (t.onSurfaceMuted, FontWeight.w400),
     };
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (info.tone == DueTone.overdue) ...[
-          Icon(LucideIcons.triangleAlert, size: 13, color: color),
-          const SizedBox(width: 3),
-        ],
-        Flexible(
-          child: Text(
-            info.label,
-            textAlign: TextAlign.end,
-            style: TextStyle(
-              fontSize: AppTokens.textMeta,
-              color: color,
-              fontWeight: weight,
-            ),
-          ),
+    // One text run with the icon inline, so the icon stays next to the words when they wrap.
+    return Text.rich(
+      textAlign: TextAlign.end,
+      TextSpan(
+        style: TextStyle(
+          fontSize: AppTokens.textMeta,
+          color: color,
+          fontWeight: weight,
         ),
-      ],
+        children: [
+          if (info.tone == DueTone.overdue)
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 3),
+                child: Icon(LucideIcons.triangleAlert, size: 13, color: color),
+              ),
+            ),
+          TextSpan(text: info.label),
+        ],
+      ),
     );
   }
 }
