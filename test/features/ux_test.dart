@@ -117,6 +117,7 @@ void main() {
       await tester.pump(const Duration(seconds: 6));
       expect(find.text('Undo'), findsOneWidget, reason: 'still there at 6 s');
       await tester.pump(const Duration(seconds: 5));
+      await tester.pump(const Duration(milliseconds: 300)); // it fades out
       expect(find.text('Undo'), findsNothing, reason: 'gone after 10 s');
     });
 

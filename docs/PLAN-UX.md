@@ -1,6 +1,6 @@
 # Tsumugi Mobile: UX Plan
 
-> **Status:** draft v4, 2026-11-15 (v4 adds the motion plan: sections 5.6 and 9.1, assumptions A20 to A23, backlog U19 to U30). Draft v3: the "may do now" items (U2, U3, U4, U13, U14, U15, U17) are **done** and tested; the items that need real people (U1, U16, and everything gated on round 1) are **not done**. Section 4 and 9 show the new status. v2 added an assumptions register (section 2), a standards and research review with sources (section 3) and a check of the build against those standards (section 4).
+> **Status:** draft v4, 2026-11-15 (v4 adds the motion plan, **built the same day** except U26 to U28 and U30 (see 9.1 status): sections 5.6 and 9.1, assumptions A20 to A23, backlog U19 to U30). Draft v3: the "may do now" items (U2, U3, U4, U13, U14, U15, U17) are **done** and tested; the items that need real people (U1, U16, and everything gated on round 1) are **not done**. Section 4 and 9 show the new status. v2 added an assumptions register (section 2), a standards and research review with sources (section 3) and a check of the build against those standards (section 4).
 > **Scope:** the experience side of the app: who it is for, what they do, how well the current build supports it, how we will find out, and what to change next. The visual system, components and engineering phases are in [PLAN-MOBILE-UI.md](PLAN-MOBILE-UI.md); data, routes and website parity are in [PLAN-FLUTTER-MOBILE.md](PLAN-FLUTTER-MOBILE.md).
 > **Boundary (unchanged):** a play-demo. No backend, no online services, nothing saved on the device, no permissions. Everything a person does lives in memory and resets on restart. UX work must not add accounts, sync, analytics, notifications or sharing.
 
@@ -364,6 +364,8 @@ Effort: S under a day, M a few days, L a week or more. **Do not start M or L ite
 | M-13 | Calendar | Month change slides in the direction of travel; the selected day scales 0.9 to 1 | 250 ms | Fade |
 | M-14 | Press feedback on tiles and cards | Ripple (exists) plus a 2% scale-down while held | 80 ms | Ripple only |
 
+**Built (2026-11-15), and what was measured.** 242 tests pass (19 new in `motion_test.dart`: tokens, reduced-motion rule, tab fade, task exit, progress bars, entrances, toast and tip, settling). On the Galaxy A05s (release build) tab switching with the fade-through: **median 11.1 ms, 95th percentile 22.3 ms, worst 44.6 ms, 6 of 123 intervals over 25 ms** (about 5%, mostly the first frame after a switch). That is a little worse than plain scrolling, which had none over 25 ms; if sessions show stutter on tab switches the first thing to try is pre-building the tab. **Not verified:** I could not capture the in-between frames on the phone with screenshots (they are slower than the animations), so the motion is checked by tests that step through time, not by eye on the device; a screen recording and a look by a person is still needed. The page transition is tested only as a builder: in a widget test a pushed route showed no transition widgets, which was not explained; check it on the phone by eye.
+
 **Implementation approach.** One file of motion tokens (durations, curves, a `reduced` fallback), used everywhere instead of literals. Use implicit animations (`AnimatedContainer`, `AnimatedSwitcher`, `TweenAnimationBuilder`, `AnimatedSize`) where a value changes; use explicit controllers only for choreographed sequences (M-1, M-8). For lists: M-1 and M-2 are the hard part because the Tasks list is lazy slivers with pinned group headers (a plain `AnimatedList` does not fit grouped slivers); the plan is for a tile that is about to leave to play its own exit (collapse) before the data change is committed, and for entering tiles to animate themselves on first build, with a short-lived "leaving" set held in the session state. Prototype this first and measure on the A05s before building the rest. Tab fade-through (M-3) needs a custom container for the shell's branches (`navigatorContainerBuilder`).
 
 **Performance rules.** Wrap animated regions in `RepaintBoundary`; animate opacity and transforms, not layout, wherever possible; never animate more than one list at a time; keep each animation inside the frame budgets already measured (median 11 ms, no frame over 25 ms on the A05s). Check each one with the SurfaceFlinger latency method in `CONTEXT.md`.
@@ -372,18 +374,18 @@ Effort: S under a day, M a few days, L a week or more. **Do not start M or L ite
 
 | # | Item | Effort | Gate | Status |
 |---|---|---|---|---|
-| U19 | Motion tokens file; `motionDuration` becomes "swap, do not remove"; Account Reduce motion and system setting both use it | S | None | Not started |
-| U20 | M-3 tab fade-through and M-4 tab underline slide with content cross-fade | M | None | Not started |
-| U21 | M-5 shared-axis page transition (and keep predictive back) | S | None | Not started |
-| U22 | M-1, M-2 task complete, reopen, add, delete exit and entrance (prototype and measure first) | L | None | Not started |
-| U23 | M-7 animated numbers and progress bars | S | None | Not started |
-| U24 | M-8 first-open staggered entrance on Home, Tasks, Projects | S | None | Not started |
-| U25 | M-9 toast exit and tip collapse; M-11 chip and switch transitions; M-14 press scale | S | None | Not started |
-| U26 | M-10 swipe affordance and settle | M | After U22 | Not started |
-| U27 | M-6 row-to-sheet shared element | M | After U21 | Not started |
-| U28 | M-12 skeleton shimmer for the Loading state | S | None | Not started |
-| U29 | M-13 Calendar month slide and day scale | S | None | Not started |
-| U30 | Motion checks in sessions: ask "where did the task go?" in task 3; compare Reduce motion on and off with one person who asked for it | S | With U1 | Not started |
+| U19 | Motion tokens file; `motionDuration` becomes "swap, do not remove"; Account Reduce motion and system setting both use it | S | None | **Done 2026-11-15.** `Motion` tokens and `fadeDuration` in `lib/core/theme/motion.dart`; reduced motion swaps movement for a 100 ms fade |
+| U20 | M-3 tab fade-through and M-4 tab underline slide with content cross-fade | M | None | **Done 2026-11-15.** `FadeThroughBranches` (tabs fade in and rise 6 dp, all tabs stay alive); the Today/Upcoming/Calendar/All underline was not slid (its content still swaps instantly) |
+| U21 | M-5 shared-axis page transition (and keep predictive back) | S | None | **Done 2026-11-15.** Shared-axis page transition in the theme (30 dp slide, fade; fade only when reduced). Unit-tested as a builder; not seen in a screen recording |
+| U22 | M-1, M-2 task complete, reopen, add, delete exit and entrance (prototype and measure first) | L | None | **Done 2026-11-15 (prototype shipped).** A tile shows its check for about 120 ms, then fades and collapses over 200 ms, then the change is made; a tile that lands in a new group fades in. Reduced motion: immediate. Hidden cost: a task takes about 320 ms longer to leave its list |
+| U23 | M-7 animated numbers and progress bars | S | None | **Done 2026-11-15.** Progress bars fill from empty and move to new values over 400 ms; the Home headline and figures line fade-swap |
+| U24 | M-8 first-open staggered entrance on Home, Tasks, Projects | S | None | **Done 2026-11-15.** `Entrance` on Home sections and project cards, once per launch per section; not on Tasks or Library (lazy lists) |
+| U25 | M-9 toast exit and tip collapse; M-11 chip and switch transitions; M-14 press scale | S | None | **Done 2026-11-15.** Undo message fades out, tip collapses smoothly, Quick add chips change colour over 120 ms. Press scale (M-14) was not built |
+| U26 | M-10 swipe affordance and settle | M | After U22 | Not started. The swipe already settles back with Flutter's built-in animation; an icon-scale cue was not added |
+| U27 | M-6 row-to-sheet shared element | M | After U21 | Not started. Needs a measured prototype; the plain sheet slide is unchanged |
+| U28 | M-12 skeleton shimmer for the Loading state | S | None | **Not built, on purpose.** A looping shimmer never lets the screen settle, so every test that waits for an idle screen would hang; revisit with a finite pulse |
+| U29 | M-13 Calendar month slide and day scale | S | None | **Done 2026-11-15.** Calendar grid cross-fades when the month changes; no slide direction and no day scale |
+| U30 | Motion checks in sessions: ask "where did the task go?" in task 3; compare Reduce motion on and off with one person who asked for it | S | With U1 | Not started. Needs sessions |
 
 ## 10. Measures and how often
 

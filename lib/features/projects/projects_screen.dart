@@ -11,6 +11,7 @@ import '../../core/data/selectors.dart';
 import '../../core/data/status.dart';
 import '../../core/data/workspace_store.dart';
 import '../../core/theme/tokens.dart';
+import '../../shared/widgets/motion_widgets.dart';
 import '../../shared/widgets/badges.dart';
 import '../../shared/widgets/filters.dart';
 import '../../shared/widgets/layout.dart';
@@ -213,7 +214,12 @@ class _ProjectsScreenState extends ConsumerState<ProjectsScreen>
                 Column(
                   spacing: AppTokens.space3,
                   children: [
-                    for (final p in list) ProjectCard(project: p, data: data),
+                    for (final (i, p) in list.indexed)
+                      Entrance(
+                        id: 'projects/${p.id}',
+                        index: i,
+                        child: ProjectCard(project: p, data: data),
+                      ),
                   ],
                 ),
             ],

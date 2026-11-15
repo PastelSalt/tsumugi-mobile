@@ -3,6 +3,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/data/format.dart';
 import '../../core/data/status.dart';
+import '../../core/theme/motion.dart';
 import '../../core/theme/tokens.dart';
 
 /// Pill with icon and text on a tone colour. Status is never conveyed by colour alone.
@@ -170,9 +171,16 @@ class TsProgressBar extends StatelessWidget {
                 child: Stack(
                   children: [
                     Container(height: 8, color: t.line),
-                    FractionallySizedBox(
-                      widthFactor: fraction,
-                      child: Container(height: 8, color: t.green),
+                    // Fills from empty on first appearance and moves from the old value to the new one
+                    // when the number changes (docs/PLAN-UX.md, M-7).
+                    TweenAnimationBuilder<double>(
+                      tween: Tween<double>(begin: 0, end: fraction),
+                      duration: fadeDuration(context, Motion.number),
+                      curve: Motion.standard,
+                      builder: (context, f, _) => FractionallySizedBox(
+                        widthFactor: f.clamp(0.0, 1.0),
+                        child: Container(height: 8, color: t.green),
+                      ),
                     ),
                   ],
                 ),

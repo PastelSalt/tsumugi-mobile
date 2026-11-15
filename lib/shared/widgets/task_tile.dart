@@ -26,7 +26,7 @@ import 'task_actions.dart';
 ///   action menu. Swipe right completes, swipe left moves it to tomorrow; every gesture has a
 ///   menu or accessibility-action equivalent and an Undo message.
 /// - Tapping the tile opens the details.
-class TaskTile extends ConsumerWidget {
+class TaskTile extends ConsumerStatefulWidget {
   const TaskTile({
     super.key,
     required this.task,
@@ -47,11 +47,91 @@ class TaskTile extends ConsumerWidget {
   final bool divider;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TaskTile> createState() => _TaskTileState();
+}
+
+class _TaskTileState extends ConsumerState<TaskTile>
+    with TickerProviderStateMixin {
+  // Leaving: the circle shows its check for a beat, then the tile fades and collapses (M-1).
+  late final AnimationController _leave = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+  );
+
+  // Arriving: a tile that has just landed in a new group fades in and rises 8 dp (M-2).
+  late final AnimationController _arrive = AnimationController(
+    vsync: this,
+    duration: Motion.short,
+    value: 1,
+  );
+
+  bool _leaving = false;
+  bool _completing = false;
+  bool _checkedArrival = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_checkedArrival) return;
+    _checkedArrival = true;
+    final s = ref.read(sessionProvider);
+    final touched = s.touchedAt;
+    if (s.touchedId == widget.task.id &&
+        touched != null &&
+        DateTime.now().difference(touched) <
+            const Duration(milliseconds: 900)) {
+      _arrive.duration = fadeDuration(context);
+      _arrive.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _leave.dispose();
+    _arrive.dispose();
+    super.dispose();
+  }
+
+  /// Plays the exit, then makes the change. With reduced motion the change is made at once (its
+  /// result still fades in where it lands).
+  Future<void> _leaveThen(
+    VoidCallback commit, {
+    bool completing = false,
+  }) async {
+    if (_leaving) return;
+    if (motionReduced(context)) {
+      commit();
+      return;
+    }
+    setState(() {
+      _leaving = true;
+      _completing = completing;
+    });
+    await _leave.forward();
+    commit();
+    if (!mounted) return;
+    // The tile is still here when the task stays in this list (for example All): show it again.
+    setState(() {
+      _leaving = false;
+      _completing = false;
+    });
+    _leave.value = 0;
+    _arrive.forward(from: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final task = widget.task;
+    final onTap = widget.onTap;
+    final selected = widget.selected;
+    final showProject = widget.showProject;
+    final divider = widget.divider;
     final data = ref.watch(workspaceDataProvider);
     final t = context.tokens;
     final actions = TaskActions(context, ref);
     final done = task.status == 'Done';
+    final shown = _completing ? task.copyWith(status: 'Done') : task;
+    final shownDone = shown.status == 'Done';
     final project = showProject ? data.projectById(task.projectId) : null;
     final open = onTap ?? () => openTaskDetails(context, task);
     final subDone = task.subtasks.where((s) => s.done).length;
@@ -114,8 +194,11 @@ class TaskTile extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           StatusCircle(
-            task: task,
-            onTap: () => actions.toggleComplete(task),
+            task: shown,
+            onTap: () => _leaveThen(
+              () => actions.toggleComplete(task),
+              completing: !done,
+            ),
             onLongPress: () => actions.showMenu(task, onOpenDetails: open),
           ),
           Expanded(
@@ -141,8 +224,10 @@ class TaskTile extends ConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(
-                                  color: done ? t.onSurfaceMuted : t.onSurface,
-                                  decoration: done
+                                  color: shownDone
+                                      ? t.onSurfaceMuted
+                                      : t.onSurface,
+                                  decoration: shownDone
                                       ? TextDecoration.lineThrough
                                       : null,
                                   decorationColor: t.onSurfaceMuted,
@@ -184,7 +269,7 @@ class TaskTile extends ConsumerWidget {
           )
         : tile;
 
-    return Semantics(
+    final content = Semantics(
       container: true,
       customSemanticsActions: {
         CustomSemanticsAction(label: done ? 'Reopen' : 'Mark done'): () =>
@@ -205,9 +290,9 @@ class TaskTile extends ConsumerWidget {
         // The swipe runs the action and the tile snaps back: the task moves group on its own.
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.startToEnd) {
-            actions.toggleComplete(task);
+            _leaveThen(() => actions.toggleComplete(task), completing: !done);
           } else {
-            actions.moveToTomorrow(task);
+            _leaveThen(() => actions.moveToTomorrow(task));
           }
           return false;
         },
@@ -227,6 +312,32 @@ class TaskTile extends ConsumerWidget {
         ),
         child: withDivider,
       ),
+    );
+    return AnimatedBuilder(
+      animation: Listenable.merge([_leave, _arrive]),
+      child: content,
+      builder: (context, child) {
+        final out = const Interval(
+          0.4,
+          1,
+          curve: Motion.exit,
+        ).transform(_leave.value);
+        final into = Motion.enter.transform(_arrive.value);
+        if (out == 0 && into == 1) return child!;
+        return ClipRect(
+          child: Align(
+            alignment: Alignment.topCenter,
+            heightFactor: 1 - out,
+            child: Opacity(
+              opacity: ((1 - out) * into).clamp(0.0, 1.0),
+              child: Transform.translate(
+                offset: Offset(0, 8 * (1 - into)),
+                child: child,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

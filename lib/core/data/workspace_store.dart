@@ -34,7 +34,14 @@ class SessionState {
     this.tasks = const [],
     this.taskOverrides = const {},
     this.deletedTaskIds = const {},
+    this.touchedId,
+    this.touchedAt,
   });
+
+  /// The task changed last and when: lets a tile that has just arrived in a new group animate in
+  /// (docs/PLAN-UX.md, M-1 and M-2). Never saved; not part of the data.
+  final String? touchedId;
+  final DateTime? touchedAt;
 
   final List<Project> projects;
   final List<Milestone> milestones;
@@ -48,12 +55,16 @@ class SessionState {
     List<Task>? tasks,
     Map<String, Task>? taskOverrides,
     Set<String>? deletedTaskIds,
+    String? touchedId,
+    DateTime? touchedAt,
   }) => SessionState(
     projects: projects ?? this.projects,
     milestones: milestones ?? this.milestones,
     tasks: tasks ?? this.tasks,
     taskOverrides: taskOverrides ?? this.taskOverrides,
     deletedTaskIds: deletedTaskIds ?? this.deletedTaskIds,
+    touchedId: touchedId ?? this.touchedId,
+    touchedAt: touchedAt ?? this.touchedAt,
   );
 
   /// Number of changes made in this session (shown on "Reset session data").
@@ -114,7 +125,11 @@ class SessionNotifier extends Notifier<SessionState> {
     final task = _task(id);
     if (task == null) return false;
     _commit(
-      state.copyWith(taskOverrides: {...state.taskOverrides, id: change(task)}),
+      state.copyWith(
+        taskOverrides: {...state.taskOverrides, id: change(task)},
+        touchedId: id,
+        touchedAt: DateTime.now(),
+      ),
     );
     return true;
   }

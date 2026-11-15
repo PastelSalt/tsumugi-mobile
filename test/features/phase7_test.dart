@@ -181,8 +181,14 @@ void main() {
             ),
           ),
         );
+        // Reduced: a short fade only. Normal: the shared-axis slide as well.
         expect(
           built is FadeTransition,
+          disabled,
+          reason: 'disableAnimations=$disabled',
+        );
+        expect(
+          built is SlideTransition,
           !disabled,
           reason: 'disableAnimations=$disabled',
         );

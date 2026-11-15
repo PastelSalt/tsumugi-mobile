@@ -133,3 +133,14 @@ Chronological record of actions in this repository.
 
 - **Pushed to GitHub (2026-11-15):** `main` on `PastelSalt/tsumugi-mobile` now includes the UX plan items, the visual hierarchy work and the logo bar fix.
 - **Motion plan written (2026-11-15), no code:** owner reported there are no animations even with Reduce motion off. Checked: the phone's animation scales are 1.0 and battery saver is off; the code has six animated spots and tab switches, list changes, numbers and entrances are instant; `PLAN-MOBILE-UI.md` 7.4 had promised more and it was never built. Added to `docs/PLAN-UX.md`: section 3.9 (research on motion), 5.6 (finding), 9.1 (14 moments, reduced motion as "swap, do not remove", approach, performance rules, tests, backlog U19 to U30), assumptions A20 to A23, risks and sources; added M9 to `docs/PLAN-MOBILE-UI.md`.
+
+- **Motion pass built (2026-11-15), from `docs/PLAN-UX.md` 9.1:**
+  - Tokens and rule (`lib/core/theme/motion.dart`): durations 80 to 400 ms; `fadeDuration` makes reduced motion a 100 ms fade instead of nothing; `motionDuration` stays instant for small state changes.
+  - Tabs: `FadeThroughBranches` replaces the indexed stack (fade in and a 6 dp rise, all tabs kept alive). Pages: shared-axis slide and fade, set in the theme.
+  - Tasks: a tile shows its check, fades and collapses (320 ms), then the change is made; a tile that lands in a new group fades in (`SessionState.touchedId` and `touchedAt`). Reduced: immediate.
+  - Numbers and sections: progress bars fill and move to new values; Home headline and figures fade-swap; `Entrance` fades and raises Home sections and project cards once per launch.
+  - Small things: Undo message fades out (`UndoToast.hide` takes `immediate`), the Tasks tip collapses, Quick add chips change colour, Calendar grid cross-fades.
+  - Found on the way: wrapping a chip in a `ShapeDecoration` added 2 dp per side and pushed Quick add's Close button off a 640 dp screen (a test caught it); the chip now keeps the plain Material layout and animates its colours.
+  - On the A05s: tab switches median 11.1 ms, p95 22.3 ms, 6 of 123 intervals over 25 ms. Not seen by eye (screenshots too slow); needs a screen recording.
+  - Not built: row-to-sheet shared element, swipe cue, skeleton shimmer (would stop screens settling in tests), press scale, Tasks and Library entrances, sliding tab underline.
+  - Tests: 242 pass (19 new); goldens regenerated; analyzer clean.

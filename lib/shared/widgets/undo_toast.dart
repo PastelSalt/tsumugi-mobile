@@ -17,6 +17,7 @@ class UndoToast {
 
   static OverlayEntry? _entry;
   static Timer? _timer;
+  static GlobalKey<_ToastViewState>? _key;
 
   static void show(
     BuildContext context, {
@@ -37,12 +38,15 @@ class UndoToast {
     Duration duration = const Duration(seconds: 10),
   }) {
     if (!overlay.mounted) return;
-    hide();
+    hide(immediate: true);
     final persistent =
         MediaQuery.maybeAccessibleNavigationOf(overlay.context) ?? false;
     late final OverlayEntry entry;
+    final key = GlobalKey<_ToastViewState>();
+    _key = key;
     entry = OverlayEntry(
       builder: (context) => _ToastView(
+        key: key,
         message: message,
         persistent: persistent,
         onUndo: () {
@@ -56,16 +60,26 @@ class UndoToast {
     if (!persistent) _timer = Timer(duration, hide);
   }
 
-  static void hide() {
+  /// Removes the message: it fades and drops away, unless [immediate] (a new one replacing it).
+  static void hide({bool immediate = false}) {
     _timer?.cancel();
     _timer = null;
-    _entry?.remove();
+    final entry = _entry;
+    final view = _key?.currentState;
     _entry = null;
+    _key = null;
+    if (entry == null) return;
+    if (immediate || view == null) {
+      entry.remove();
+      return;
+    }
+    view.exit().whenComplete(entry.remove);
   }
 }
 
 class _ToastView extends StatefulWidget {
   const _ToastView({
+    super.key,
     required this.message,
     required this.onUndo,
     required this.persistent,
@@ -87,6 +101,9 @@ class _ToastViewState extends State<_ToastView>
     vsync: this,
     duration: const Duration(milliseconds: 180),
   )..forward();
+
+  /// Plays the entrance backwards; completes when the message is gone.
+  TickerFuture exit() => _controller.reverse();
 
   @override
   void dispose() {

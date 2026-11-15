@@ -469,7 +469,7 @@ Each phase leaves the app shippable, tests green, goldens updated for both theme
 
 - Implement the motion spec in [PLAN-UX.md](PLAN-UX.md) section 9.1 (tokens, tab fade-through, page shared-axis, task complete and list changes, animated numbers, first-open entrance, toast and tip, swipe settle, skeletons, calendar). Prototype the lazy-list tile exit first and measure on the A05s.
 - **Done when:** each moment in 9.1 exists, meets the frame budgets on the A05s, has a timing test and a reduced-motion test, and Reduce motion swaps movement for a short fade.
-- **Status: not started.**
+- **Status: mostly done on 2026-11-15** (see [PLAN-UX.md](PLAN-UX.md) 9.1): tokens, reduced-motion rule, tab fade-through, shared-axis pages, task exit and entrance, animated numbers and bars, first-open entrance, toast and tip, chips, calendar fade. **Not done:** row-to-sheet shared element, swipe icon cue, skeleton shimmer, press scale, Tasks and Library entrances, a sliding tab underline. Not seen by eye on the phone.
 
 ### M8: Validation and docs (M)
 

@@ -8,6 +8,7 @@ import '../../core/data/selectors.dart';
 import '../../core/data/workspace_store.dart';
 import '../../core/feedback/app_feedback.dart';
 import '../../core/quickadd/parse.dart';
+import '../../core/theme/motion.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/confirm_discard.dart';
 import '../../shared/widgets/preview_sheet.dart';
@@ -430,34 +431,43 @@ class _Chip extends StatelessWidget {
       selected: selected,
       label: label,
       excludeSemantics: true,
-      child: Material(
-        color: selected ? t.accentContainer : t.paper,
-        shape: StadiumBorder(
-          side: BorderSide(color: selected ? t.ink : t.controlBorder),
-        ),
-        child: InkWell(
-          customBorder: const StadiumBorder(),
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: AppTokens.minTarget),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(icon, size: 16),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      label,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: AppTokens.textMeta,
-                        fontWeight: FontWeight.w700,
+      // Fill and border change colour over 120 ms when selected (docs/PLAN-UX.md, M-11); the layout
+      // is the plain Material chip, so its size does not change.
+      child: TweenAnimationBuilder<Color?>(
+        tween: ColorTween(end: selected ? t.accentContainer : t.paper),
+        duration: motionDuration(context, Motion.fast),
+        builder: (context, fill, _) => TweenAnimationBuilder<Color?>(
+          tween: ColorTween(end: selected ? t.ink : t.controlBorder),
+          duration: motionDuration(context, Motion.fast),
+          builder: (context, border, child) => Material(
+            color: fill,
+            shape: StadiumBorder(side: BorderSide(color: border ?? t.ink)),
+            child: child,
+          ),
+          child: InkWell(
+            customBorder: const StadiumBorder(),
+            onTap: onTap,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: AppTokens.minTarget),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(icon, size: 16),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        label,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: AppTokens.textMeta,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

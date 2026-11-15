@@ -5,6 +5,7 @@ import '../../core/data/format.dart';
 import '../../core/data/models.dart';
 import '../../core/data/selectors.dart';
 import '../../core/theme/tokens.dart';
+import '../../shared/widgets/motion_widgets.dart';
 import '../../shared/widgets/record_sheets.dart';
 import '../../shared/widgets/records.dart';
 import '../../shared/widgets/task_tile.dart';
@@ -159,30 +160,36 @@ class CalendarView extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         // The grid bleeds into the page gutters: seven columns of at least 48 dp each.
-        LayoutBuilder(
-          builder: (context, box) => SizedBox(
-            width: box.maxWidth,
-            height: (cells.length ~/ 7) * _cellHeight,
-            child: OverflowBox(
-              maxWidth: box.maxWidth + 2 * AppTokens.pageGutter,
-              child: Column(
-                children: [
-                  for (var row = 0; row < cells.length ~/ 7; row++)
-                    Row(
-                      children: [
-                        for (final date in cells.sublist(row * 7, row * 7 + 7))
-                          Expanded(
-                            child: _DayCell(
-                              date: date,
-                              monthKey: key,
-                              selected: date == selectedDay,
-                              items: byDay(date),
-                              onTap: () => onDay(date),
+        FadeSwitch(
+          switchKey: key,
+          child: LayoutBuilder(
+            builder: (context, box) => SizedBox(
+              width: box.maxWidth,
+              height: (cells.length ~/ 7) * _cellHeight,
+              child: OverflowBox(
+                maxWidth: box.maxWidth + 2 * AppTokens.pageGutter,
+                child: Column(
+                  children: [
+                    for (var row = 0; row < cells.length ~/ 7; row++)
+                      Row(
+                        children: [
+                          for (final date in cells.sublist(
+                            row * 7,
+                            row * 7 + 7,
+                          ))
+                            Expanded(
+                              child: _DayCell(
+                                date: date,
+                                monthKey: key,
+                                selected: date == selectedDay,
+                                items: byDay(date),
+                                onTap: () => onDay(date),
+                              ),
                             ),
-                          ),
-                      ],
-                    ),
-                ],
+                        ],
+                      ),
+                  ],
+                ),
               ),
             ),
           ),

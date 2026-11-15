@@ -18,6 +18,7 @@ import '../features/welcome/welcome_screen.dart';
 import '../features/quickadd/quick_add_sheet.dart';
 import 'placeholder_screen.dart';
 import 'shell/app_shell.dart';
+import 'shell/fade_through_branches.dart';
 
 /// A pushed page outside the bottom-bar tabs: app bar with a back button and the screen below it.
 Widget _page(String title, Widget body) =>
@@ -80,8 +81,13 @@ GoRouter buildRouter({String initialLocation = '/'}) {
         builder: (context, state) =>
             _page('Legal', LegalScreen(slug: state.pathParameters['doc']!)),
       ),
-      StatefulShellRoute.indexedStack(
+      StatefulShellRoute(
         builder: (context, state, shell) => AppShell(navigationShell: shell),
+        navigatorContainerBuilder: (context, shell, children) =>
+            FadeThroughBranches(
+              currentIndex: shell.currentIndex,
+              children: children,
+            ),
         branches: [
           StatefulShellBranch(
             routes: [

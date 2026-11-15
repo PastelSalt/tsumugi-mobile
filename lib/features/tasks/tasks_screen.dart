@@ -11,6 +11,7 @@ import '../../core/data/status.dart';
 import '../../core/data/workspace_store.dart';
 import '../../core/settings/preferences.dart';
 import '../../core/state/preview_state.dart';
+import '../../core/theme/motion.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/filters.dart';
 import '../../shared/widgets/large_title_scaffold.dart';
@@ -266,13 +267,14 @@ class _TasksScreenState extends ConsumerState<TasksScreen>
           child: _InlineAdd(projectId: project == 'all' ? null : project),
         ),
       ),
-      if (groups.isNotEmpty && !ref.watch(gestureHintDismissedProvider))
-        _box(
-          _GestureHint(
-            onDismiss: () =>
-                ref.read(gestureHintDismissedProvider.notifier).dismiss(),
-          ),
+      _box(
+        _HintSlot(
+          visible:
+              groups.isNotEmpty && !ref.watch(gestureHintDismissedProvider),
+          onDismiss: () =>
+              ref.read(gestureHintDismissedProvider.notifier).dismiss(),
         ),
+      ),
       if (groups.isEmpty)
         _box(
           const EmptyState(
@@ -588,10 +590,45 @@ class _BoardColumn extends StatelessWidget {
   }
 }
 
+/// Holds the gesture hint's place: dismissing it fades it out and the space closes smoothly
+/// (docs/PLAN-UX.md, M-9) instead of the list jumping up.
+class _HintSlot extends StatelessWidget {
+  const _HintSlot({required this.visible, required this.onDismiss});
+
+  final bool visible;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    final d = fadeDuration(context);
+    return ClipRect(
+      child: AnimatedSize(
+        duration: d,
+        curve: Motion.standard,
+        alignment: Alignment.topCenter,
+        child: AnimatedSwitcher(
+          duration: d,
+          // The leaving tip is laid over the space as it closes, so it does not hold the space open.
+          layoutBuilder: (current, previous) => Stack(
+            children: [
+              for (final p in previous)
+                Positioned(left: 0, right: 0, top: 0, child: p),
+              ?current,
+            ],
+          ),
+          child: visible
+              ? _GestureHint(key: const ValueKey('hint'), onDismiss: onDismiss)
+              : const SizedBox(key: ValueKey('none'), width: double.infinity),
+        ),
+      ),
+    );
+  }
+}
+
 /// One-time hint for the gestures on a task tile. Shown once, dismissible, and Account can show it
 /// again. It is a hint, not a tour (docs/PLAN-UX.md, 3.6).
 class _GestureHint extends StatelessWidget {
-  const _GestureHint({required this.onDismiss});
+  const _GestureHint({super.key, required this.onDismiss});
 
   final VoidCallback onDismiss;
 

@@ -8,6 +8,7 @@ import '../../core/data/models.dart';
 import '../../core/data/selectors.dart';
 import '../../core/data/workspace_store.dart';
 import '../../core/theme/tokens.dart';
+import '../../shared/widgets/motion_widgets.dart';
 import '../../shared/widgets/badges.dart';
 import '../../shared/widgets/record_sheets.dart';
 import '../../shared/widgets/records.dart';
@@ -93,83 +94,123 @@ class _HomeBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Semantics(
-          button: true,
-          label: '$headline. $facts. Opens Tasks.',
-          excludeSemantics: true,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(AppTokens.radiusMd),
-            onTap: () => context.go('/tasks'),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: AppTokens.space2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    dateLine,
-                    style: text.bodySmall?.copyWith(
-                      color: t.onSurfaceMuted,
-                      fontWeight: FontWeight.w600,
+        Entrance(
+          id: 'home/headline',
+          child: Semantics(
+            button: true,
+            label: '$headline. $facts. Opens Tasks.',
+            excludeSemantics: true,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(AppTokens.radiusMd),
+              onTap: () => context.go('/tasks'),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: AppTokens.space2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      dateLine,
+                      style: text.bodySmall?.copyWith(
+                        color: t.onSurfaceMuted,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    headline,
-                    style: text.headlineMedium?.copyWith(
-                      color: f.overdue > 0 ? t.danger : t.onSurface,
+                    const SizedBox(height: 2),
+                    FadeSwitch(
+                      switchKey: headline,
+                      child: Text(
+                        headline,
+                        style: text.headlineMedium?.copyWith(
+                          color: f.overdue > 0 ? t.danger : t.onSurface,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    facts,
-                    style: text.bodyMedium?.copyWith(color: t.onSurfaceMuted),
-                  ),
-                ],
+                    const SizedBox(height: 2),
+                    FadeSwitch(
+                      switchKey: facts,
+                      child: Text(
+                        facts,
+                        style: text.bodyMedium?.copyWith(
+                          color: t.onSurfaceMuted,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
         const SizedBox(height: AppTokens.space5),
-        _SectionLabel(
-          'Up now',
-          action: TextButton(
-            onPressed: () => context.go('/tasks'),
-            child: Text(
-              focus.length > 3 ? 'All tasks (${focus.length})' : 'All tasks',
-            ),
-          ),
-        ),
-        if (focus.isEmpty)
-          EmptyState(
-            title: 'Nothing due today',
-            body: 'Enjoy the quiet, or pull something forward from Up next.',
-            action: OutlinedButton(
-              onPressed: () => showQuickAddSheet(context),
-              child: const Text('Add a task'),
-            ),
-          )
-        else
-          Column(
+        Entrance(
+          id: 'home/up-now',
+          index: 1,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              for (final task in focus.take(3))
-                TaskTile(task: task, showProject: true),
+              _SectionLabel(
+                'Up now',
+                action: TextButton(
+                  onPressed: () => context.go('/tasks'),
+                  child: Text(
+                    focus.length > 3
+                        ? 'All tasks (${focus.length})'
+                        : 'All tasks',
+                  ),
+                ),
+              ),
+              if (focus.isEmpty)
+                EmptyState(
+                  title: 'Nothing due today',
+                  body: 'Enjoy the quiet, or pull something forward from Up next.',
+                  action: OutlinedButton(
+                    onPressed: () => showQuickAddSheet(context),
+                    child: const Text('Add a task'),
+                  ),
+                )
+              else
+                Column(
+                  children: [
+                    for (final task in focus.take(3))
+                      TaskTile(task: task, showProject: true),
+                  ],
+                ),
             ],
           ),
+        ),
         if (recent.isNotEmpty) ...[
           const SizedBox(height: AppTokens.space6),
-          _SectionLabel(
-            'Continue',
-            action: TextButton(
-              onPressed: () => context.go('/projects'),
-              child: const Text('All projects'),
+          Entrance(
+            id: 'home/continue',
+            index: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _SectionLabel(
+                  'Continue',
+                  action: TextButton(
+                    onPressed: () => context.go('/projects'),
+                    child: const Text('All projects'),
+                  ),
+                ),
+                _ContinueCard(data: data, project: recent.first),
+              ],
             ),
           ),
-          _ContinueCard(data: data, project: recent.first),
         ],
         if (upcoming.isNotEmpty) ...[
           const SizedBox(height: AppTokens.space6),
-          const _SectionLabel('Up next'),
-          for (final item in upcoming) _UpNextRow(item: item, data: data),
+          Entrance(
+            id: 'home/up-next',
+            index: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _SectionLabel('Up next'),
+                for (final item in upcoming) _UpNextRow(item: item, data: data),
+              ],
+            ),
+          ),
         ],
         const SizedBox(height: AppTokens.space4),
         Align(
