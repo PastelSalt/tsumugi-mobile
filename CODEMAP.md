@@ -106,6 +106,17 @@ Maintained index of the current code. Update it when files, responsibilities, ro
 | `android/app/src/main/res/xml/shortcuts.xml`, `values-v31/`, `values-night-v31/` | Launcher shortcuts (Add task, Today, Search via `tsumugi://` links), Android 12+ splash in light and dark |
 | `android/` | Android runner; launcher label "Tsumugi"; launch screen = website canvas colour with the "ts" mark (`drawable/launch_background.xml`, `splash_mark.png`); no `INTERNET` permission in the main manifest |
 
+## Signed-in mode (lib/core/net, added 2026-11-16)
+
+| Path | Responsibility |
+| --- | --- |
+| `lib/core/net/api_client.dart` | The only networking code. Dio client, `ApiError`, `ApiResponse`, `apiBase`; keeps the session cookie value |
+| `lib/core/net/session_cookie_store.dart` | Where that one value lives: Android Keystore (secure storage) or memory |
+| `lib/core/net/auth_state.dart` | `authProvider` (unknown / signedOut / signedIn / demo), `AccountUser`, device time zone provider |
+| `lib/core/net/live_store.dart` | `liveProvider` (server workspace + today), `LiveGateway` (task and project writes), `liveErrorProvider` |
+| `lib/features/auth/live_auth_screens.dart` | Real sign-in and sign-up screens (`/sign-in`, `/sign-up`) |
+| `test/support/fake_api.dart`, `test/core/net/`, `test/features/live_auth_test.dart`, `test/integration/` | In-memory server, client/auth/live-data/write tests, sign-in widget tests, real-server test |
+
 ## Runtime flow
 
 ```text

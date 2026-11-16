@@ -225,6 +225,8 @@ class AuthTextField extends StatelessWidget {
     this.error,
     this.keyboardType,
     this.autofillHints,
+    this.controller,
+    this.textInputAction,
   });
 
   final String label;
@@ -233,10 +235,16 @@ class AuthTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Iterable<String>? autofillHints;
 
+  /// Only the real sign-in and sign-up screens pass one. The demo forms never read what is typed.
+  final TextEditingController? controller;
+  final TextInputAction? textInputAction;
+
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.only(bottom: AppTokens.space4),
     child: TextField(
+      controller: controller,
+      textInputAction: textInputAction,
       keyboardType: keyboardType,
       autofillHints: autofillHints,
       decoration: InputDecoration(
@@ -267,12 +275,20 @@ class AuthPasswordField extends StatefulWidget {
     this.hint = true,
     this.error,
     this.showRequirements = false,
+    this.controller,
+    this.autofillHints,
+    this.onSubmitted,
   });
 
   final String label;
+
+  /// Shows the "demo only" hint. The real screens turn it off.
   final bool hint;
   final String? error;
   final bool showRequirements;
+  final TextEditingController? controller;
+  final Iterable<String>? autofillHints;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   State<AuthPasswordField> createState() => _AuthPasswordFieldState();
@@ -291,6 +307,9 @@ class _AuthPasswordFieldState extends State<AuthPasswordField> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextField(
+            controller: widget.controller,
+            autofillHints: widget.autofillHints,
+            onSubmitted: widget.onSubmitted,
             obscureText: !_visible,
             enableSuggestions: false,
             autocorrect: false,

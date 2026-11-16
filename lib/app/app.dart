@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/net/auth_state.dart';
+import '../core/net/live_store.dart';
 import '../core/settings/preferences.dart';
 import '../core/theme/system_ui.dart';
 import '../core/theme/theme.dart';
@@ -23,6 +25,7 @@ class _TsumugiAppState extends ConsumerState<TsumugiApp> {
   late final GoRouter _router = buildRouter(
     initialLocation: widget.initialLocation,
   );
+  final _messenger = GlobalKey<ScaffoldMessengerState>();
 
   @override
   void dispose() {
@@ -33,7 +36,22 @@ class _TsumugiAppState extends ConsumerState<TsumugiApp> {
   @override
   Widget build(BuildContext context) {
     final prefs = ref.watch(preferencesProvider);
+    // A save that failed (offline, rejected): say so, in plain words.
+    ref.listen(liveErrorProvider, (_, message) {
+      if (message == null) return;
+      _messenger.currentState
+        ?..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
+      ref.read(liveErrorProvider.notifier).clear();
+    });
+    // The session ended somewhere else (another device, a password change): back to sign-in.
+    ref.listen(authProvider, (previous, next) {
+      if (previous?.isSignedIn == true && next.status == AuthStatus.signedOut) {
+        _router.go('/sign-in');
+      }
+    });
     return MaterialApp.router(
+      scaffoldMessengerKey: _messenger,
       title: 'Tsumugi',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(),

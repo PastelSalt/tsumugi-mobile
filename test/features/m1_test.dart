@@ -274,11 +274,14 @@ void main() {
       ); // dark icons on the light theme
     });
 
-    test('the Android manifest opts in to predictive back and requests no permissions', () {
+    test('the Android manifest opts in to predictive back and asks only for INTERNET (the signed-in path; see privacy_test.dart)', () {
       final manifest = File('android/app/src/main/AndroidManifest.xml')
           .readAsStringSync();
       expect(manifest, contains('android:enableOnBackInvokedCallback="true"'));
-      expect(manifest.contains('uses-permission'), isFalse);
+      expect(
+        RegExp(r'uses-permission[^>]*android:name="([^"]+)"').allMatches(manifest).map((m) => m.group(1)).toList(),
+        ['android.permission.INTERNET'],
+      );
     });
   });
 

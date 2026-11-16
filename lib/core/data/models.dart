@@ -218,6 +218,7 @@ class Criterion {
 class Requirement {
   const Requirement({
     required this.id,
+    this.key,
     required this.projectId,
     required this.title,
     required this.type,
@@ -229,6 +230,10 @@ class Requirement {
   });
 
   final String id;
+
+  /// The readable label ("REQ-001") the server gives each requirement. The sample data has none; its `id` is already
+  /// readable. Show [label].
+  final String? key;
   final String projectId;
   final String title;
 
@@ -242,8 +247,12 @@ class Requirement {
   final String description;
   final List<Criterion> acceptance;
 
+  /// What people read: the server key, or the sample data's id.
+  String get label => key ?? id;
+
   factory Requirement.fromJson(Map<String, dynamic> j) => Requirement(
     id: j['id'] as String,
+    key: j['key'] as String?,
     projectId: j['projectId'] as String,
     title: j['title'] as String,
     type: j['type'] as String,
@@ -445,6 +454,13 @@ class Fixtures {
 
   final WorkspaceData data;
   final List<ProjectTemplate> templates;
+
+  /// The signed-in workspace from `GET /workspace/snapshot` plus `GET /templates` (the snapshot has no
+  /// templates). The snapshot's `today` and `now` are read separately by the live store.
+  factory Fixtures.fromApi(
+    Map<String, dynamic> snapshot,
+    List<Map<String, dynamic>> templates,
+  ) => Fixtures.fromJson({...snapshot, 'templates': templates});
 
   factory Fixtures.fromJson(Map<String, dynamic> j) {
     List<T> list<T>(String key, T Function(Map<String, dynamic>) f) => [

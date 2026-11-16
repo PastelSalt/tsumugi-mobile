@@ -209,7 +209,7 @@ class RequirementRow extends ConsumerWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text: '${requirement.id}  ',
+                  text: '${requirement.label}  ',
                   style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: AppTokens.textMeta,

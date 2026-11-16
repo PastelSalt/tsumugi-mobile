@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/account/account_screen.dart';
 import '../features/auth/auth_screens.dart';
+import '../features/auth/live_auth_screens.dart';
 import '../features/gallery/gallery_screen.dart';
 import '../features/help/help_screen.dart';
 import '../features/home/home_screen.dart';
@@ -31,6 +32,15 @@ GoRouter buildRouter({String initialLocation = '/'}) {
     initialLocation: initialLocation,
     routes: [
       GoRoute(path: '/', builder: (context, state) => const WelcomeScreen()),
+      // Real accounts (the server). The /login and /register routes below are the demo-mode layouts.
+      GoRoute(
+        path: '/sign-in',
+        builder: (context, state) => const LiveSignInScreen(),
+      ),
+      GoRoute(
+        path: '/sign-up',
+        builder: (context, state) => const LiveSignUpScreen(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) =>

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/data/workspace_store.dart';
+import '../../core/net/auth_state.dart';
 
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -123,6 +124,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
     final edited = _form != _defaults;
     final dev = ref.watch(devToolsProvider);
     final sessionCount = ref.watch(sessionProvider).count;
+    final auth = ref.watch(authProvider);
     final prefs = ref.watch(preferencesProvider);
     final notifier = ref.read(preferencesProvider.notifier);
     return ListView(
@@ -133,6 +135,50 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (auth.isSignedIn)
+                _card('Your account', [
+                  Text(auth.user?.displayName ?? ''),
+                  Text(
+                    auth.user?.email ?? '',
+                    style: TextStyle(color: t.muted),
+                  ),
+                  const SizedBox(height: AppTokens.space3),
+                  OutlinedButton(
+                    onPressed: () async {
+                      final router = GoRouter.of(context);
+                      await ref.read(authProvider.notifier).logout();
+                      router.go('/');
+                    },
+                    child: const Text('Sign out'),
+                  ),
+                ])
+              else if (auth.isDemo)
+                _card('You are in the demo', [
+                  Text(
+                    'This is a sample workspace. Nothing is saved or sent, and your changes are gone when you close the app.',
+                    style: TextStyle(color: t.muted),
+                  ),
+                  const SizedBox(height: AppTokens.space3),
+                  Wrap(
+                    spacing: AppTokens.space2,
+                    children: [
+                      FilledButton(
+                        onPressed: () {
+                          ref.read(authProvider.notifier).leaveDemo();
+                          context.go('/sign-up');
+                        },
+                        child: const Text('Create an account'),
+                      ),
+                      OutlinedButton(
+                        onPressed: () {
+                          ref.read(authProvider.notifier).leaveDemo();
+                          context.go('/');
+                        },
+                        child: const Text('Leave the demo'),
+                      ),
+                    ],
+                  ),
+                ]),
               _card('Appearance', [
                 Semantics(
                   header: true,

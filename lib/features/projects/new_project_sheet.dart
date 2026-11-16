@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/data/workspace_store.dart';
+import '../../core/net/live_store.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/confirm_discard.dart';
 
@@ -39,12 +40,32 @@ class _NewProjectSheetState extends ConsumerState<NewProjectSheet> {
     super.dispose();
   }
 
-  void _create() {
+  bool _saving = false;
+
+  Future<void> _create() async {
     final templates = ref.read(templatesProvider);
     final t = templates.firstWhere((x) => x.kind == _kind);
     final title = _name.text.trim().isEmpty
         ? 'Untitled ${t.label.toLowerCase()} project'
         : _name.text.trim();
+    if (ref.read(liveProvider) != null) {
+      // Signed in: the server creates the project (and the template's starter milestone and tasks).
+      setState(() => _saving = true);
+      final router = GoRouter.of(context);
+      final navigator = Navigator.of(context);
+      try {
+        final id = await ref
+            .read(liveGatewayProvider)
+            .createProject(name: title, templateKind: t.kind);
+        await ref.read(liveGatewayProvider).refresh();
+        navigator.pop();
+        router.go('/projects/$id');
+      } catch (e) {
+        ref.read(liveErrorProvider.notifier).report(e);
+        if (mounted) setState(() => _saving = false);
+      }
+      return;
+    }
     final id = ref
         .read(sessionProvider.notifier)
         .addProject(
@@ -138,8 +159,8 @@ class _NewProjectSheetState extends ConsumerState<NewProjectSheet> {
                   child: const Text('Cancel'),
                 ),
                 FilledButton(
-                  onPressed: _create,
-                  child: const Text('Create project'),
+                  onPressed: _saving ? null : _create,
+                  child: Text(_saving ? 'Creating…' : 'Create project'),
                 ),
               ],
             ),

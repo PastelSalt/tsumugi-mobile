@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Needed to sign in and sync with the Tsumugi server. The demo never uses the network. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Tsumugi"
         android:enableOnBackInvokedCallback="true"

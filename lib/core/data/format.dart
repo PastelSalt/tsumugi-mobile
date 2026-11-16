@@ -1,6 +1,26 @@
-/// Fixed "demo today" (website `data/format.js`) so relative dates and overdue checks are deterministic.
-const demoToday = '2026-11-12';
-final demoNow = DateTime(2026, 11, 12, 12);
+// "Today" for relative dates and overdue checks. The demo uses a fixed day (website `data/format.js`) so it is
+// deterministic. Signed in, the server's "today" (decided in the account's time zone) replaces it with [setClock],
+// and [resetClock] puts the fixed day back for the demo and for tests.
+const _demoToday = '2026-11-12';
+final _demoNow = DateTime(2026, 11, 12, 12);
+String _today = _demoToday;
+DateTime _now = _demoNow;
+
+String get demoToday => _today;
+DateTime get demoNow => _now;
+
+/// Uses the server's `today` (YYYY-MM-DD) with the device's current time of day, so "2 h ago" counts from now.
+void setClock(String today, [DateTime? deviceNow]) {
+  final d = deviceNow ?? DateTime.now();
+  String two(int v) => v.toString().padLeft(2, '0');
+  _today = today;
+  _now = DateTime.parse('${today}T${two(d.hour)}:${two(d.minute)}:${two(d.second)}');
+}
+
+void resetClock() {
+  _today = _demoToday;
+  _now = _demoNow;
+}
 
 DateTime parseDay(String iso) =>
     DateTime.parse('${iso.substring(0, 10)}T00:00:00');

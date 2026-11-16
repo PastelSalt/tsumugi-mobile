@@ -309,7 +309,7 @@ class RequirementPanel extends ConsumerWidget {
     final t = context.tokens;
     return DetailPanel(
       title: r.title,
-      kicker: '${r.id} · ${data.projectById(r.projectId)?.name ?? ''}',
+      kicker: '${r.label} · ${data.projectById(r.projectId)?.name ?? ''}',
       actions: const [
         PreviewAction(label: 'Mark met', primary: true),
         PreviewAction(label: 'Mark verified'),

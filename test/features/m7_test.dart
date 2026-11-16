@@ -59,8 +59,11 @@ void main() {
       expect(manifest, contains('android:scheme="tsumugi"'));
     });
 
-    test('the links add no permissions and no network access', () {
-      expect(manifest.contains('uses-permission'), isFalse);
+    test('the links add no permissions beyond INTERNET', () {
+      expect(
+        RegExp(r'uses-permission[^>]*android:name="([^"]+)"').allMatches(manifest).map((m) => m.group(1)).toList(),
+        ['android.permission.INTERNET'],
+      );
     });
 
     test('Android 12 splash is set for light and dark', () {

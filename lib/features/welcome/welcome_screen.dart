@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../core/docs/legal_meta.dart';
+import '../../core/net/auth_state.dart';
 import '../../core/theme/tokens.dart';
 import '../../shared/widgets/brand_mark.dart';
 
@@ -81,11 +83,15 @@ const _worlds = [
 
 /// Welcome (the short mobile version of the website landing page): tagline, the traceability
 /// thread, the kinds of making it suits, and the way into the demo.
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // A saved session that still works skips Welcome (the check runs once at launch).
+    ref.listen(authProvider, (_, next) {
+      if (next.isSignedIn) context.go('/home');
+    });
     final t = context.tokens;
     final text = Theme.of(context).textTheme;
     return Scaffold(
@@ -132,18 +138,22 @@ class WelcomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppTokens.space4),
             FilledButton(
-              onPressed: () => context.go('/home'),
+              onPressed: () {
+                // The demo: bundled sample data, no network, nothing stored. A permanent feature.
+                ref.read(authProvider.notifier).enterDemo();
+                context.go('/home');
+              },
               child: const Text('Continue as demo user'),
             ),
             const SizedBox(height: AppTokens.space2),
             OutlinedButton(
-              onPressed: () => context.go('/login'),
+              onPressed: () => context.go('/sign-in'),
               child: const Text('Log in'),
             ),
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
-                onPressed: () => context.go('/register'),
+                onPressed: () => context.go('/sign-up'),
                 child: const Text('New to Tsumugi? Create account'),
               ),
             ),

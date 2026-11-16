@@ -2,7 +2,7 @@
 
 > Portable handoff for continuing work on another device or with another agent.
 >
-> **Last updated:** 2026-11-14
+> **Last updated:** 2026-11-16
 
 ## How to resume
 
@@ -10,7 +10,8 @@ The app is a complete frontend-only Flutter port of the website demo in `../CTIN
 
 Rules that apply to all work (carried over from the website):
 
-- **Play-demo (decision 2026-11-14, applies to all future work):** the app never gets a backend or any online service, never saves anything on the device and requests no permissions. Everything the person does lives in memory and resets on restart. Many actions are now *real inside the session* (see below and `docs/PLAN-MOBILE-UI.md` section 1a).
+- **Narrowed 2026-11-16 (owner): the demo is permanent, and signed-in use may use the network and keep one session token.** The demo path (Welcome > "Continue as demo user") must keep working offline in every build, including release: it never touches `lib/core/net/`, sends nothing, stores nothing. Networking, secure storage and the device time zone live in `lib/core/net/` only; `test/privacy_test.dart` enforces that (plus: release manifest = `INTERNET` only, no cleartext, no analytics or crash-reporting packages) and `test/core/net/live_data_test.dart` proves the demo makes zero requests. Any new feature must work in the demo (sample data or a "Preview only" sheet) as well as signed in. The server API is documented in the website repo's `docs/PLAN-D-01.md`.
+- **Play-demo (decision 2026-11-14; the parts below about no backend, no persistence and no permissions now apply to the demo path only):** the app never gets a backend or any online service, never saves anything on the device and requests no permissions. Everything the person does lives in memory and resets on restart. Many actions are now *real inside the session* (see below and `docs/PLAN-MOBILE-UI.md` section 1a).
 - Frontend only: no authentication, API, database, persistence, uploads or analytics. **Real in the session (M2 to M6):** complete, reopen, change status, reschedule, block, edit title and notes, tick subtasks and delete a task (with Undo, 20 steps); Quick add and templates add records (labelled "Session only"); theme, text size, reduce motion, week start and vibration preferences apply at once. **Still a "Preview only" sheet:** editing a project, the reader's Edit button, milestone and requirement writes, New note, sign-in and similar. Everything resets on restart.
 - The individual workspace never shows team concepts (people, assignees, roles, access). A team workspace would be a separate, future workspace type.
 - Look: Fredoka, warm paper canvas, flat colour (no gradients), ink outlines for selected elements, pastel accents, Lucide icons, text of at least 12 sp, targets of at least 48 dp, status always icon plus text. Motion is restrained and is skipped when the device disables animations.
@@ -25,6 +26,9 @@ Rules that apply to all work (carried over from the website):
 - Commands: `flutter pub get`, `flutter run` (needs an Android device or emulator), `flutter analyze`, `flutter test`, `flutter build apk --release`.
 
 ## Where things are
+
+- **Signed-in mode (2026-11-16):** `lib/core/net/`: `api_client.dart` (Dio; sends and stores just the `tsumugi_sid` cookie value, maps the error envelope to `ApiError`; base URL from `--dart-define=API_BASE`, default `http://10.0.2.2:3001/api/v1`), `session_cookie_store.dart` (Android Keystore through `flutter_secure_storage`; in-memory for tests), `auth_state.dart` (`authProvider`: unknown, signedOut, signedIn, demo; sign-in, sign-up, resume, sign-out, device time zone), `live_store.dart` (`liveProvider` holds the server workspace; `LiveGateway` writes; `liveErrorProvider` shows failed saves as a snack bar). `workspaceDataProvider` and `templatesProvider` read the server workspace while signed in, else the bundled sample data. `SessionNotifier` (`workspace_store.dart`) keeps its in-memory overlay and also saves each task action to the server, then reloads the snapshot and drops the stand-in; Undo also undoes on the server. `format.dart`'s "today" is now settable (`setClock`/`resetClock`): the server's day signed in, the fixed 12 Nov 2026 in the demo. Screens: `lib/features/auth/live_auth_screens.dart` (`/sign-in`, `/sign-up`); `/login` and `/register` remain the demo-mode layouts.
+- **Tests for it:** `test/support/fake_api.dart` (an in-memory server), `test/core/net/*`, `test/features/live_auth_test.dart`, `test/fixtures/api_*.json` (real server responses copied from the website repo's `docs/samples/`), and `test/integration/live_server_test.dart` (real server; skipped unless `TSUMUGI_API` is given).
 
 - Data and rules: `lib/core/data/` (models, selectors, session store, formatting, status vocabulary). Sample data is `assets/data/fixtures.json`, **generated** from the website by `node tool/export_fixtures.mjs` (needs the website's `node_modules`); never hand-edit it. The same script writes `test/fixtures/web_parity.json`, the values the website's own code computes, which `test/core/parity_test.dart` checks the Dart port against.
 - Screens: `lib/features/<screen>/`. Shared widgets: `lib/shared/widgets/`. Theme and tokens: `lib/core/theme/`.
@@ -45,7 +49,7 @@ Rules that apply to all work (carried over from the website):
 
 ## Verification status (2026-11-14)
 
-Done and automated: `flutter analyze` clean; **242 tests** pass (parity with the website's own results, store, every screen's behaviour, the guide's everyday workflows, layout sweep at 360 x 640 dp at 1x and 1.5x text, tablet portrait and landscape, accessibility guidelines on 24 routes in light and 25 routes in dark at 100% and 160% text, preview states, 20 golden screenshots including 4 dark and 3 at 200% text, privacy and design-rule checks, and the new `m1` to `m6` test files). The release APK (55.9 MB, three ABIs) was rebuilt after M7 and installed on a real phone; its manifest has no `INTERNET` permission.
+Done and automated: `flutter analyze` clean; **271 tests** pass (+2 live-server tests that run only with a server address) (parity with the website's own results, store, every screen's behaviour, the guide's everyday workflows, layout sweep at 360 x 640 dp at 1x and 1.5x text, tablet portrait and landscape, accessibility guidelines on 24 routes in light and 25 routes in dark at 100% and 160% text, preview states, 20 golden screenshots including 4 dark and 3 at 200% text, privacy and design-rule checks, and the new `m1` to `m6` test files). The release APK (55.9 MB, three ABIs) was rebuilt after M7 and installed on a real phone; its manifest has no `INTERNET` permission.
 
 **Not done (needs a person):** a TalkBack walkthrough, usability sessions, reduced motion on the device, and a side-by-side visual check against the live website (project card tints for yellow and green are my reading of the palette). See the checklist in the plan, section 10.
 
